@@ -1,0 +1,95 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Query {
+  hello: String!
+}
+
+type Mutation {
+  createUser(username: CreateUserDto!): Boolean!
+  updatePassword(username: String!, newPassword: String!): Boolean!
+  programarMant(programarMantInput: PrograMantenimientoDto!): Boolean!
+
+  """
+  Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la calidad
+  """
+  updateOneMantenimiento(updateOneMantenimientoInput: UpdateOneMantenimientoDto!): Boolean!
+  registrarMant(registrarMantInput: UpdateMantenimientoDto!): Boolean!
+  createCar(createCarInput: CreateCarDto!): Boolean!
+  createRepuesto(createRepuestoInput: CreateRepuestoDto!): Boolean!
+  verifyRepuesto(verifyRepuestoInput: VerifyRepuestoDto!): Boolean!
+}
+
+input CreateUserDto {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+  nivelUser: String!
+}
+
+input PrograMantenimientoDto {
+  placa: String!
+  tipo: String!
+  tecnico: String!
+  fecha: DateTime!
+  anotaciones: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input UpdateOneMantenimientoDto {
+  placa: String!
+  tipo: String!
+  tecnico: String!
+  fecha: DateTime!
+  kmMedido: Float!
+  fechaInicio: DateTime!
+  diagnostico: String!
+  repuestos: [RepuestoDto!]
+}
+
+input RepuestoDto {
+  id: String!
+  cantidadReserva: Float
+  marca: String
+  producto: String
+  cantidad: Float!
+  precio: Float
+}
+
+input UpdateMantenimientoDto {
+  _id: String!
+  kmMedido: Float!
+  fechaInicio: DateTime!
+  fecha: DateTime!
+  diagnostico: String!
+  repuestos: [RepuestoDto!]
+}
+
+input CreateCarDto {
+  placa: String!
+  propietario: String!
+  cliente: String!
+  fechaSoat: DateTime!
+  kmActual: Int!
+  fechaRevision: DateTime!
+  vigenciaContrato: DateTime!
+  puntaje: Int
+}
+
+input CreateRepuestoDto {
+  cantidadReserva: Float!
+  marca: String!
+  producto: String!
+  cantidad: Float!
+  precio: Float!
+}
+
+input VerifyRepuestoDto {
+  repuestos: [RepuestoDto!]
+}
