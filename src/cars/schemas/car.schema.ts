@@ -5,6 +5,7 @@ export type CarDocument = HydratedDocument<Car>;
 
 @Schema()
 export class Car {
+  _id: string;
   @Prop({
     required: true,
     trim: true,
@@ -22,6 +23,9 @@ export class Car {
 
   @Prop()
   kmActual: number;
+
+  @Prop()
+  kmRegistroInicial: number;
 
   @Prop()
   fechaRevision: Date;

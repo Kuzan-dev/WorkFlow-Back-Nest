@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { Repuesto } from 'src/repuestos/schemas/repuesto.schema';
 
 export type MantenimientoDocument = HydratedDocument<Mantenimiento>;
 
@@ -50,11 +51,11 @@ export class Mantenimiento {
   @Prop()
   diagnosticoFinal: string;
 
-  @Prop([Object])
-  repuestos: Array<object>;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Repuesto' }] })
+  repuestos: Repuesto[];
 
-  @Prop([Object])
-  respuestosAdicionales: Array<object>;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Repuesto' }] })
+  repuestosAjuste: Repuesto[];
 
   @Prop([String])
   documentos: Array<string>;

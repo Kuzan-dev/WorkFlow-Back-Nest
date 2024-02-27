@@ -15,6 +15,10 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { CarsModule } from './cars/cars.module';
 import { RepuestosModule } from './repuestos/repuestos.module';
 import { FacturasModule } from './facturas/facturas.module';
+import { ProveedoresModule } from './proveedores/proveedores.module';
+import { PersonalModule } from './personal/personal.module';
+import { ClientesModule } from './clientes/clientes.module';
+import { DocumentosModule } from './documentos/documentos.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,9 +29,6 @@ import { FacturasModule } from './facturas/facturas.module';
       playground: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      subscriptions: {
-        'graphql-ws': true,
-      },
     }),
     MongooseModule.forRoot(process.env.DB_CONNECTION),
     AuthModule,
@@ -36,6 +37,10 @@ import { FacturasModule } from './facturas/facturas.module';
     CarsModule,
     RepuestosModule,
     FacturasModule,
+    ProveedoresModule,
+    PersonalModule,
+    ClientesModule,
+    DocumentosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

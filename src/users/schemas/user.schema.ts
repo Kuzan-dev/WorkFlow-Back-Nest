@@ -32,6 +32,9 @@ export class User {
   })
   password: string;
 
+  @Prop()
+  clienteAsociado: string;
+
   @Prop({
     required: true,
     enum: ['admin', 'tecnico', 'cliente'],

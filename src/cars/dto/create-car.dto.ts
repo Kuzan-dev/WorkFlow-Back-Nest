@@ -32,7 +32,7 @@ export class CreateCarDto {
   @Field(() => Int)
   @IsString()
   @IsNotEmpty()
-  kmActual: number;
+  kmRegistroInicial: number;
 
   @Field()
   @IsDate()

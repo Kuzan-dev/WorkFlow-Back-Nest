@@ -6,22 +6,62 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PrograMantenimientoDto } from './dto/create-mantenimiento.dto';
-import { Mantenimiento } from './schemas/mantenimiento.schema';
+import {
+  Mantenimiento,
+  MantenimientoDocument,
+} from './schemas/mantenimiento.schema';
 import { CarsService } from 'src/cars/cars.service';
 import { ExistsCarDto } from '../cars/dto/exists-card.dto';
 import { UpdateMantenimientoDto } from './dto/update-mantenimiento.dto';
 import { UpdateOneMantenimientoDto } from './dto/update-one-mantenimiento.dto';
 import { RepuestosService } from 'src/repuestos/repuestos.service';
 import { VerifyRepuestoDto } from '../repuestos/dto/verify-repuesto.dto';
-
+import { CarInfoDto } from 'src/cars/dto/car-info.dto';
+import { Subject } from 'rxjs';
 @Injectable()
 export class MantenimientosService {
+  private readonly mantenimientoChanges = new Subject<any>();
   constructor(
     @InjectModel(Mantenimiento.name)
     private readonly mantenimientoModel: Model<Mantenimiento>,
     private readonly carsService: CarsService,
     private readonly repuestosService: RepuestosService,
-  ) {}
+  ) {
+    // // 2. En tu middleware de Mongoose, emitir un evento cuando se realice un cambio
+    // this.mantenimientoModel.schema.post('save', () => {
+    //   this.mantenimientoChanges.next('Mantenimiento updated');
+    // });
+  }
+  // Método para manejar los cambios en la subscription
+  // getMantenimientoChanges(estado: string, fecha: Date) {
+  //   return this.mantenimientoChanges.asObservable().pipe(
+  //     map(async () => {
+  //       const cantidad = await this.getCantidadMantenimientosPorEstado(estado);
+  //       const mantenimientos = await this.getMantenimientosPorEstadoYFecha(
+  //         estado,
+  //         fecha,
+  //       );
+  //       const result = { cantidad, mantenimientos };
+  //       pubSub.publish('mantenimientoChanges', result);
+  //       return result;
+  //     }),
+  //   );
+  // }
+
+  async getCantidadMantenimientosPorEstado(estado: string): Promise<number> {
+    return this.mantenimientoModel.countDocuments({ estado });
+  }
+
+  async getMantenimientosPorEstadoYFecha(
+    estado: string,
+    fecha: Date,
+  ): Promise<Mantenimiento[]> {
+    return this.mantenimientoModel.find({ estado, fecha });
+  }
+
+  async getMantenimientoPorId(id: string): Promise<Mantenimiento> {
+    return this.mantenimientoModel.findById(id).exec();
+  }
 
   async programar(
     programarManteniminetoDto: PrograMantenimientoDto,
@@ -33,23 +73,15 @@ export class MantenimientosService {
     if (!exists) {
       throw new NotFoundException('Carro no existe');
     }
-    const programMant = await this.mantenimientoModel.create(
-      programarManteniminetoDto,
-    );
+
+    const programMant = await this.mantenimientoModel.create({
+      ...programarManteniminetoDto,
+      estado: 'programado',
+    });
     return programMant;
   }
 
   async registrar(
-    updateMantDto: UpdateMantenimientoDto,
-  ): Promise<Mantenimiento> {
-    const updateMant = await this.mantenimientoModel.findByIdAndUpdate(
-      updateMantDto._id,
-      updateMantDto,
-      { new: true },
-    );
-    return updateMant;
-  }
-  async registrarPrueba(
     updateMantDto: UpdateMantenimientoDto,
   ): Promise<Mantenimiento> {
     const session = await this.mantenimientoModel.db.startSession();
@@ -82,11 +114,22 @@ export class MantenimientosService {
 
       const updateMant = await this.mantenimientoModel.findByIdAndUpdate(
         updateMantDto._id,
-        updateMantDto,
+        {
+          ...updateMantDto,
+          estado: 'pendiente',
+        },
         { new: true, session },
       );
+      // Obtener la placa del carro del mantenimiento
+      const placa = mantenimiento.placa;
 
+      const updateKmDto = {
+        placa,
+        kmActual: updateMantDto.kmMedido,
+      };
+      await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
+      // this.mantenimientoChanges.next('Mantenimiento updated'); //Emitir evento para notificar cambios
 
       return updateMant;
     } catch (error) {
@@ -127,10 +170,23 @@ export class MantenimientosService {
         throw new BadRequestException('Repuestos verification failed');
       }
       const [updateOneMant] = await this.mantenimientoModel.create(
-        [updateOneMantDto],
+        [
+          {
+            ...updateOneMantDto,
+            estado: 'registrado',
+          },
+        ],
         { new: true, session },
       );
+
+      // Actualizar kmActual después de que todas las demás operaciones se hayan completado con éxito
+      const updateKmDto = {
+        placa: updateOneMantDto.placa,
+        kmActual: updateOneMantDto.kmMedido,
+      };
+      await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
+      // this.mantenimientoChanges.next('Mantenimiento updated'); //Emitir evento para notificar cambios
       return updateOneMant;
     } catch (error) {
       await session.abortTransaction();
@@ -138,5 +194,39 @@ export class MantenimientosService {
     } finally {
       session.endSession();
     }
+  }
+
+  async filtrarMantenimientosPorPlaca(
+    placa: string,
+  ): Promise<MantenimientoDocument[]> {
+    return this.mantenimientoModel.find({ placa }).exec();
+  }
+
+  async getInfoByPlaca(placa: string): Promise<any[]> {
+    const mantenimientos = await this.filtrarMantenimientosPorPlaca(placa);
+    return mantenimientos.map((mantenimiento) => ({
+      id: mantenimiento._id,
+      fecha: mantenimiento.fecha,
+      tipo: mantenimiento.tipo,
+      repuestosUsados: mantenimiento.repuestos.length,
+    }));
+  }
+
+  async findInfoForPlaca(existsCarDto: ExistsCarDto): Promise<CarInfoDto> {
+    const car = await this.carsService.findCarInfo(existsCarDto);
+    const mantenimientos = await this.getInfoByPlaca(car.placa);
+
+    return {
+      id: car._id,
+      placa: car.placa,
+      fechaSoat: car.fechaSoat,
+      vigenciaContrato: car.vigenciaContrato,
+      cliente: car.cliente,
+      propietario: car.propietario,
+      kmRegistroInicial: car.kmRegistroInicial,
+      kmActual: car.kmActual,
+      Puntaje: car.puntaje,
+      Mantenimientos: mantenimientos,
+    };
   }
 }

@@ -7,6 +7,10 @@ import { Roles } from '../auth/roles.decorator';
 import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+import { ExistsCarDto } from 'src/cars/dto/exists-card.dto';
+import { CarInfo } from './dto/info-placa-mant.dto';
+import { MantenimientoInfoDto } from './dto/info-mant.dto';
+import { MantenimientoResult } from './dto/home-tecnico-subscription.dto';
 
 @Resolver()
 export class MantenimientosResolver {
@@ -14,9 +18,9 @@ export class MantenimientosResolver {
 
   //Tenico Funciones
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => String)
-  hello() {
-    return 'Hello world!';
+  @Query((returns) => MantenimientoInfoDto)
+  async mantenimiento(@Args('id', { type: () => String }) id: string) {
+    return this.mantenimientosService.getMantenimientoPorId(id);
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
@@ -47,7 +51,33 @@ export class MantenimientosResolver {
   async registrarMant(
     @Args('registrarMantInput') registrarMantDto: UpdateMantenimientoDto,
   ) {
-    await this.mantenimientosService.registrarPrueba(registrarMantDto);
+    await this.mantenimientosService.registrar(registrarMantDto);
     return true;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Query(() => CarInfo)
+  async findInfoForPlaca(
+    @Args('placa', { type: () => String }) placa: string,
+  ): Promise<CarInfo> {
+    const existsCarDto: ExistsCarDto = { placa };
+    return this.mantenimientosService.findInfoForPlaca(existsCarDto);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Query((returns) => MantenimientoResult)
+  async mantenimientoChanges(
+    @Args('estado') estado: string,
+    @Args('fecha') fecha: Date,
+  ) {
+    const cantidad =
+      await this.mantenimientosService.getCantidadMantenimientosPorEstado(
+        estado,
+      );
+    const mantenimientos =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        estado,
+        fecha,
+      );
+    return { cantidad, mantenimientos };
   }
 }

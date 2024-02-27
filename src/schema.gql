@@ -2,8 +2,68 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type RepuestoType {
+  id: String!
+  cantidadReserva: Float
+  marca: String
+  producto: String
+  cantidad: Float!
+  precio: Float
+}
+
+type CarInfo {
+  id: String!
+  placa: String!
+  fechaSoat: DateTime!
+  vigenciaContrato: DateTime!
+  cliente: String!
+  propietario: String!
+  kmActual: Float!
+  Puntaje: Float!
+  Mantenimientos: [MantenimientoInfo!]
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MantenimientoInfo {
+  id: String!
+  fecha: DateTime!
+  tipo: String!
+  repuestosUsados: Float!
+}
+
+type MantenimientoInfoDto {
+  placa: String!
+  tipo: String
+  tecnico: String
+  estado: String
+  kmPrevio: Float
+  kmMedido: Float
+  cliente: String
+  fecha: DateTime
+  fechaInicio: DateTime
+  fechaFin: DateTime
+  fechaSoat: DateTime
+  anotaciones: String
+  diagnostico: String
+  diagnosticoFinal: String
+  repuestos: [RepuestoType!]
+  respuestosAjuste: [RepuestoType!]
+  documentos: [String!]
+}
+
+type MantenimientoResult {
+  cantidad: Int!
+  mantenimientos: [MantenimientoInfoDto!]!
+}
+
 type Query {
-  hello: String!
+  mantenimiento(id: String!): MantenimientoInfoDto!
+  findInfoForPlaca(placa: String!): CarInfo!
+  mantenimientoChanges(estado: String!, fecha: DateTime!): MantenimientoResult!
 }
 
 type Mutation {
@@ -19,6 +79,7 @@ type Mutation {
   createCar(createCarInput: CreateCarDto!): Boolean!
   createRepuesto(createRepuestoInput: CreateRepuestoDto!): Boolean!
   verifyRepuesto(verifyRepuestoInput: VerifyRepuestoDto!): Boolean!
+  createFactura(createFacturaInput: CreateFacturaDto!): String!
 }
 
 input CreateUserDto {
@@ -26,6 +87,7 @@ input CreateUserDto {
   username: String!
   email: String!
   password: String!
+  clienteAsociado: String
   nivelUser: String!
 }
 
@@ -36,11 +98,6 @@ input PrograMantenimientoDto {
   fecha: DateTime!
   anotaciones: String!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 input UpdateOneMantenimientoDto {
   placa: String!
@@ -76,7 +133,7 @@ input CreateCarDto {
   propietario: String!
   cliente: String!
   fechaSoat: DateTime!
-  kmActual: Int!
+  kmRegistroInicial: Int!
   fechaRevision: DateTime!
   vigenciaContrato: DateTime!
   puntaje: Int
@@ -92,4 +149,16 @@ input CreateRepuestoDto {
 
 input VerifyRepuestoDto {
   repuestos: [RepuestoDto!]
+}
+
+input CreateFacturaDto {
+  numeroFactura: String
+  monto: Float!
+  igv: Float
+  detraccion: Float
+  tipo: String!
+  notificacion: Boolean!
+  fecha: DateTime!
+  involucrado: String
+  documentos: [String!]
 }

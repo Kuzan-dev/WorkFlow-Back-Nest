@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Car } from './schemas/car.schema';
 import { CreateCarDto } from './dto/create-car.dto';
 import { ExistsCarDto } from './dto/exists-card.dto';
+import { UpdateKmDto } from './dto/update-km.dto';
 
 @Injectable()
 export class CarsService {
@@ -17,5 +18,21 @@ export class CarsService {
   async exists(existsCarDto: ExistsCarDto): Promise<boolean> {
     const ecar = await this.carModel.findOne({ placa: existsCarDto.placa });
     return !!ecar;
+  }
+
+  // Esta funcion encuentra la información de un carro por su placa
+  async findCarInfo(existsCarDto: ExistsCarDto): Promise<Car> {
+    return this.carModel.findOne({ placa: existsCarDto.placa }).exec();
+  }
+
+  // Esta función actualiza el kmActual de un carro
+  async updateKm(updateKmDto: UpdateKmDto): Promise<Car> {
+    return this.carModel
+      .findOneAndUpdate(
+        { placa: updateKmDto.placa }, // encuentra el carro por su placa
+        { kmActual: updateKmDto.kmActual }, // actualiza el kmActual
+        { new: true }, // devuelve el documento actualizado
+      )
+      .exec();
   }
 }
