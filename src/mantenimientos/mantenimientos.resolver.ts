@@ -16,9 +16,18 @@ import { MantenimientoResult } from './dto/home-tecnico-subscription.dto';
 export class MantenimientosResolver {
   constructor(private readonly mantenimientosService: MantenimientosService) {}
 
-  //Tenico Funciones
+  @Query(() => [Date], {
+    name: 'calendar',
+    description:
+      'Esta función retorna una matriz con las fechas de los mantenimientos que tengan de estado "programado"',
+  })
+  async getProgrammedMaintenanceDates() {
+    return this.mantenimientosService.getProgrammedMaintenanceDates();
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Query((returns) => MantenimientoInfoDto, {
+    name: 'Mantenimiento_Info_por_ID',
     description:
       'Esta funcion retorna la informacion de un mantenimiento por id',
   })
@@ -28,6 +37,7 @@ export class MantenimientosResolver {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Query(() => CarInfo, {
+    name: 'admin_history_cars',
     description:
       'Esta Función retorna la información de un auto ademas de sus mantenimientos (id, fecha, tipo, repuestosUsados) por medio de su placa',
   })
@@ -58,20 +68,35 @@ export class MantenimientosResolver {
     return { cantidad, mantenimientos };
   }
 
+  @Mutation(() => Boolean, {
+    name: 'cambiar_estado_revision',
+    description:
+      'Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados',
+  })
+  async revision(
+    @Args('id', { type: () => String }) id: string,
+    @Args('cambiosSolicitados', { type: () => String })
+    cambiosSolicitados: string,
+  ) {
+    await this.mantenimientosService.revision(id, cambiosSolicitados);
+    return true;
+  }
+
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
   @Roles('admin', 'tecnico')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean, {
+  @Mutation((returns) => String, {
+    name: 'programar_mantenimiento',
     description: 'Esta funcion programa un mantenimiento',
   })
   async programarMant(
     @Args('programarMantInput') prograMantDto: PrograMantenimientoDto,
   ) {
-    await this.mantenimientosService.programar(prograMantDto);
-    return true;
+    return await this.mantenimientosService.programar(prograMantDto);
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean, {
+  @Mutation((returns) => String, {
+    name: 'regisrar_mantenimiento_no_programado',
     description:
       'Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la cantidad',
   })
@@ -79,19 +104,35 @@ export class MantenimientosResolver {
     @Args('updateOneMantenimientoInput')
     updateOneMantenimientoDto: UpdateOneMantenimientoDto,
   ) {
-    await this.mantenimientosService.registrarNuevo(updateOneMantenimientoDto);
-    return true;
+    return await this.mantenimientosService.registrarNuevo(
+      updateOneMantenimientoDto,
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean, {
+  @Mutation((returns) => String, {
+    name: 'regisrar_mantenimiento_programado',
     description:
       'Esta Función registra un mantenimiento que ya haya sido previamente programado, ademas en el apartado de repuestos, pide entregar una id y la cantidad',
   })
   async registrarMant(
     @Args('registrarMantInput') registrarMantDto: UpdateMantenimientoDto,
   ) {
-    await this.mantenimientosService.registrar(registrarMantDto);
-    return true;
+    return await this.mantenimientosService.registrar(registrarMantDto);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Mutation((returns) => String, {
+    name: 'completar_mantenimiento',
+    description:
+      'Esta función actualiza el campo diagnosticoFinal de un mantenimiento y cambia su estado a "completado"',
+  })
+  async actualizarDiagnosticoFinal(
+    @Args('id', { type: () => String }) id: string,
+    @Args('diagnosticoFinal', { type: () => String }) diagnosticoFinal: string,
+  ): Promise<string> {
+    return await this.mantenimientosService.completarMantenimiento(
+      id,
+      diagnosticoFinal,
+    );
   }
 }

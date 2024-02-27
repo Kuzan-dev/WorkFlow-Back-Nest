@@ -13,12 +13,12 @@ export class RepuestoDto {
   @IsOptional()
   cantidadReserva?: number;
 
-  @Field({ nullable: true })
+  @Field()
   @IsOptional()
   @IsString()
   marca?: string;
 
-  @Field({ nullable: true })
+  @Field()
   @IsOptional()
   @IsString()
   producto?: string;

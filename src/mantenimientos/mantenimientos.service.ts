@@ -18,6 +18,8 @@ import { RepuestosService } from 'src/repuestos/repuestos.service';
 import { VerifyRepuestoDto } from '../repuestos/dto/verify-repuesto.dto';
 import { CarInfoDto } from 'src/cars/dto/car-info.dto';
 import { Subject } from 'rxjs';
+import * as moment from 'moment-timezone';
+
 @Injectable()
 export class MantenimientosService {
   private readonly mantenimientoChanges = new Subject<any>();
@@ -30,6 +32,22 @@ export class MantenimientosService {
 
   async getCantidadMantenimientosPorEstado(estado: string): Promise<number> {
     return this.mantenimientoModel.countDocuments({ estado });
+  }
+  async getProgrammedMaintenanceDates(): Promise<Date[]> {
+    const mantenimientos = await this.mantenimientoModel
+      .find({ estado: 'programado' })
+      .exec();
+    const fechas = [];
+    for (const mantenimiento of mantenimientos) {
+      const fecha = moment(mantenimiento.fecha)
+        .tz('America/Lima')
+        .startOf('day')
+        .toDate();
+      if (!fechas.find((f) => f.getTime() === fecha.getTime())) {
+        fechas.push(fecha);
+      }
+    }
+    return fechas;
   }
 
   async getMantenimientosPorEstadoYFecha(
@@ -70,7 +88,7 @@ export class MantenimientosService {
       ...programarManteniminetoDto,
       estado: 'programado',
     });
-    return programMant;
+    return programMant.id.toString();
   }
 
   async registrar(
@@ -90,6 +108,8 @@ export class MantenimientosService {
 
       const repuestos = updateMantDto.repuestos.map((repuesto: any) => ({
         id: repuesto.id,
+        marca: repuesto.marca,
+        producto: repuesto.producto,
         cantidad: Number(repuesto.cantidad),
       }));
 
@@ -121,9 +141,8 @@ export class MantenimientosService {
       };
       await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
-      // this.mantenimientoChanges.next('Mantenimiento updated'); //Emitir evento para notificar cambios
 
-      return updateMant;
+      return updateMant.id.toString(); //Enviamos el ID como string
     } catch (error) {
       await session.abortTransaction();
       throw error;
@@ -146,8 +165,8 @@ export class MantenimientosService {
       const repuestos = updateOneMantDto.repuestos.map((repuesto: any) => ({
         id: repuesto.id,
         //cantidadReserva: Number(repuesto.cantidadReserva),
-        //marca: repuesto.marca,
-        //producto: repuesto.producto,
+        marca: repuesto.marca,
+        producto: repuesto.producto,
         cantidad: Number(repuesto.cantidad),
         // precio: Number(repuesto.precio),
       }));
@@ -178,8 +197,8 @@ export class MantenimientosService {
       };
       await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
-      // this.mantenimientoChanges.next('Mantenimiento updated'); //Emitir evento para notificar cambios
-      return updateOneMant;
+
+      return updateOneMant.id.toString();
     } catch (error) {
       await session.abortTransaction();
       throw error;
@@ -220,5 +239,75 @@ export class MantenimientosService {
       Puntaje: car.puntaje,
       Mantenimientos: mantenimientos,
     };
+  }
+
+  async revision(
+    id: string,
+    cambiosSolicitados: string,
+  ): Promise<Mantenimiento> {
+    const session = await this.mantenimientoModel.db.startSession();
+    session.startTransaction();
+    try {
+      const mantenimiento = await this.mantenimientoModel
+        .findById(id)
+        .session(session);
+      if (!mantenimiento) {
+        throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
+      }
+
+      const repuestos = mantenimiento.repuestos
+        .filter((repuesto: any) => repuesto.id)
+        .map((repuesto: any) => ({
+          id: repuesto.id,
+          marca: repuesto.marca,
+          producto: repuesto.producto,
+          cantidad: repuesto.cantidad,
+        }));
+
+      const verifyRepuestoDto: VerifyRepuestoDto = { repuestos };
+
+      const canProceed = await this.repuestosService.correctRevi(
+        verifyRepuestoDto,
+        session,
+      );
+
+      if (!canProceed) {
+        throw new BadRequestException('Repuestos correction failed');
+      }
+
+      mantenimiento.estado = 'revision';
+      mantenimiento.cambiosSolicitados = cambiosSolicitados;
+      const updatedMant = await mantenimiento.save({ session });
+
+      await session.commitTransaction();
+
+      return updatedMant;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
+  async completarMantenimiento(
+    id: string,
+    diagnosticoFinal: string,
+  ): Promise<string> {
+    const updatedMantenimiento =
+      await this.mantenimientoModel.findByIdAndUpdate(
+        id,
+        {
+          diagnosticoFinal,
+          estado: 'completado',
+        },
+        { new: true },
+      );
+
+    if (!updatedMantenimiento) {
+      throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
+    }
+
+    return updatedMantenimiento.id.toString();
   }
 }

@@ -51,6 +51,9 @@ export class Mantenimiento {
   @Prop()
   diagnosticoFinal: string;
 
+  @Prop()
+  cambiosSolicitados: string;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Repuesto' }] })
   repuestos: Repuesto[];
 

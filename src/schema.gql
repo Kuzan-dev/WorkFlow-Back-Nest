@@ -60,19 +60,36 @@ type MantenimientoResult {
   mantenimientos: [MantenimientoInfoDto!]!
 }
 
+type GetPlacasDto {
+  _id: String!
+  placa: String!
+  cliente: String!
+  fechaSoat: DateTime!
+}
+
 type Query {
+  """
+  Esta función retorna una matriz con las fechas de los mantenimientos que tengan de estado "programado"
+  """
+  calendar: [DateTime!]!
+
   """Esta funcion retorna la informacion de un mantenimiento por id"""
-  mantenimiento(id: String!): MantenimientoInfoDto!
+  Mantenimiento_Info_por_ID(id: String!): MantenimientoInfoDto!
 
   """
   Esta Función retorna la información de un auto ademas de sus mantenimientos (id, fecha, tipo, repuestosUsados) por medio de su placa
   """
-  findInfoForPlaca(placa: String!): CarInfo!
+  admin_history_cars(placa: String!): CarInfo!
 
   """
   Esta funcion retorna la cantidad de mantenimientos por estado y los mantenimientos (información compleja) por estado y fecha
   """
   mantenimientoChanges(estado: String!, fecha: DateTime!): MantenimientoResult!
+
+  """
+  Esta Función retorna la información de los carros (id, placa, cliente, fechaSoat)
+  """
+  obtener_info_placas: [GetPlacasDto!]!
   obtener_todos_los_repuestos: [RepuestoType!]!
 }
 
@@ -80,19 +97,31 @@ type Mutation {
   createUser(username: CreateUserDto!): Boolean!
   updatePassword(username: String!, newPassword: String!): Boolean!
 
+  """
+  Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados
+  """
+  cambiar_estado_revision(id: String!, cambiosSolicitados: String!): Boolean!
+
   """Esta funcion programa un mantenimiento"""
-  programarMant(programarMantInput: PrograMantenimientoDto!): Boolean!
+  programar_mantenimiento(programarMantInput: PrograMantenimientoDto!): String!
 
   """
   Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la cantidad
   """
-  updateOneMantenimiento(updateOneMantenimientoInput: UpdateOneMantenimientoDto!): Boolean!
+  regisrar_mantenimiento_no_programado(updateOneMantenimientoInput: UpdateOneMantenimientoDto!): String!
 
   """
   Esta Función registra un mantenimiento que ya haya sido previamente programado, ademas en el apartado de repuestos, pide entregar una id y la cantidad
   """
-  registrarMant(registrarMantInput: UpdateMantenimientoDto!): Boolean!
-  createCar(createCarInput: CreateCarDto!): Boolean!
+  regisrar_mantenimiento_programado(registrarMantInput: UpdateMantenimientoDto!): String!
+
+  """
+  Esta función actualiza el campo diagnosticoFinal de un mantenimiento y cambia su estado a "completado"
+  """
+  completar_mantenimiento(id: String!, diagnosticoFinal: String!): String!
+
+  """Esta Función registra un auto en la base de datos"""
+  crear_auto(createCarInput: CreateCarDto!): Boolean!
   createRepuesto(createRepuestoInput: CreateRepuestoDto!): Boolean!
   verifyRepuesto(verifyRepuestoInput: VerifyRepuestoDto!): Boolean!
   createFactura(createFacturaInput: CreateFacturaDto!): String!
@@ -129,8 +158,8 @@ input UpdateOneMantenimientoDto {
 input RepuestoDto {
   id: String!
   cantidadReserva: Float
-  marca: String
-  producto: String
+  marca: String!
+  producto: String!
   cantidad: Float!
   precio: Float
 }

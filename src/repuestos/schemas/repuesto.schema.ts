@@ -7,7 +7,6 @@ export type RepuestoDocument = Repuesto & HydratedDocument<Repuesto>;
   timestamps: true,
 })
 export class Repuesto {
-  @Prop()
   _id: string;
 
   @Prop({
