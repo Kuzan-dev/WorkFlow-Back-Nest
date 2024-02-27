@@ -26,27 +26,7 @@ export class MantenimientosService {
     private readonly mantenimientoModel: Model<Mantenimiento>,
     private readonly carsService: CarsService,
     private readonly repuestosService: RepuestosService,
-  ) {
-    // // 2. En tu middleware de Mongoose, emitir un evento cuando se realice un cambio
-    // this.mantenimientoModel.schema.post('save', () => {
-    //   this.mantenimientoChanges.next('Mantenimiento updated');
-    // });
-  }
-  // Método para manejar los cambios en la subscription
-  // getMantenimientoChanges(estado: string, fecha: Date) {
-  //   return this.mantenimientoChanges.asObservable().pipe(
-  //     map(async () => {
-  //       const cantidad = await this.getCantidadMantenimientosPorEstado(estado);
-  //       const mantenimientos = await this.getMantenimientosPorEstadoYFecha(
-  //         estado,
-  //         fecha,
-  //       );
-  //       const result = { cantidad, mantenimientos };
-  //       pubSub.publish('mantenimientoChanges', result);
-  //       return result;
-  //     }),
-  //   );
-  // }
+  ) {}
 
   async getCantidadMantenimientosPorEstado(estado: string): Promise<number> {
     return this.mantenimientoModel.countDocuments({ estado });

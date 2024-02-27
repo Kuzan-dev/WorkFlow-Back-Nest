@@ -18,45 +18,19 @@ export class MantenimientosResolver {
 
   //Tenico Funciones
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => MantenimientoInfoDto)
+  @Query((returns) => MantenimientoInfoDto, {
+    description:
+      'Esta funcion retorna la informacion de un mantenimiento por id',
+  })
   async mantenimiento(@Args('id', { type: () => String }) id: string) {
     return this.mantenimientosService.getMantenimientoPorId(id);
   }
 
-  @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean)
-  async programarMant(
-    @Args('programarMantInput') prograMantDto: PrograMantenimientoDto,
-  ) {
-    await this.mantenimientosService.programar(prograMantDto);
-    return true;
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean, {
+  @Query(() => CarInfo, {
     description:
-      'Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la calidad',
+      'Esta Función retorna la información de un auto ademas de sus mantenimientos (id, fecha, tipo, repuestosUsados) por medio de su placa',
   })
-  async updateOneMantenimiento(
-    @Args('updateOneMantenimientoInput')
-    updateOneMantenimientoDto: UpdateOneMantenimientoDto,
-  ) {
-    await this.mantenimientosService.registrarNuevo(updateOneMantenimientoDto);
-    return true;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean)
-  async registrarMant(
-    @Args('registrarMantInput') registrarMantDto: UpdateMantenimientoDto,
-  ) {
-    await this.mantenimientosService.registrar(registrarMantDto);
-    return true;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query(() => CarInfo)
   async findInfoForPlaca(
     @Args('placa', { type: () => String }) placa: string,
   ): Promise<CarInfo> {
@@ -64,7 +38,10 @@ export class MantenimientosResolver {
     return this.mantenimientosService.findInfoForPlaca(existsCarDto);
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => MantenimientoResult)
+  @Query((returns) => MantenimientoResult, {
+    description:
+      'Esta funcion retorna la cantidad de mantenimientos por estado y los mantenimientos (información compleja) por estado y fecha',
+  })
   async mantenimientoChanges(
     @Args('estado') estado: string,
     @Args('fecha') fecha: Date,
@@ -79,5 +56,42 @@ export class MantenimientosResolver {
         fecha,
       );
     return { cantidad, mantenimientos };
+  }
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Mutation((returns) => Boolean, {
+    description: 'Esta funcion programa un mantenimiento',
+  })
+  async programarMant(
+    @Args('programarMantInput') prograMantDto: PrograMantenimientoDto,
+  ) {
+    await this.mantenimientosService.programar(prograMantDto);
+    return true;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Mutation((returns) => Boolean, {
+    description:
+      'Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la cantidad',
+  })
+  async updateOneMantenimiento(
+    @Args('updateOneMantenimientoInput')
+    updateOneMantenimientoDto: UpdateOneMantenimientoDto,
+  ) {
+    await this.mantenimientosService.registrarNuevo(updateOneMantenimientoDto);
+    return true;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Mutation((returns) => Boolean, {
+    description:
+      'Esta Función registra un mantenimiento que ya haya sido previamente programado, ademas en el apartado de repuestos, pide entregar una id y la cantidad',
+  })
+  async registrarMant(
+    @Args('registrarMantInput') registrarMantDto: UpdateMantenimientoDto,
+  ) {
+    await this.mantenimientosService.registrar(registrarMantDto);
+    return true;
   }
 }
