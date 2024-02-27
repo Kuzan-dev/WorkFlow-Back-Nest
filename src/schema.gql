@@ -61,20 +61,36 @@ type MantenimientoResult {
 }
 
 type Query {
+  """Esta funcion retorna la informacion de un mantenimiento por id"""
   mantenimiento(id: String!): MantenimientoInfoDto!
+
+  """
+  Esta Función retorna la información de un auto ademas de sus mantenimientos (id, fecha, tipo, repuestosUsados) por medio de su placa
+  """
   findInfoForPlaca(placa: String!): CarInfo!
+
+  """
+  Esta funcion retorna la cantidad de mantenimientos por estado y los mantenimientos (información compleja) por estado y fecha
+  """
   mantenimientoChanges(estado: String!, fecha: DateTime!): MantenimientoResult!
+  obtener_todos_los_repuestos: [RepuestoType!]!
 }
 
 type Mutation {
   createUser(username: CreateUserDto!): Boolean!
   updatePassword(username: String!, newPassword: String!): Boolean!
+
+  """Esta funcion programa un mantenimiento"""
   programarMant(programarMantInput: PrograMantenimientoDto!): Boolean!
 
   """
-  Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la calidad
+  Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la cantidad
   """
   updateOneMantenimiento(updateOneMantenimientoInput: UpdateOneMantenimientoDto!): Boolean!
+
+  """
+  Esta Función registra un mantenimiento que ya haya sido previamente programado, ademas en el apartado de repuestos, pide entregar una id y la cantidad
+  """
   registrarMant(registrarMantInput: UpdateMantenimientoDto!): Boolean!
   createCar(createCarInput: CreateCarDto!): Boolean!
   createRepuesto(createRepuestoInput: CreateRepuestoDto!): Boolean!

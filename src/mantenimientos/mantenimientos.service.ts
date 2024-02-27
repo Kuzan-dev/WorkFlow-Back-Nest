@@ -36,7 +36,19 @@ export class MantenimientosService {
     estado: string,
     fecha: Date,
   ): Promise<Mantenimiento[]> {
-    return this.mantenimientoModel.find({ estado, fecha });
+    const startOfDay = new Date(fecha);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(fecha);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return this.mantenimientoModel.find({
+      estado,
+      fecha: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
   }
 
   async getMantenimientoPorId(id: string): Promise<Mantenimiento> {

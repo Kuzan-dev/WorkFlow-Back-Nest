@@ -16,6 +16,10 @@ export class RepuestosService {
     const newRepuesto = await this.respuestoModel.create(createRepuestoDto);
     return newRepuesto;
   }
+  async findAll(): Promise<Repuesto[]> {
+    const repuestos = await this.respuestoModel.find();
+    return repuestos;
+  }
 
   async verify(
     verifyRepuestoDto: VerifyRepuestoDto,
