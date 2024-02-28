@@ -50,6 +50,28 @@ export class MantenimientosService {
     return fechas;
   }
 
+  async getCantidadMantenimientosPorEstadoYFecha(
+    estado: string,
+    fecha: Date,
+  ): Promise<number> {
+    // Obtener el inicio del día
+    const inicioDia = new Date(fecha);
+    inicioDia.setHours(0, 0, 0, 0);
+
+    // Obtener el fin del día
+    const finDia = new Date(fecha);
+    finDia.setHours(23, 59, 59, 999);
+
+    // Realizar la consulta
+    return this.mantenimientoModel.countDocuments({
+      estado,
+      fecha: {
+        $gte: inicioDia,
+        $lte: finDia,
+      },
+    });
+  }
+
   async getMantenimientosPorEstadoYFecha(
     estado: string,
     fecha: Date,

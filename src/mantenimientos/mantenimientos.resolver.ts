@@ -1,4 +1,5 @@
 import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
+
 import { MantenimientosService } from './mantenimientos.service';
 import { PrograMantenimientoDto } from './dto/create-mantenimiento.dto';
 import { UpdateMantenimientoDto } from './dto/update-mantenimiento.dto';
@@ -11,6 +12,7 @@ import { ExistsCarDto } from 'src/cars/dto/exists-card.dto';
 import { CarInfo } from './dto/info-placa-mant.dto';
 import { MantenimientoInfoDto } from './dto/info-mant.dto';
 import { MantenimientoResult } from './dto/home-tecnico-subscription.dto';
+import { HomeAdminDTO } from './dto/home-admin.dto';
 
 @Resolver()
 export class MantenimientosResolver {
@@ -33,6 +35,84 @@ export class MantenimientosResolver {
   })
   async mantenimiento(@Args('id', { type: () => String }) id: string) {
     return this.mantenimientosService.getMantenimientoPorId(id);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Query((returns) => HomeAdminDTO, {
+    name: 'home_admin',
+    description:
+      'Esta funcion se usa en el home del admin y retorna la cantidad de mantenimientos programados, la cantidad total de mantenimientos y los mantenimientos programados',
+  })
+  async homeAdmin(@Args('fecha') fecha: Date): Promise<HomeAdminDTO> {
+    const cantidadProgramada =
+      await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
+        'programada',
+        fecha,
+      );
+    const cantidadPendiente =
+      await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
+        'pendiente',
+        fecha,
+      );
+    const cantidadRevision =
+      await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
+        'revision',
+        fecha,
+      );
+    const cantidadCompletada =
+      await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
+        'completado',
+        fecha,
+      );
+
+    const cantidadTotal =
+      cantidadCompletada + cantidadPendiente + cantidadRevision;
+
+    const mantenimientos1 =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        'programado',
+        fecha,
+      );
+    const mantenimientos2 =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        'pendiente',
+        fecha,
+      );
+    const mantenimientos3 =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        'revision',
+        fecha,
+      );
+    const mantenimientos4 =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        'completado',
+        fecha,
+      );
+    const mantenimientos5 =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        'aprobado',
+        fecha,
+      );
+    const mantenimientos6 =
+      await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
+        'expirado',
+        fecha,
+      );
+
+    const mantenimientos = [
+      ...mantenimientos1,
+      ...mantenimientos2,
+      ...mantenimientos3,
+      ...mantenimientos4,
+      ...mantenimientos5,
+      ...mantenimientos6,
+    ];
+
+    return {
+      cantidadProgramada,
+      cantidadTotal,
+      mantenimientos,
+    };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

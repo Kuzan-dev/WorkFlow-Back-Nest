@@ -1,8 +1,8 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { RepuestoType } from '../../repuestos/dto/repuesto.dto';
+import { RepuestoType2 } from '../../repuestos/dto/repuesto2.dto';
 
 @ObjectType()
-export class MantenimientoInfoDto {
+export class MantenimientoInfoDto2 {
   @Field()
   placa: string;
 
@@ -45,11 +45,11 @@ export class MantenimientoInfoDto {
   @Field({ nullable: true })
   diagnosticoFinal: string;
 
-  @Field(() => [RepuestoType], { nullable: true })
-  repuestos: RepuestoType[];
+  @Field(() => [RepuestoType2], { nullable: true })
+  repuestos: RepuestoType2[];
 
-  @Field(() => [RepuestoType], { nullable: true })
-  repuestosAjuste: RepuestoType[];
+  @Field(() => [RepuestoType2], { nullable: true })
+  repuestosAjuste: RepuestoType2[];
 
   @Field(() => [String], { nullable: true })
   documentos: Array<string>;

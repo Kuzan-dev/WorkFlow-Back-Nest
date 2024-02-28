@@ -51,13 +51,48 @@ type MantenimientoInfoDto {
   diagnostico: String
   diagnosticoFinal: String
   repuestos: [RepuestoType!]
-  respuestosAjuste: [RepuestoType!]
+  repuestosAjuste: [RepuestoType!]
   documentos: [String!]
 }
 
 type MantenimientoResult {
   cantidad: Int!
   mantenimientos: [MantenimientoInfoDto!]!
+}
+
+type RepuestoType2 {
+  _id: String!
+  cantidadReserva: Float
+  marca: String
+  producto: String
+  cantidad: Float!
+  precio: Float
+}
+
+type MantenimientoInfoDto2 {
+  placa: String!
+  tipo: String
+  tecnico: String
+  estado: String
+  kmPrevio: Float
+  kmMedido: Float
+  cliente: String
+  fecha: DateTime
+  fechaInicio: DateTime
+  fechaFin: DateTime
+  fechaSoat: DateTime
+  anotaciones: String
+  diagnostico: String
+  diagnosticoFinal: String
+  repuestos: [RepuestoType2!]
+  repuestosAjuste: [RepuestoType2!]
+  documentos: [String!]
+}
+
+type HomeAdminDTO {
+  cantidadProgramada: Int!
+  cantidadTotal: Int!
+  mantenimientos: [MantenimientoInfoDto2!]!
 }
 
 type GetPlacasDto {
@@ -77,6 +112,11 @@ type Query {
   Mantenimiento_Info_por_ID(id: String!): MantenimientoInfoDto!
 
   """
+  Esta funcion se usa en el home del admin y retorna la cantidad de mantenimientos programados, la cantidad total de mantenimientos y los mantenimientos programados
+  """
+  home_admin(fecha: DateTime!): HomeAdminDTO!
+
+  """
   Esta Función retorna la información de un auto ademas de sus mantenimientos (id, fecha, tipo, repuestosUsados) por medio de su placa
   """
   admin_history_cars(placa: String!): CarInfo!
@@ -90,6 +130,10 @@ type Query {
   Esta Función retorna la información de los carros (id, placa, cliente, fechaSoat)
   """
   obtener_info_placas: [GetPlacasDto!]!
+
+  """
+  Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)
+  """
   obtener_todos_los_repuestos: [RepuestoType!]!
 }
 
@@ -122,9 +166,21 @@ type Mutation {
 
   """Esta Función registra un auto en la base de datos"""
   crear_auto(createCarInput: CreateCarDto!): Boolean!
-  createRepuesto(createRepuestoInput: CreateRepuestoDto!): Boolean!
-  verifyRepuesto(verifyRepuestoInput: VerifyRepuestoDto!): Boolean!
-  createFactura(createFacturaInput: CreateFacturaDto!): String!
+
+  """
+  Esta Función registra un repuesto en la base de datos y retorna true si se registro correctamente
+  """
+  crear_repuesto(createRepuestoInput: CreateRepuestoDto!): Boolean!
+
+  """
+  Esta Función se usa internamente para actualizar repuestos en la base de datos y retorna true si se actualizo correctamente, no usar en el cliente
+  """
+  verficar_repuestos(verifyRepuestoInput: VerifyRepuestoDto!): Boolean!
+
+  """
+  Esta Función registra una factura en la base de datos y retorna el id de la factura creada
+  """
+  crear_factura(createFacturaInput: CreateFacturaDto!): String!
 }
 
 input CreateUserDto {
