@@ -7,7 +7,11 @@ import { CreateFacturaDto } from './dto/create-factura.dto';
 export class FacturasResolver {
   constructor(private readonly facturasService: FacturasService) {}
 
-  @Mutation((returns) => String)
+  @Mutation((returns) => String, {
+    name: 'crear_factura',
+    description:
+      'Esta Función registra una factura en la base de datos y retorna el id de la factura creada',
+  })
   async createFactura(
     @Args('createFacturaInput') createFacturaDto: CreateFacturaDto,
   ) {
