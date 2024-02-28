@@ -4,6 +4,9 @@ import { RepuestoType2 } from '../../repuestos/dto/repuesto2.dto';
 @ObjectType()
 export class MantenimientoInfoDto2 {
   @Field()
+  _id: string;
+
+  @Field()
   placa: string;
 
   @Field({ nullable: true })

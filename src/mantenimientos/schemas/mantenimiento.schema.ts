@@ -6,6 +6,8 @@ export type MantenimientoDocument = HydratedDocument<Mantenimiento>;
 
 @Schema()
 export class Mantenimiento {
+  _id: string;
+
   @Prop({
     required: true,
     trim: true,
