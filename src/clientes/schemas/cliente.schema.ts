@@ -1,12 +1,26 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+@Schema()
+class Contrato {
+  @Prop()
+  numeroContrato: string;
+
+  @Prop()
+  fechaInicio: Date;
+
+  @Prop()
+  fechaFin: Date;
+}
+
 export type ClienteDocument = Cliente & Document;
 
 @Schema({
   timestamps: true,
 })
 export class Cliente {
+  _id: string;
+
   @Prop({
     required: true,
     trim: true,
@@ -42,16 +56,8 @@ export class Cliente {
   })
   rubro: string;
   // Información de Contrato
-
-  @Prop()
-  numeroContrato: string;
-
-  @Prop()
-  fechaInicio: Date;
-
-  @Prop()
-  fechaFin: Date;
-
+  @Prop({ type: [Contrato], default: [] })
+  contratos: Contrato[];
   //Información de Documentos
 
   @Prop([String])

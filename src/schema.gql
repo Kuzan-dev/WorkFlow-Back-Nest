@@ -103,6 +103,38 @@ type GetPlacasDto {
   fechaSoat: DateTime!
 }
 
+type SalarioFechaDto {
+  salario: Float!
+  fecha: DateTime!
+}
+
+type PersonalDto {
+  nombre: String!
+  numero: Int
+  email: String
+  fechaIngreso: DateTime
+  salarioFecha: [SalarioFechaDto]
+  documentos: [String]
+}
+
+type ContratoDto {
+  numeroContrato: String!
+  fechaInicio: DateTime!
+  fechaFin: DateTime!
+}
+
+type ClienteDto {
+  nombre: String!
+  ruc: String!
+  direccion: String!
+  nombreCliente: String
+  numeroContacto: Float
+  email: String!
+  rubro: String!
+  contratos: [ContratoDto]
+  documentos: [String]
+}
+
 type Query {
   """
   Esta función retorna una matriz con las fechas de los mantenimientos que tengan de estado "programado"
@@ -136,6 +168,22 @@ type Query {
   Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)
   """
   obtener_todos_los_repuestos: [RepuestoType!]!
+
+  """
+  Esta Función retorna la información de todo el personal en la base de datos
+  """
+  obtener_Todo_Personal: [PersonalDto!]!
+
+  """Esta Función retorna la información de un personal por su id"""
+  obtener_Personal_Por_Id(id: String!): PersonalDto!
+
+  """Esta Función retorna la información de un cliente en base a su ID"""
+  obtener_Cliente_ID(id: String!): ClienteDto!
+
+  """
+  Esta Función retorna la información de todos los clientes en la base de datos
+  """
+  obtener_Todos_Clientes: [ClienteDto!]!
 }
 
 type Mutation {
@@ -182,6 +230,36 @@ type Mutation {
   Esta Función registra una factura en la base de datos y retorna el id de la factura creada
   """
   crear_factura(createFacturaInput: CreateFacturaDto!): String!
+
+  """
+  Esta Función registra un nuevo persoanl en la base de datos y retorna el id del documento creado
+  """
+  crear_Personal(input: PersonalInput!): String!
+
+  """
+  Esta Función agrega un nuevo salario y una fecha al personal en la base de datos y retorna el documento actualizado
+  """
+  Agregar_Salario_Fecha(id: String!, salarioFecha: SalarioFechaInput!): PersonalDto!
+
+  """
+  Esta Función elimina un personal de la base de datos y retorna un booleano indicando si se eliminó correctamente o no
+  """
+  borrar_Personal(id: String!): Boolean!
+
+  """
+  Esta Función registra un nuevo cliente en la base de datos y retorna el id del documento creado
+  """
+  crear_Cliente(cliente: ClienteInput!): String!
+
+  """
+  Esta Función elimina un cliente de la base de datos y retorna un booleano indicando si se eliminó correctamente o no
+  """
+  borrar_Cliente(id: String!): Boolean!
+
+  """
+  Esta Función agrega un nuevo contrato al cliente en la base de datos y retorna el documento actualizado
+  """
+  Agregar_Contrato(id: String!, contrato: ContratoInput!): ClienteDto!
 }
 
 input CreateUserDto {
@@ -263,4 +341,36 @@ input CreateFacturaDto {
   fecha: DateTime!
   involucrado: String
   documentos: [String!]
+}
+
+input PersonalInput {
+  nombre: String!
+  numero: Int
+  email: String
+  fechaIngreso: DateTime
+  salarioFecha: [SalarioFechaInput]
+  documentos: [String]
+}
+
+input SalarioFechaInput {
+  salario: Float!
+  fecha: DateTime!
+}
+
+input ClienteInput {
+  nombre: String!
+  ruc: String!
+  direccion: String!
+  nombreCliente: String
+  numeroContacto: Float
+  email: String!
+  rubro: String!
+  contratos: [ContratoInput]
+  documentos: [String]
+}
+
+input ContratoInput {
+  numeroContrato: String!
+  fechaInicio: DateTime!
+  fechaFin: DateTime!
 }

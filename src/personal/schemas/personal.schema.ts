@@ -12,6 +12,8 @@ class SalarioFecha {
 
 @Schema()
 export class Personal {
+  _id: string;
+
   @Prop({ type: String, required: true })
   nombre: string;
 
@@ -22,7 +24,7 @@ export class Personal {
   email: string;
 
   @Prop({ type: Date })
-  fechaContrato: Date;
+  fechaIngreso: Date;
 
   @Prop({ type: [SalarioFecha], default: [] })
   salarioFecha: SalarioFecha[];
