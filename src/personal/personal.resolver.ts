@@ -54,4 +54,12 @@ export class PersonalResolver {
   async getPersonalById(@Args('id') id: string): Promise<PersonalDto> {
     return this.personalService.getPersonalById(id);
   }
+
+  // @Query(() => Number)
+  // async getTotalSalaryAtDate(
+  //   @Args('date', { type: () => String }) date: string,
+  // ) {
+  //   const queryDate = new Date(date);
+  //   return this.personalService.getTotalSalaryAtDate(queryDate);
+  // }
 }

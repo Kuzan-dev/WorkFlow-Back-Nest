@@ -21,5 +21,6 @@ import { AuthModule } from 'src/auth/auth.module';
     RepuestosModule,
   ],
   providers: [MantenimientosResolver, MantenimientosService],
+  exports: [MantenimientosService],
 })
 export class MantenimientosModule {}

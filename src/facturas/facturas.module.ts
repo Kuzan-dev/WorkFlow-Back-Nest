@@ -11,5 +11,6 @@ import { Factura, FacturaSchema } from './schemas/factura.schema';
   ],
   controllers: [FacturasController],
   providers: [FacturasService, FacturasResolver],
+  exports: [FacturasService],
 })
 export class FacturasModule {}

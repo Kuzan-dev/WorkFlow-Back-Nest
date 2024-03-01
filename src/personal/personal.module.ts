@@ -11,5 +11,6 @@ import { PersonalResolver } from './personal.resolver';
     ]),
   ],
   providers: [PersonalService, PersonalResolver],
+  exports: [PersonalService],
 })
 export class PersonalModule {}

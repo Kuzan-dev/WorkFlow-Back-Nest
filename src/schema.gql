@@ -135,6 +135,26 @@ type ClienteDto {
   documentos: [String]
 }
 
+type MonthlySummaryDto {
+  mesYear: String!
+  fact: Float!
+  igv: Float!
+  detraccion: Float!
+  igvOtros: Float!
+  personalTotal: Float!
+  otros: Float!
+}
+
+type GeneralReportDto {
+  mesYear: String!
+  ingresoFact: Float!
+  egresosFact: Float!
+  egresosTotalFact: Float!
+  igvIngresos: Float!
+  igvEgresos: Float!
+  detracciones: Float!
+}
+
 type Query {
   """
   Esta función retorna una matriz con las fechas de los mantenimientos que tengan de estado "programado"
@@ -184,6 +204,12 @@ type Query {
   Esta Función retorna la información de todos los clientes en la base de datos
   """
   obtener_Todos_Clientes: [ClienteDto!]!
+
+  """Obtiene el resumen mensual de gastos"""
+  grafica_gastos_generales(inputDate: String!): [MonthlySummaryDto!]!
+
+  """Obtiene el resumen mensual de ingresos y egresos"""
+  grafica_ingresos_egresos(inputDate: String!): [GeneralReportDto!]!
 }
 
 type Mutation {

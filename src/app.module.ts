@@ -19,6 +19,7 @@ import { ProveedoresModule } from './proveedores/proveedores.module';
 import { PersonalModule } from './personal/personal.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { DocumentosModule } from './documentos/documentos.module';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +42,7 @@ import { DocumentosModule } from './documentos/documentos.module';
     PersonalModule,
     ClientesModule,
     DocumentosModule,
+    EstadisticasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
