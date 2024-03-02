@@ -12,6 +12,9 @@ export class SalarioFechaDto {
 @ObjectType()
 export class PersonalDto {
   @Field()
+  _id: string;
+
+  @Field()
   nombre: string;
 
   @Field(() => Int, { nullable: true })

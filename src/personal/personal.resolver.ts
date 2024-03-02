@@ -1,7 +1,8 @@
-import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql';
 import { PersonalService } from './personal.service';
 import { PersonalInput, SalarioFechaInput } from './dto/create-personal.input';
 import { PersonalDto } from './dto/create-personal.dto';
+import { pubSub } from 'src/shared/pubsub';
 
 @Resolver()
 export class PersonalResolver {
@@ -53,6 +54,11 @@ export class PersonalResolver {
   })
   async getPersonalById(@Args('id') id: string): Promise<PersonalDto> {
     return this.personalService.getPersonalById(id);
+  }
+
+  @Subscription(() => [PersonalDto], { name: 'Personal' })
+  personalAll() {
+    return pubSub.asyncIterator('Personal');
   }
 
   // @Query(() => Number)

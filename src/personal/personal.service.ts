@@ -3,6 +3,7 @@ import { Personal, PersonalDocument } from './schemas/personal.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PersonalDto, SalarioFechaDto } from './dto/create-personal.dto';
+import { pubSub } from 'src/shared/pubsub';
 
 @Injectable()
 export class PersonalService {
@@ -13,6 +14,8 @@ export class PersonalService {
   async createPersonal(createPersonalDto: PersonalDto): Promise<string> {
     const createdPersonal = new this.personalModel(createPersonalDto);
     const savedPersonal = await createdPersonal.save();
+    const allPersonal = await this.getAllPersonal();
+    pubSub.publish('Personal', { Personal: allPersonal });
     return savedPersonal._id;
   }
 

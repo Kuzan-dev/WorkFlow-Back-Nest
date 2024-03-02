@@ -15,6 +15,9 @@ export class ContratoDto {
 @ObjectType()
 export class ClienteDto {
   @Field()
+  _id: string;
+
+  @Field()
   nombre: string;
 
   @Field()

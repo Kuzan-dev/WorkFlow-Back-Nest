@@ -15,6 +15,9 @@ export class ContratoInput {
 @InputType()
 export class ClienteInput {
   @Field()
+  _id: string;
+
+  @Field()
   nombre: string;
 
   @Field()

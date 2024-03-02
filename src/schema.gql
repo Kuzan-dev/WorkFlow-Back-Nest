@@ -109,6 +109,7 @@ type SalarioFechaDto {
 }
 
 type PersonalDto {
+  _id: String!
   nombre: String!
   numero: Int
   email: String
@@ -124,6 +125,7 @@ type ContratoDto {
 }
 
 type ClienteDto {
+  _id: String!
   nombre: String!
   ruc: String!
   direccion: String!
@@ -370,6 +372,7 @@ input CreateFacturaDto {
 }
 
 input PersonalInput {
+  _id: String!
   nombre: String!
   numero: Int
   email: String
@@ -384,6 +387,7 @@ input SalarioFechaInput {
 }
 
 input ClienteInput {
+  _id: String!
   nombre: String!
   ruc: String!
   direccion: String!
@@ -399,4 +403,8 @@ input ContratoInput {
   numeroContrato: String!
   fechaInicio: DateTime!
   fechaFin: DateTime!
+}
+
+type Subscription {
+  Personal: [PersonalDto!]!
 }
