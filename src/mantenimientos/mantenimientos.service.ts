@@ -19,6 +19,7 @@ import { VerifyRepuestoDto } from '../repuestos/dto/verify-repuesto.dto';
 import { CarInfoDto } from 'src/cars/dto/car-info.dto';
 import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
+import { pubSub } from 'src/shared/pubsub';
 
 @Injectable()
 export class MantenimientosService {
@@ -110,6 +111,11 @@ export class MantenimientosService {
       ...programarManteniminetoDto,
       estado: 'programado',
     });
+    const allMantenimientos = await this.getMantenimientosDeHoy();
+    const calendar = await this.getProgrammedMaintenanceCount();
+    pubSub.publish('calendarTecnico', {
+      calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+    });
     return programMant.id.toString();
   }
 
@@ -163,6 +169,11 @@ export class MantenimientosService {
       };
       await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
+      const allMantenimientos = await this.getMantenimientosDeHoy();
+      const calendar = await this.getProgrammedMaintenanceCount();
+      pubSub.publish('calendarTecnico', {
+        calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+      });
 
       return updateMant.id.toString(); //Enviamos el ID como string
     } catch (error) {
@@ -206,7 +217,7 @@ export class MantenimientosService {
         [
           {
             ...updateOneMantDto,
-            estado: 'registrado',
+            estado: 'pendiente',
           },
         ],
         { new: true, session },
@@ -219,6 +230,11 @@ export class MantenimientosService {
       };
       await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
+      const allMantenimientos = await this.getMantenimientosDeHoy();
+      const calendar = await this.getProgrammedMaintenanceCount();
+      pubSub.publish('calendarTecnico', {
+        calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+      });
 
       return updateOneMant.id.toString();
     } catch (error) {
@@ -303,6 +319,12 @@ export class MantenimientosService {
 
       await session.commitTransaction();
 
+      const allMantenimientos = await this.getMantenimientosDeHoy();
+      const calendar = await this.getProgrammedMaintenanceCount();
+      pubSub.publish('calendarTecnico', {
+        calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+      });
+
       return updatedMant;
     } catch (error) {
       await session.abortTransaction();
@@ -329,7 +351,90 @@ export class MantenimientosService {
     if (!updatedMantenimiento) {
       throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
     }
-
+    const allMantenimientos = await this.getMantenimientosDeHoy();
+    const calendar = await this.getProgrammedMaintenanceCount();
+    pubSub.publish('calendarTecnico', {
+      calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+    });
     return updatedMantenimiento.id.toString();
+  }
+
+  async getMantenimientosExceptoEstado(
+    estado: string,
+  ): Promise<Mantenimiento[]> {
+    return this.mantenimientoModel.find({ estado: { $ne: estado } }).exec();
+  }
+
+  async getMantenimientosDeHoy(): Promise<Mantenimiento[]> {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    console.log('Fecha del servidor: ', new Date());
+    console.log('Inicio del día: ', startOfToday);
+    console.log('Fin del día: ', endOfToday);
+
+    const mantenimientos = await this.mantenimientoModel
+      .find({
+        fecha: { $gte: startOfToday, $lte: endOfToday },
+        tipo: { $nin: ['expirado', 'completado'] },
+      })
+      .exec();
+
+    console.log('Mantenimientos encontrados: ', mantenimientos);
+
+    // Asegurarse de que siempre se devuelva un array
+    return mantenimientos || [];
+  }
+  async getCalendarHome(): Promise<[number, number]> {
+    const today = new Date();
+    const cantidadProgramada =
+      await this.getCantidadMantenimientosPorEstadoYFecha('programada', today);
+    const cantidadPendiente =
+      await this.getCantidadMantenimientosPorEstadoYFecha('pendiente', today);
+    const cantidadRevision =
+      await this.getCantidadMantenimientosPorEstadoYFecha('revision', today);
+    const cantidadCompletada =
+      await this.getCantidadMantenimientosPorEstadoYFecha('completado', today);
+    const cantidadTotal =
+      cantidadCompletada +
+      cantidadPendiente +
+      cantidadRevision +
+      cantidadProgramada;
+    return [cantidadProgramada, cantidadTotal];
+  }
+
+  async getProgrammedMaintenanceCount(): Promise<
+    { dayMes: string; cantidad: number }[]
+  > {
+    const today = new Date();
+    const twoMonthsLater = new Date();
+    twoMonthsLater.setMonth(today.getMonth() + 2);
+
+    const mantenimientos = await this.mantenimientoModel
+      .find({
+        estado: 'programado',
+        fecha: {
+          $gte: today,
+          $lte: twoMonthsLater,
+        },
+      })
+      .exec();
+
+    const counts = mantenimientos.reduce((acc, mantenimiento) => {
+      const dayMes = mantenimiento.fecha.toISOString().split('T')[0]; // Formatea la fecha a 'YYYY-MM-DD'
+      if (!acc[dayMes]) {
+        acc[dayMes] = 0;
+      }
+      acc[dayMes]++;
+      return acc;
+    }, {});
+
+    return Object.entries(counts).map(([dayMes, cantidad]) => ({
+      dayMes: dayMes.split('-').reverse().join('/'), // Cambia el formato de 'YYYY-MM-DD' a 'DD/MM/YYYY'
+      cantidad: Number(cantidad),
+    }));
   }
 }

@@ -1,5 +1,4 @@
-import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
-
+import { Resolver, Args, Mutation, Query, Subscription } from '@nestjs/graphql';
 import { MantenimientosService } from './mantenimientos.service';
 import { PrograMantenimientoDto } from './dto/create-mantenimiento.dto';
 import { UpdateMantenimientoDto } from './dto/update-mantenimiento.dto';
@@ -13,10 +12,23 @@ import { CarInfo } from './dto/info-placa-mant.dto';
 import { MantenimientoInfoDto } from './dto/info-mant.dto';
 import { MantenimientoResult } from './dto/home-tecnico-subscription.dto';
 import { HomeAdminDTO } from './dto/home-admin.dto';
+import { CalendarAndMantenimientosDTO } from './dto/socket-home.dto';
+import { pubSub } from 'src/shared/pubsub';
 
 @Resolver()
 export class MantenimientosResolver {
   constructor(private readonly mantenimientosService: MantenimientosService) {}
+
+  @Subscription(() => CalendarAndMantenimientosDTO, {
+    name: 'Calendar_Hoy_Tecnico',
+    description:
+      'Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy',
+    nullable: true,
+    resolve: (payload) => payload.calendarTecnico,
+  })
+  calendarTecnico() {
+    return pubSub.asyncIterator('calendarTecnico');
+  }
 
   @Query(() => [Date], {
     name: 'calendar',

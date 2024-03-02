@@ -96,6 +96,48 @@ type HomeAdminDTO {
   mantenimientos: [MantenimientoInfoDto2!]!
 }
 
+type RepuestoDTO {
+  id: ID
+  producto: String
+  marca: String
+  cantidad: Float
+  cantidadReserva: Float
+  precio: Float
+}
+
+type homeMantDTO {
+  calendar: [Float!]
+  _id: ID
+  placa: String
+  tipo: String
+  tecnico: String
+  estado: String
+  kmPrevio: Float
+  kmMedido: Float
+  cliente: String
+  fecha: DateTime
+  fechaInicio: DateTime
+  fechaFin: DateTime
+  fechaSoat: DateTime
+  anotaciones: String
+  diagnostico: String
+  diagnosticoFinal: String
+  cambiosSolicitados: String
+  repuestos: [RepuestoDTO]
+  repuestosAjuste: [RepuestoDTO]
+  documentos: [String]
+}
+
+type MaintenanceCountDto {
+  dayMes: String
+  cantidad: Float
+}
+
+type CalendarAndMantenimientosDTO {
+  calendar: [MaintenanceCountDto]
+  mantenimientos: [homeMantDTO]
+}
+
 type GetPlacasDto {
   _id: String!
   placa: String!
@@ -406,5 +448,9 @@ input ContratoInput {
 }
 
 type Subscription {
+  """
+  Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy
+  """
+  Calendar_Hoy_Tecnico: CalendarAndMantenimientosDTO
   Personal: [PersonalDto!]!
 }
