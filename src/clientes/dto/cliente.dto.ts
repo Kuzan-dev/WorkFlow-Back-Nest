@@ -14,7 +14,7 @@ export class ContratoDto {
 
 @ObjectType()
 export class ClienteDto {
-  @Field()
+  @Field({ nullable: true })
   _id: string;
 
   @Field()
