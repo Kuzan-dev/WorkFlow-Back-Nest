@@ -23,9 +23,6 @@ export class RepuestoDTO {
 
 @ObjectType()
 export class homeMantDTO {
-  @Field(() => [Number], { nullable: true })
-  calendar: number[];
-
   @Field(() => ID, { nullable: true })
   _id: string;
 

@@ -111,11 +111,13 @@ export class MantenimientosService {
       ...programarManteniminetoDto,
       estado: 'programado',
     });
+    const mantToday = await this.getMantAPartirDeHoy();
     const allMantenimientos = await this.getMantenimientosDeHoy();
     const calendar = await this.getProgrammedMaintenanceCount();
     pubSub.publish('calendarTecnico', {
       calendarTecnico: { calendar, mantenimientos: allMantenimientos },
     });
+    pubSub.publish('Actividades', { Actividades: mantToday });
     return programMant.id.toString();
   }
 
@@ -169,12 +171,13 @@ export class MantenimientosService {
       };
       await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
+      const mantToday = await this.getMantAPartirDeHoy();
       const allMantenimientos = await this.getMantenimientosDeHoy();
       const calendar = await this.getProgrammedMaintenanceCount();
       pubSub.publish('calendarTecnico', {
         calendarTecnico: { calendar, mantenimientos: allMantenimientos },
       });
-
+      pubSub.publish('Actividades', { Actividades: mantToday });
       return updateMant.id.toString(); //Enviamos el ID como string
     } catch (error) {
       await session.abortTransaction();
@@ -230,12 +233,13 @@ export class MantenimientosService {
       };
       await this.carsService.updateKm(updateKmDto);
       await session.commitTransaction();
+      const mantToday = await this.getMantAPartirDeHoy();
       const allMantenimientos = await this.getMantenimientosDeHoy();
       const calendar = await this.getProgrammedMaintenanceCount();
       pubSub.publish('calendarTecnico', {
         calendarTecnico: { calendar, mantenimientos: allMantenimientos },
       });
-
+      pubSub.publish('Actividades', { Actividades: mantToday });
       return updateOneMant.id.toString();
     } catch (error) {
       await session.abortTransaction();
@@ -319,12 +323,13 @@ export class MantenimientosService {
 
       await session.commitTransaction();
 
+      const mantToday = await this.getMantAPartirDeHoy();
       const allMantenimientos = await this.getMantenimientosDeHoy();
       const calendar = await this.getProgrammedMaintenanceCount();
       pubSub.publish('calendarTecnico', {
         calendarTecnico: { calendar, mantenimientos: allMantenimientos },
       });
-
+      pubSub.publish('Actividades', { Actividades: mantToday });
       return updatedMant;
     } catch (error) {
       await session.abortTransaction();
@@ -351,11 +356,13 @@ export class MantenimientosService {
     if (!updatedMantenimiento) {
       throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
     }
+    const mantToday = await this.getMantAPartirDeHoy();
     const allMantenimientos = await this.getMantenimientosDeHoy();
     const calendar = await this.getProgrammedMaintenanceCount();
     pubSub.publish('calendarTecnico', {
       calendarTecnico: { calendar, mantenimientos: allMantenimientos },
     });
+    pubSub.publish('Actividades', { Actividades: mantToday });
     return updatedMantenimiento.id.toString();
   }
 
@@ -383,7 +390,7 @@ export class MantenimientosService {
       })
       .exec();
 
-    console.log('Mantenimientos encontrados: ', mantenimientos);
+    //console.log('Mantenimientos encontrados: ', mantenimientos);
 
     // Asegurarse de que siempre se devuelva un array
     return mantenimientos || [];
@@ -436,5 +443,25 @@ export class MantenimientosService {
       dayMes: dayMes.split('-').reverse().join('/'), // Cambia el formato de 'YYYY-MM-DD' a 'DD/MM/YYYY'
       cantidad: Number(cantidad),
     }));
+  }
+
+  async getMantAPartirDeHoy(): Promise<Mantenimiento[]> {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    // console.log('Fecha del servidor: ', new Date());
+    // console.log('Inicio del día: ', startOfToday);
+
+    const mantenimientos = await this.mantenimientoModel
+      .find({
+        fecha: { $gte: startOfToday },
+        tipo: { $nin: ['expirado', 'completado'] },
+      })
+      .exec();
+
+    //console.log('Mantenimientos encontrados: ', mantenimientos);
+
+    // Asegurarse de que siempre se devuelva un array
+    return mantenimientos || [];
   }
 }

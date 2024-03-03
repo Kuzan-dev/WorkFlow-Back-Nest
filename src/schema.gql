@@ -106,7 +106,6 @@ type RepuestoDTO {
 }
 
 type homeMantDTO {
-  calendar: [Float!]
   _id: ID
   placa: String
   tipo: String
@@ -452,5 +451,10 @@ type Subscription {
   Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy
   """
   Calendar_Hoy_Tecnico: CalendarAndMantenimientosDTO
+
+  """
+  Esta funcion retorna los mantenimientos desde el día de hoy para la pestaña de actividades
+  """
+  Actividades: [homeMantDTO!]!
   Personal: [PersonalDto!]!
 }

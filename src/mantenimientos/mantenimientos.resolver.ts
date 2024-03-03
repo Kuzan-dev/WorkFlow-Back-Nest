@@ -12,7 +12,10 @@ import { CarInfo } from './dto/info-placa-mant.dto';
 import { MantenimientoInfoDto } from './dto/info-mant.dto';
 import { MantenimientoResult } from './dto/home-tecnico-subscription.dto';
 import { HomeAdminDTO } from './dto/home-admin.dto';
-import { CalendarAndMantenimientosDTO } from './dto/socket-home.dto';
+import {
+  CalendarAndMantenimientosDTO,
+  homeMantDTO,
+} from './dto/socket-home.dto';
 import { pubSub } from 'src/shared/pubsub';
 
 @Resolver()
@@ -28,6 +31,15 @@ export class MantenimientosResolver {
   })
   calendarTecnico() {
     return pubSub.asyncIterator('calendarTecnico');
+  }
+
+  @Subscription(() => [homeMantDTO], {
+    name: 'Actividades',
+    description:
+      'Esta funcion retorna los mantenimientos desde el día de hoy para la pestaña de actividades',
+  })
+  actividadesTec() {
+    return pubSub.asyncIterator('Actividades');
   }
 
   @Query(() => [Date], {
