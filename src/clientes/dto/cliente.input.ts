@@ -14,7 +14,7 @@ export class ContratoInput {
 
 @InputType()
 export class ClienteInput {
-  @Field()
+  @Field({ nullable: true })
   _id: string;
 
   @Field()

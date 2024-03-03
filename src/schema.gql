@@ -428,7 +428,7 @@ input SalarioFechaInput {
 }
 
 input ClienteInput {
-  _id: String!
+  _id: String
   nombre: String!
   ruc: String!
   direccion: String!
