@@ -8,13 +8,12 @@ export class CarsResolver {
   constructor(private readonly carsService: CarsService) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => Boolean, {
+  @Mutation((returns) => String, {
     name: 'crear_auto',
     description: 'Esta Función registra un auto en la base de datos',
   })
   async createCar(@Args('createCarInput') createCarDto: CreateCarDto) {
-    await this.carsService.create(createCarDto);
-    return true;
+    return await this.carsService.create(createCarDto);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

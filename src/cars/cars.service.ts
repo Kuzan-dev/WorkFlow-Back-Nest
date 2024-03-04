@@ -10,9 +10,9 @@ import { UpdateKmDto } from './dto/update-km.dto';
 export class CarsService {
   constructor(@InjectModel(Car.name) private readonly carModel: Model<Car>) {}
   // Esta funcion crea un carro en la base de datos
-  async create(createCarDto: CreateCarDto): Promise<Car> {
+  async create(createCarDto: CreateCarDto): Promise<string> {
     const createCar = await this.carModel.create(createCarDto);
-    return createCar;
+    return createCar.id.toString();
   }
   // Esta funcion verifica si un carro existe en la base de datos
   async exists(existsCarDto: ExistsCarDto): Promise<boolean> {

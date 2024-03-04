@@ -305,7 +305,7 @@ type Mutation {
   completar_mantenimiento(id: String!, diagnosticoFinal: String!): String!
 
   """Esta Función registra un auto en la base de datos"""
-  crear_auto(createCarInput: CreateCarDto!): Boolean!
+  crear_auto(createCarInput: CreateCarDto!): String!
 
   """
   Esta Función registra un repuesto en la base de datos y retorna true si se registro correctamente
