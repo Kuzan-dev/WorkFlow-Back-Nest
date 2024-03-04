@@ -31,6 +31,10 @@ export class MantenimientosService {
     private readonly repuestosService: RepuestosService,
   ) {}
 
+  async getMantenimientosPorPlaca(placa: string): Promise<Mantenimiento[]> {
+    return this.mantenimientoModel.find({ placa: placa }).exec();
+  }
+
   async getCantidadMantenimientosPorEstado(estado: string): Promise<number> {
     return this.mantenimientoModel.countDocuments({ estado });
   }

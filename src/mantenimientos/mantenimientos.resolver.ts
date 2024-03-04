@@ -9,7 +9,10 @@ import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 import { ExistsCarDto } from 'src/cars/dto/exists-card.dto';
 import { CarInfo } from './dto/info-placa-mant.dto';
-import { MantenimientoInfoDto } from './dto/info-mant.dto';
+import {
+  MantenimientoInfoDto,
+  MantenimientoInfoDto56,
+} from './dto/info-mant.dto';
 import { MantenimientoResult } from './dto/home-tecnico-subscription.dto';
 import { HomeAdminDTO } from './dto/home-admin.dto';
 import {
@@ -73,6 +76,18 @@ export class MantenimientosResolver {
   })
   async mantenimiento(@Args('id', { type: () => String }) id: string) {
     return this.mantenimientosService.getMantenimientoPorId(id);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @Query((returns) => [MantenimientoInfoDto56], {
+    name: 'Mantenimiento_Info_por_Placa',
+    description:
+      'Esta funcion retorna la informacion de un mantenimiento por placa',
+  })
+  async mantenimientoPlaca(
+    @Args('placa', { type: () => String }) placa: string,
+  ) {
+    return this.mantenimientosService.getMantenimientosPorPlaca(placa);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

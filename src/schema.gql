@@ -55,6 +55,27 @@ type MantenimientoInfoDto {
   documentos: [String!]
 }
 
+type MantenimientoInfoDto56 {
+  _id: String!
+  placa: String!
+  tipo: String
+  tecnico: String
+  estado: String
+  kmPrevio: Float
+  kmMedido: Float
+  cliente: String
+  fecha: DateTime
+  fechaInicio: DateTime
+  fechaFin: DateTime
+  fechaSoat: DateTime
+  anotaciones: String
+  diagnostico: String
+  diagnosticoFinal: String
+  repuestos: [RepuestoType!]
+  repuestosAjuste: [RepuestoType!]
+  documentos: [String!]
+}
+
 type MantenimientoResult {
   cantidad: Int!
   mantenimientos: [MantenimientoInfoDto!]!
@@ -228,6 +249,9 @@ type Query {
 
   """Esta funcion retorna la informacion de un mantenimiento por id"""
   Mantenimiento_Info_por_ID(id: String!): MantenimientoInfoDto!
+
+  """Esta funcion retorna la informacion de un mantenimiento por placa"""
+  Mantenimiento_Info_por_Placa(placa: String!): [MantenimientoInfoDto56!]!
 
   """
   Esta funcion se usa en el home del admin y retorna la cantidad de mantenimientos programados, la cantidad total de mantenimientos y los mantenimientos programados
