@@ -12,6 +12,9 @@ export class GetPlacasDto {
   cliente: string;
 
   @Field()
+  tipoContrato: string;
+
+  @Field()
   propietario: string;
 
   @Field()

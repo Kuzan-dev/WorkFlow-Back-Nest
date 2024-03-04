@@ -156,6 +156,7 @@ type GetPlacasDto {
   _id: String!
   placa: String!
   cliente: String!
+  tipoContrato: String!
   propietario: String!
   fechaSoat: DateTime!
 }
