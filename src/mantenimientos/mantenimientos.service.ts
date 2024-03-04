@@ -464,4 +464,57 @@ export class MantenimientosService {
     // Asegurarse de que siempre se devuelva un array
     return mantenimientos || [];
   }
+
+  async getConsumedRepuestos(startDate: Date, months: number): Promise<any> {
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() - months);
+
+    const mantenimientos = await this.mantenimientoModel.aggregate([
+      {
+        $match: {
+          fecha: { $gte: endDate, $lte: startDate },
+          estado: 'completado',
+        },
+      },
+      {
+        $unwind: '$repuestos',
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: '$fecha' },
+            year: { $year: '$fecha' },
+            producto: '$repuestos.producto',
+          },
+          cantidadConsumida: { $sum: '$repuestos.cantidad' },
+        },
+      },
+      {
+        $sort: { cantidadConsumida: -1 },
+      },
+    ]);
+
+    const results = [];
+    for (const mant of mantenimientos) {
+      const key = `${mant._id.month}/${mant._id.year}`;
+      let monthData = results.find((item) => item.mesYear === key);
+      if (!monthData) {
+        monthData = {
+          mesYear: key,
+          otros: { producto: 'otros', cantidadConsumida: 0 },
+        };
+        results.push(monthData);
+      }
+      if (Object.keys(monthData).length <= 6) {
+        monthData[`prod${Object.keys(monthData).length - 1}`] = {
+          producto: mant._id.producto,
+          cantidadConsumida: mant.cantidadConsumida,
+        };
+      } else {
+        monthData.otros.cantidadConsumida += mant.cantidadConsumida;
+      }
+    }
+
+    return results;
+  }
 }

@@ -17,6 +17,7 @@ import {
   homeMantDTO,
 } from './dto/socket-home.dto';
 import { pubSub } from 'src/shared/pubsub';
+import { MesRepuestos } from './dto/repuestos.mant-busqueda.dto';
 
 @Resolver()
 export class MantenimientosResolver {
@@ -40,6 +41,15 @@ export class MantenimientosResolver {
   })
   actividadesTec() {
     return pubSub.asyncIterator('Actividades');
+  }
+
+  @Query(() => [MesRepuestos])
+  async getConsumedRepuestos(
+    @Args('startDate', { type: () => String }) startDate: string,
+    @Args('months', { type: () => Number }) months: number,
+  ) {
+    const start = new Date(startDate);
+    return this.mantenimientosService.getConsumedRepuestos(start, months);
   }
 
   @Query(() => [Date], {
@@ -198,6 +208,7 @@ export class MantenimientosResolver {
   ) {
     return await this.mantenimientosService.programar(prograMantDto);
   }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Mutation((returns) => String, {
     name: 'regisrar_mantenimiento_no_programado',

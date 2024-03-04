@@ -21,7 +21,7 @@ export class CarsResolver {
   @Query((returns) => [GetPlacasDto], {
     name: 'obtener_info_placas',
     description:
-      'Esta Función retorna la información de los carros (id, placa, cliente, fechaSoat)',
+      'Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)',
   })
   async getCarsData() {
     return this.carsService.getCarsData();

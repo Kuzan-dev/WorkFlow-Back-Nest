@@ -20,6 +20,8 @@ import { PersonalModule } from './personal/personal.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { DocumentosModule } from './documentos/documentos.module';
 import { EstadisticasModule } from './estadisticas/estadisticas.module';
+import { TasksModule } from './tasks/tasks.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -46,6 +48,7 @@ import { EstadisticasModule } from './estadisticas/estadisticas.module';
     ClientesModule,
     DocumentosModule,
     EstadisticasModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

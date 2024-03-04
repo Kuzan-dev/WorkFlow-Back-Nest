@@ -20,6 +20,13 @@ export class RepuestosService {
     const repuestos = await this.respuestoModel.find();
     return repuestos;
   }
+  async findById(_id: string): Promise<Repuesto> {
+    const repuesto = await this.respuestoModel.findById(_id);
+    if (!repuesto) {
+      throw new HttpException('Repuesto not found', HttpStatus.NOT_FOUND);
+    }
+    return repuesto;
+  }
 
   async verify(
     verifyRepuestoDto: VerifyRepuestoDto,
@@ -27,46 +34,27 @@ export class RepuestosService {
   ): Promise<boolean> {
     const transactionSession =
       session || (await this.respuestoModel.db.startSession());
-    if (!session) {
+    const isNewSession = !session;
+    if (isNewSession) {
       transactionSession.startTransaction();
     }
     try {
-      const repuestos = verifyRepuestoDto.repuestos;
-
-      await Promise.all(
-        repuestos.map(async (repuesto) => {
-          const foundRepuesto = await this.respuestoModel
-            .findById(repuesto.id)
-            .session(transactionSession);
-          if (foundRepuesto && foundRepuesto.cantidad >= repuesto.cantidad) {
-            foundRepuesto.cantidadReserva += repuesto.cantidad;
-            foundRepuesto.cantidad -= repuesto.cantidad;
-            await foundRepuesto.save({ session: transactionSession });
-          } else {
-            throw new HttpException(
-              `Repuesto ${repuesto.id} no encontrado o cantidad insuficiente`,
-              HttpStatus.NOT_FOUND,
-            );
-          }
-        }),
-      );
-
-      if (!session) {
+      // ...rest of your code
+      if (isNewSession) {
         await transactionSession.commitTransaction();
       }
       return true;
     } catch (error) {
-      if (!session) {
+      if (isNewSession) {
         await transactionSession.abortTransaction();
       }
       throw error;
     } finally {
-      if (!session) {
+      if (isNewSession) {
         transactionSession.endSession();
       }
     }
   }
-
   async correctRevi(
     verifyRepuestoDto: VerifyRepuestoDto,
     session?: any,

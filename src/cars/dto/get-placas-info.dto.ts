@@ -12,5 +12,8 @@ export class GetPlacasDto {
   cliente: string;
 
   @Field()
+  propietario: string;
+
+  @Field()
   fechaSoat: Date;
 }

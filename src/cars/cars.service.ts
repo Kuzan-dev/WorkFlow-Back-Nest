@@ -38,8 +38,11 @@ export class CarsService {
 
   // Esta función retorna la información de los carros
   async getCarsData(): Promise<
-    Pick<Car, '_id' | 'placa' | 'cliente' | 'fechaSoat'>[]
+    Pick<Car, '_id' | 'placa' | 'cliente' | 'propietario' | 'fechaSoat'>[]
   > {
-    return this.carModel.find().select('_id placa cliente fechaSoat').exec();
+    return this.carModel
+      .find()
+      .select('_id placa cliente propietario fechaSoat')
+      .exec();
   }
 }
