@@ -43,7 +43,11 @@ export class MantenimientosResolver {
     return pubSub.asyncIterator('Actividades');
   }
 
-  @Query(() => [MesRepuestos])
+  @Query(() => [MesRepuestos], {
+    name: 'grafica_repuesto_xmeses',
+    description:
+      'Esta función retorna los repuestos consumidos en los ultimos x meses, para el reporte de repuestos',
+  })
   async getConsumedRepuestos(
     @Args('startDate', { type: () => String }) startDate: string,
     @Args('months', { type: () => Number }) months: number,

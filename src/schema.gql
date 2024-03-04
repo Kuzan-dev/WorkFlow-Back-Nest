@@ -215,7 +215,10 @@ type GeneralReportDto {
 }
 
 type Query {
-  getConsumedRepuestos(startDate: String!, months: Float!): [MesRepuestos!]!
+  """
+  Esta función retorna los repuestos consumidos en los ultimos x meses, para el reporte de repuestos
+  """
+  grafica_repuesto_xmeses(startDate: String!, months: Float!): [MesRepuestos!]!
 
   """
   Esta función retorna una matriz con las fechas de los mantenimientos que tengan de estado "programado"
