@@ -275,6 +275,7 @@ export class MantenimientosService {
       fechaSoat: car.fechaSoat,
       vigenciaContrato: car.vigenciaContrato,
       cliente: car.cliente,
+      tipoContrato: car.tipoContrato,
       propietario: car.propietario,
       kmRegistroInicial: car.kmRegistroInicial,
       kmActual: car.kmActual,

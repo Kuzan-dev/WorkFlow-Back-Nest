@@ -35,6 +35,11 @@ export class CreateCarDto {
   kmRegistroInicial: number;
 
   @Field()
+  @IsString()
+  @IsNotEmpty()
+  tipoContrato: string;
+
+  @Field()
   @IsDate()
   @IsNotEmpty()
   fechaRevision: Date;

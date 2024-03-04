@@ -11,6 +11,7 @@ export interface CarInfoDto {
   fechaSoat: Date;
   vigenciaContrato: Date;
   cliente: string;
+  tipoContrato: string;
   propietario: string;
   kmActual: number;
   kmRegistroInicial: number;

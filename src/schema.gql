@@ -404,6 +404,7 @@ input CreateCarDto {
   cliente: String!
   fechaSoat: DateTime!
   kmRegistroInicial: Int!
+  tipoContrato: String!
   fechaRevision: DateTime!
   vigenciaContrato: DateTime!
   puntaje: Int

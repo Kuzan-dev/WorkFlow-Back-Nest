@@ -19,6 +19,9 @@ export class Car {
   cliente: string;
 
   @Prop()
+  tipoContrato: string;
+
+  @Prop()
   fechaSoat: Date;
 
   @Prop()
