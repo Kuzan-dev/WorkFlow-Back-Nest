@@ -273,6 +273,9 @@ type Query {
   """
   obtener_info_placas: [GetPlacasDto!]!
 
+  """Esta Función retorna la información de un auto por medio de su placa"""
+  obtener_info_for_placa(placa: String!): GetPlacasDto!
+
   """
   Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)
   """
@@ -390,6 +393,9 @@ input PrograMantenimientoDto {
   placa: String!
   tipo: String!
   tecnico: String!
+  fechaSoat: DateTime!
+  kmPrevio: Float!
+  Cliente: String!
   fecha: DateTime!
   anotaciones: String!
 }
@@ -399,6 +405,9 @@ input UpdateOneMantenimientoDto {
   tipo: String!
   tecnico: String!
   fecha: DateTime!
+  fechaSoat: DateTime!
+  kmPrevio: Float!
+  Cliente: String!
   kmMedido: Float!
   fechaInicio: DateTime!
   diagnostico: String!
@@ -419,6 +428,9 @@ input UpdateMantenimientoDto {
   kmMedido: Float!
   fechaInicio: DateTime!
   fecha: DateTime!
+  fechaSoat: DateTime!
+  kmPrevio: Float!
+  Cliente: String!
   diagnostico: String!
   repuestos: [RepuestoDto!]
 }

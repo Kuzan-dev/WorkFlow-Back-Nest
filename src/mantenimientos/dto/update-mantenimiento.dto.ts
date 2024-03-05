@@ -31,6 +31,18 @@ export class UpdateMantenimientoDto {
 
   @Field()
   @IsString()
+  fechaSoat: Date;
+
+  @Field()
+  @IsNumber()
+  kmPrevio: number;
+
+  @Field()
+  @IsString()
+  Cliente: string;
+
+  @Field()
+  @IsString()
   @IsNotEmpty()
   diagnostico: string;
 

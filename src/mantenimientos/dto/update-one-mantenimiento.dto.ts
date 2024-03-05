@@ -31,6 +31,18 @@ export class UpdateOneMantenimientoDto {
   fecha: Date;
 
   @Field()
+  @IsString()
+  fechaSoat: Date;
+
+  @Field()
+  @IsNumber()
+  kmPrevio: number;
+
+  @Field()
+  @IsString()
+  Cliente: string;
+
+  @Field()
   @IsNotEmpty()
   @IsNumber()
   kmMedido: number;

@@ -48,4 +48,9 @@ export class CarsService {
       .select('_id placa cliente tipoContrato propietario fechaSoat')
       .exec();
   }
+
+  // Esta función retorna la información de un carro por su placa
+  async getCarInfo(placa: string): Promise<Car> {
+    return this.carModel.findOne({ placa }).exec();
+  }
 }

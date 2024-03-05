@@ -25,4 +25,13 @@ export class CarsResolver {
   async getCarsData() {
     return this.carsService.getCarsData();
   }
+
+  @Query(() => GetPlacasDto, {
+    name: 'obtener_info_for_placa',
+    description:
+      'Esta Función retorna la información de un auto por medio de su placa',
+  })
+  async getCarInfo(@Args('placa', { type: () => String }) placa: string) {
+    return this.carsService.getCarInfo(placa);
+  }
 }

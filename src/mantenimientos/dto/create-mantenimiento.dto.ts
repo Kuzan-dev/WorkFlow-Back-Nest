@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 @InputType()
 export class PrograMantenimientoDto {
@@ -17,6 +17,18 @@ export class PrograMantenimientoDto {
   @IsNotEmpty()
   @IsString()
   tecnico: string;
+
+  @Field()
+  @IsString()
+  fechaSoat: Date;
+
+  @Field()
+  @IsNumber()
+  kmPrevio: number;
+
+  @Field()
+  @IsString()
+  Cliente: string;
 
   @Field()
   @IsString()
