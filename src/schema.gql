@@ -182,6 +182,16 @@ type GetPlacasDto {
   fechaSoat: DateTime!
 }
 
+type GetForPlacasDto {
+  _id: String!
+  placa: String!
+  cliente: String!
+  tipoContrato: String!
+  kmActual: Float!
+  propietario: String!
+  fechaSoat: DateTime!
+}
+
 type SalarioFechaDto {
   salario: Float!
   fecha: DateTime!
@@ -274,7 +284,7 @@ type Query {
   obtener_info_placas: [GetPlacasDto!]!
 
   """Esta Función retorna la información de un auto por medio de su placa"""
-  obtener_info_for_placa(placa: String!): GetPlacasDto!
+  obtener_info_for_placa(placa: String!): GetForPlacasDto!
 
   """
   Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)

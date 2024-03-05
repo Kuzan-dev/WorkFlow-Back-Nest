@@ -2,6 +2,7 @@ import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { GetPlacasDto } from './dto/get-placas-info.dto';
+import { GetForPlacasDto } from './dto/get-for-placa';
 
 @Resolver()
 export class CarsResolver {
@@ -26,7 +27,7 @@ export class CarsResolver {
     return this.carsService.getCarsData();
   }
 
-  @Query(() => GetPlacasDto, {
+  @Query(() => GetForPlacasDto, {
     name: 'obtener_info_for_placa',
     description:
       'Esta Función retorna la información de un auto por medio de su placa',
