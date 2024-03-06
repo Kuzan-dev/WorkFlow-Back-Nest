@@ -9,6 +9,7 @@ import {
 } from './schemas/mantenimiento.schema';
 import { CarsModule } from 'src/cars/cars.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { MantenimientosController } from './mantenimientos.controller';
 
 @Module({
   imports: [
@@ -22,5 +23,6 @@ import { AuthModule } from 'src/auth/auth.module';
   ],
   providers: [MantenimientosResolver, MantenimientosService],
   exports: [MantenimientosService],
+  controllers: [MantenimientosController],
 })
 export class MantenimientosModule {}
