@@ -403,9 +403,6 @@ input PrograMantenimientoDto {
   placa: String!
   tipo: String!
   tecnico: String!
-  fechaSoat: DateTime!
-  kmPrevio: Float!
-  Cliente: String!
   fecha: DateTime!
   anotaciones: String!
 }
