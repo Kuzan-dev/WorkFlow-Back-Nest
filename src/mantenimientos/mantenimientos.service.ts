@@ -470,9 +470,20 @@ export class MantenimientosService {
     return mantenimientos || [];
   }
 
-  async getConsumedRepuestos(startDate: Date, months: number): Promise<any> {
-    const endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() - months);
+  async getConsumedRepuestos(inputDate: Date, months: number): Promise<any> {
+    const startDate = new Date(
+      inputDate.getFullYear(),
+      inputDate.getMonth() + 1,
+      0,
+    );
+    startDate.setHours(23, 59, 59, 999); // Set the time to the end of the day
+
+    const endDate = new Date(
+      inputDate.getFullYear(),
+      inputDate.getMonth() - months,
+      1,
+    );
+    endDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
 
     const mantenimientos = await this.mantenimientoModel.aggregate([
       {
