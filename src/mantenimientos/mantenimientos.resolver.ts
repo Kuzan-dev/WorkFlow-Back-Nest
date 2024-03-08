@@ -119,7 +119,7 @@ export class MantenimientosResolver {
       );
 
     const cantidadTotal =
-      cantidadCompletada + cantidadPendiente + cantidadRevision;
+      cantidadProgramada + cantidadPendiente + cantidadRevision;
 
     const mantenimientos1 =
       await this.mantenimientosService.getMantenimientosPorEstadoYFecha(
@@ -162,7 +162,7 @@ export class MantenimientosResolver {
     ];
 
     return {
-      cantidadProgramada,
+      cantidadCompletada,
       cantidadTotal,
       mantenimientos,
     };

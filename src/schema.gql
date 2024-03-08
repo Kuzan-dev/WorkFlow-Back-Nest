@@ -112,7 +112,7 @@ type MantenimientoInfoDto2 {
 }
 
 type HomeAdminDTO {
-  cantidadProgramada: Int!
+  cantidadCompletada: Int!
   cantidadTotal: Int!
   mantenimientos: [MantenimientoInfoDto2!]!
 }
