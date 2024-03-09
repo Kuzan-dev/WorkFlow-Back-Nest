@@ -248,6 +248,16 @@ type GeneralReportDto {
 
 type Query {
   """
+  Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy
+  """
+  Query_Calendar_Hoy_Tecnico: CalendarAndMantenimientosDTO
+
+  """
+  Esta funcion retorna los mantenimientos desde el día de hoy para la pestaña de actividades
+  """
+  Actividades: [homeMantDTO!]!
+
+  """
   Esta función retorna los repuestos consumidos en los ultimos x meses, para el reporte de repuestos
   """
   grafica_repuesto_xmeses(startDate: String!, months: Float!): [MesRepuestos!]!

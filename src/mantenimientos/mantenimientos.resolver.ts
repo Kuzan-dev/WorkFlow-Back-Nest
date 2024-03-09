@@ -37,6 +37,21 @@ export class MantenimientosResolver {
     return pubSub.asyncIterator('calendarTecnico');
   }
 
+  @Query(() => CalendarAndMantenimientosDTO, {
+    name: 'Query_Calendar_Hoy_Tecnico',
+    description:
+      'Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy',
+    nullable: true,
+  })
+  async QuerycalendarTecnico() {
+    const calendar =
+      await this.mantenimientosService.getProgrammedMaintenanceCount();
+    const mantenimientos =
+      await this.mantenimientosService.getMantenimientosDeHoy();
+
+    return { calendar, mantenimientos };
+  }
+
   @Subscription(() => [homeMantDTO], {
     name: 'Actividades',
     description:
@@ -44,6 +59,15 @@ export class MantenimientosResolver {
   })
   actividadesTec() {
     return pubSub.asyncIterator('Actividades');
+  }
+
+  @Query(() => [homeMantDTO], {
+    name: 'Actividades',
+    description:
+      'Esta funcion retorna los mantenimientos desde el día de hoy para la pestaña de actividades',
+  })
+  async queryactividadesTec() {
+    return await this.mantenimientosService.getMantAPartirDeHoy();
   }
 
   @Query(() => [MesRepuestos], {
