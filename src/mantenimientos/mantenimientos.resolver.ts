@@ -123,7 +123,7 @@ export class MantenimientosResolver {
   async homeAdmin(@Args('fecha') fecha: Date): Promise<HomeAdminDTO> {
     const cantidadProgramada =
       await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
-        'programada',
+        'programado',
         fecha,
       );
     const cantidadPendiente =
