@@ -5,6 +5,8 @@ import { MantenimientoInfoDto2 } from './info-mant-home.dto';
 export class HomeAdminDTO {
   @Field(() => Int)
   cantidadCompletada: number;
+  @Field(() => Int)
+  cantidadRevision: number;
 
   @Field(() => Int)
   cantidadTotal: number;

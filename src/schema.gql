@@ -113,6 +113,7 @@ type MantenimientoInfoDto2 {
 
 type HomeAdminDTO {
   cantidadCompletada: Int!
+  cantidadRevision: Int!
   cantidadTotal: Int!
   mantenimientos: [MantenimientoInfoDto2!]!
 }

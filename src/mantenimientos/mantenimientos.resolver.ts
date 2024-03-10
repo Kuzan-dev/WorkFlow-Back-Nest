@@ -187,6 +187,7 @@ export class MantenimientosResolver {
 
     return {
       cantidadCompletada,
+      cantidadRevision,
       cantidadTotal,
       mantenimientos,
     };
