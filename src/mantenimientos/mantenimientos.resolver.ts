@@ -232,12 +232,18 @@ export class MantenimientosResolver {
       'Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados',
   })
   async revision(
+    @Args('revision', { type: () => Boolean }) revision: boolean,
     @Args('id', { type: () => String }) id: string,
     @Args('cambiosSolicitados', { type: () => String })
     cambiosSolicitados: string,
   ) {
-    await this.mantenimientosService.revision(id, cambiosSolicitados);
-    return true;
+    if (revision) {
+      await this.mantenimientosService.revision(id, cambiosSolicitados);
+      return true;
+    } else {
+      await this.mantenimientosService.deny(id, cambiosSolicitados);
+      return true;
+    }
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)

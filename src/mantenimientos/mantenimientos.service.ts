@@ -344,6 +344,59 @@ export class MantenimientosService {
     }
   }
 
+  async deny(id: string, cambiosSolicitados: string): Promise<Mantenimiento> {
+    const session = await this.mantenimientoModel.db.startSession();
+    session.startTransaction();
+    try {
+      const mantenimiento = await this.mantenimientoModel
+        .findById(id)
+        .session(session);
+      if (!mantenimiento) {
+        throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
+      }
+
+      const repuestos = mantenimiento.repuestos
+        .filter((repuesto: any) => repuesto.id)
+        .map((repuesto: any) => ({
+          id: repuesto.id,
+          marca: repuesto.marca,
+          producto: repuesto.producto,
+          cantidad: repuesto.cantidad,
+        }));
+
+      const verifyRepuestoDto: VerifyRepuestoDto = { repuestos };
+
+      const canProceed = await this.repuestosService.correctRevi(
+        verifyRepuestoDto,
+        session,
+      );
+
+      if (!canProceed) {
+        throw new BadRequestException('Repuestos correction failed');
+      }
+
+      mantenimiento.estado = 'denegado'; // Cambiado a 'denegado'
+      mantenimiento.cambiosSolicitados = cambiosSolicitados;
+      const updatedMant = await mantenimiento.save({ session });
+
+      await session.commitTransaction();
+
+      const mantToday = await this.getMantAPartirDeHoy();
+      const allMantenimientos = await this.getMantenimientosDeHoy();
+      const calendar = await this.getProgrammedMaintenanceCount();
+      pubSub.publish('calendarTecnico', {
+        calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+      });
+      pubSub.publish('Actividades', { Actividades: mantToday });
+      return updatedMant;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
   async completarMantenimiento(
     id: string,
     diagnosticoFinal: string,

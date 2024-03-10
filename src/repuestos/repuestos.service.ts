@@ -39,7 +39,25 @@ export class RepuestosService {
       transactionSession.startTransaction();
     }
     try {
-      // ...rest of your code
+      const repuestos = verifyRepuestoDto.repuestos;
+
+      await Promise.all(
+        repuestos.map(async (repuesto) => {
+          const foundRepuesto = await this.respuestoModel
+            .findById(repuesto.id)
+            .session(transactionSession);
+          if (foundRepuesto && foundRepuesto.cantidad >= repuesto.cantidad) {
+            foundRepuesto.cantidadReserva += repuesto.cantidad;
+            foundRepuesto.cantidad -= repuesto.cantidad;
+            await foundRepuesto.save({ session: transactionSession });
+          } else {
+            throw new HttpException(
+              `Repuesto ${repuesto.id} no encontrado o cantidad insuficiente`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+        }),
+      );
       if (isNewSession) {
         await transactionSession.commitTransaction();
       }
@@ -66,7 +84,6 @@ export class RepuestosService {
     }
     try {
       const repuestos = verifyRepuestoDto.repuestos;
-      console.log('Repuestos recibidos:', repuestos);
 
       await Promise.all(
         repuestos.map(async (repuesto) => {
