@@ -233,6 +233,7 @@ export class MantenimientosResolver {
       'Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados',
   })
   async revision(
+    @Args('denegado', { type: () => Boolean }) denegado: boolean,
     @Args('revision', { type: () => Boolean }) revision: boolean,
     @Args('id', { type: () => String }) id: string,
     @Args('repuestosAjuste', { type: () => [CreateRepuestoAjusteDto] })
@@ -240,13 +241,20 @@ export class MantenimientosResolver {
     @Args('cambiosSolicitados', { type: () => String })
     cambiosSolicitados: string,
   ) {
-    if (revision) {
-      await this.mantenimientosService.revision(id, cambiosSolicitados);
-      await this.mantenimientosService.addRepuestosAjuste(id, repuestosAjuste);
-      return true;
-    } else {
+    if (denegado) {
       await this.mantenimientosService.deny(id, cambiosSolicitados);
       return true;
+    } else {
+      if (revision) {
+        await this.mantenimientosService.revision(id, cambiosSolicitados);
+        await this.mantenimientosService.addRepuestosAjuste(
+          id,
+          repuestosAjuste,
+        );
+        return true;
+      } else {
+        await this.mantenimientosService.Aprobado(id);
+      }
     }
   }
 

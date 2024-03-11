@@ -398,6 +398,38 @@ export class MantenimientosService {
     }
   }
 
+  async Aprobado(id: string): Promise<Mantenimiento> {
+    const session = await this.mantenimientoModel.db.startSession();
+    session.startTransaction();
+    try {
+      const mantenimiento = await this.mantenimientoModel
+        .findById(id)
+        .session(session);
+      if (!mantenimiento) {
+        throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
+      }
+
+      mantenimiento.estado = 'aprobado'; // Cambiado a 'denegado'
+      const updatedMant = await mantenimiento.save({ session });
+
+      await session.commitTransaction();
+
+      const mantToday = await this.getMantAPartirDeHoy();
+      const allMantenimientos = await this.getMantenimientosDeHoy();
+      const calendar = await this.getProgrammedMaintenanceCount();
+      pubSub.publish('calendarTecnico', {
+        calendarTecnico: { calendar, mantenimientos: allMantenimientos },
+      });
+      pubSub.publish('Actividades', { Actividades: mantToday });
+      return updatedMant;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
   async completarMantenimiento(
     id: string,
     diagnosticoFinal: string,
