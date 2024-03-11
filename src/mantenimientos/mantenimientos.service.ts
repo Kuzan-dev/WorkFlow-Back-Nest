@@ -20,6 +20,7 @@ import { CarInfoDto } from 'src/cars/dto/car-info.dto';
 import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
 import { pubSub } from 'src/shared/pubsub';
+import { CreateRepuestoAjusteDto } from './dto/create-repuesto-ajuste.dto';
 
 @Injectable()
 export class MantenimientosService {
@@ -585,5 +586,27 @@ export class MantenimientosService {
     }
 
     return results;
+  }
+
+  async addRepuestosAjuste(
+    id: string,
+    repuestosAjusteDto: CreateRepuestoAjusteDto[],
+  ): Promise<MantenimientoDocument> {
+    const mantenimiento = await this.mantenimientoModel.findById(id);
+    if (!mantenimiento) {
+      throw new Error('Mantenimiento no encontrado');
+    }
+
+    mantenimiento.repuestosAjuste = repuestosAjusteDto.map((dto) => {
+      return {
+        _id: dto.id,
+        marca: dto.marca,
+        producto: dto.producto,
+        cantidad: dto.cantidad,
+        precio: dto.precio,
+      };
+    });
+
+    return await mantenimiento.save();
   }
 }

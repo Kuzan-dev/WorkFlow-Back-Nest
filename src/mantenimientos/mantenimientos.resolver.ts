@@ -21,6 +21,7 @@ import {
 } from './dto/socket-home.dto';
 import { pubSub } from 'src/shared/pubsub';
 import { MesRepuestos } from './dto/repuestos.mant-busqueda.dto';
+import { CreateRepuestoAjusteDto } from './dto/create-repuesto-ajuste.dto';
 
 @Resolver()
 export class MantenimientosResolver {
@@ -227,18 +228,21 @@ export class MantenimientosResolver {
   }
 
   @Mutation(() => Boolean, {
-    name: 'cambiar_estado_revision',
+    name: 'cambiar_estado_revision_o_denegado',
     description:
       'Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados',
   })
   async revision(
     @Args('revision', { type: () => Boolean }) revision: boolean,
     @Args('id', { type: () => String }) id: string,
+    @Args('repuestosAjuste', { type: () => [CreateRepuestoAjusteDto] })
+    repuestosAjuste: CreateRepuestoAjusteDto[],
     @Args('cambiosSolicitados', { type: () => String })
     cambiosSolicitados: string,
   ) {
     if (revision) {
       await this.mantenimientosService.revision(id, cambiosSolicitados);
+      await this.mantenimientosService.addRepuestosAjuste(id, repuestosAjuste);
       return true;
     } else {
       await this.mantenimientosService.deny(id, cambiosSolicitados);

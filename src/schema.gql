@@ -332,7 +332,7 @@ type Mutation {
   """
   Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados
   """
-  cambiar_estado_revision(revision: Boolean!, id: String!, cambiosSolicitados: String!): Boolean!
+  cambiar_estado_revision_o_denegado(revision: Boolean!, id: String!, repuestosAjuste: [CreateRepuestoAjusteDto!]!, cambiosSolicitados: String!): Boolean!
 
   """Esta funcion programa un mantenimiento"""
   programar_mantenimiento(programarMantInput: PrograMantenimientoDto!): String!
@@ -408,6 +408,14 @@ input CreateUserDto {
   password: String!
   clienteAsociado: String
   nivelUser: String!
+}
+
+input CreateRepuestoAjusteDto {
+  id: String!
+  marca: String!
+  producto: String!
+  cantidad: Float!
+  precio: Float!
 }
 
 input PrograMantenimientoDto {

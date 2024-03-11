@@ -24,7 +24,7 @@ export class Repuesto {
   cantidad: number;
 
   @Prop()
-  cantidadReserva: number;
+  cantidadReserva?: number;
 
   @Prop()
   precio: number;
