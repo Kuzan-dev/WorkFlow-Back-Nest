@@ -254,6 +254,7 @@ export class MantenimientosResolver {
         return true;
       } else {
         await this.mantenimientosService.Aprobado(id);
+        return true;
       }
     }
   }

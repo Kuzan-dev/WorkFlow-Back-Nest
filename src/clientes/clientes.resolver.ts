@@ -56,4 +56,15 @@ export class ClientesResolver {
   async getAllClientes(): Promise<ClienteDto[]> {
     return this.clienteService.getAllClientes();
   }
+
+  @Query(() => [ClienteDto], {
+    name: 'buscar_Clientes',
+    description:
+      'Esta Función retorna la información de los clientes en base a su nombre',
+  })
+  async searchClientes(
+    @Args('nombreCliente') nombreCliente: string,
+  ): Promise<ClienteDto[]> {
+    return this.clienteService.searchClientes(nombreCliente);
+  }
 }

@@ -45,27 +45,6 @@ export class PersonalService {
     return this.personalModel.findById(id).exec();
   }
 
-  // async getSalaryAtDate(id: string, queryDate: Date): Promise<number | string> {
-  //   const personal = await this.personalModel.findById(id).exec();
-
-  //   if (!personal) {
-  //     throw new Error('No se encontró el personal con el ID proporcionado');
-  //   }
-
-  //   // Ordenar el array en orden descendente por fecha
-  //   personal.salarioFecha.sort((a, b) => b.fecha.getTime() - a.fecha.getTime());
-
-  //   // Recorrer el array y encontrar el salario correspondiente a la fecha de consulta
-  //   for (const sf of personal.salarioFecha) {
-  //     if (sf.fecha <= queryDate) {
-  //       return sf.salario;
-  //     }
-  //   }
-
-  //   // Si no se encuentra ningún salario, devolver un mensaje
-  //   return 'No se encontró salario para la fecha proporcionada';
-  // }
-
   async getTotalSalaryAtDate(queryDate: Date): Promise<number> {
     const personals = await this.personalModel.find().exec();
     let totalSalary = 0;
@@ -96,5 +75,16 @@ export class PersonalService {
     }
 
     return totalSalary || 0;
+  }
+
+  async searchPersonal(nombre: string): Promise<Personal[]> {
+    // eslint-disable-next-line prettier/prettier
+    if (nombre === "") {
+      return this.personalModel.find().exec();
+    } else {
+      return this.personalModel
+        .find({ nombre: new RegExp(nombre, 'i') })
+        .exec();
+    }
   }
 }

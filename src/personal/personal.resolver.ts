@@ -61,11 +61,12 @@ export class PersonalResolver {
     return pubSub.asyncIterator('Personal');
   }
 
-  // @Query(() => Number)
-  // async getTotalSalaryAtDate(
-  //   @Args('date', { type: () => String }) date: string,
-  // ) {
-  //   const queryDate = new Date(date);
-  //   return this.personalService.getTotalSalaryAtDate(queryDate);
-  // }
+  @Query(() => [PersonalDto], {
+    name: 'buscar_Pesonal',
+    description:
+      'Esta Función retorna la información del personal en base a su nombre',
+  })
+  async searchPersonal(@Args('nombre') nombre: string): Promise<PersonalDto[]> {
+    return this.personalService.searchPersonal(nombre);
+  }
 }

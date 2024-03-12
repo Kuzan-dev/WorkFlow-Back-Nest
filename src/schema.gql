@@ -302,6 +302,9 @@ type Query {
   """
   obtener_todos_los_repuestos: [RepuestoType!]!
 
+  """Esta Función r"""
+  buscar_repuestos(producto: String!): [RepuestoType!]!
+
   """
   Esta Función retorna la información de todo el personal en la base de datos
   """
@@ -310,6 +313,9 @@ type Query {
   """Esta Función retorna la información de un personal por su id"""
   obtener_Personal_Por_Id(id: String!): PersonalDto!
 
+  """Esta Función retorna la información del personal en base a su nombre"""
+  buscar_Pesonal(nombre: String!): [PersonalDto!]!
+
   """Esta Función retorna la información de un cliente en base a su ID"""
   obtener_Cliente_ID(id: String!): ClienteDto!
 
@@ -317,6 +323,11 @@ type Query {
   Esta Función retorna la información de todos los clientes en la base de datos
   """
   obtener_Todos_Clientes: [ClienteDto!]!
+
+  """
+  Esta Función retorna la información de los clientes en base a su nombre
+  """
+  buscar_Clientes(nombreCliente: String!): [ClienteDto!]!
 
   """Obtiene el resumen mensual de gastos"""
   grafica_gastos_generales(inputDate: String!): [MonthlySummaryDto!]!
@@ -332,7 +343,7 @@ type Mutation {
   """
   Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados
   """
-  cambiar_estado_revision_o_denegado(denegado: Boolean!, revision: Boolean!, id: String!, repuestosAjuste: [CreateRepuestoAjusteDto!]!, cambiosSolicitados: String!): Boolean!
+  cambiar_estado_revision_o_denegado(denegado: Boolean!, revision: Boolean!, id: String!, repuestosAjuste: [CreateRepuestoAjusteDto!]!, cambiosSolicitados: String): Boolean!
 
   """Esta funcion programa un mantenimiento"""
   programar_mantenimiento(programarMantInput: PrograMantenimientoDto!): String!

@@ -4,6 +4,7 @@ import { RepuestosService } from './repuestos.service';
 import { CreateRepuestoDto } from './dto/create-repuesto.dto';
 import { VerifyRepuestoDto } from './dto/verify-repuesto.dto';
 import { RepuestoDto, RepuestoType } from './dto/repuesto.dto';
+import { RepuestoSearchType } from './dto/search-repuesto.dto';
 
 @Resolver()
 export class RepuestosResolver {
@@ -48,5 +49,15 @@ export class RepuestosResolver {
   ) {
     await this.repuestoService.verify(verifyRepuestoDto);
     return true;
+  }
+
+  @Query(() => [RepuestoType], {
+    name: 'buscar_repuestos',
+    description: 'Esta Función r',
+  })
+  async searchRepuesto(
+    @Args('producto') producto: string,
+  ): Promise<RepuestoSearchType[]> {
+    return this.repuestoService.searchRepuesto(producto);
   }
 }

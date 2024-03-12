@@ -34,4 +34,15 @@ export class ClientesService {
   async getAllClientes(): Promise<ClienteDto[]> {
     return this.clienteModel.find().exec();
   }
+
+  async searchClientes(nombreCliente: string): Promise<Cliente[]> {
+    // eslint-disable-next-line prettier/prettier
+    if (nombreCliente === "") {
+      return this.clienteModel.find().exec();
+    } else {
+      return this.clienteModel
+        .find({ nombreCliente: new RegExp(nombreCliente, 'i') })
+        .exec();
+    }
+  }
 }

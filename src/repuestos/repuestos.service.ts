@@ -126,4 +126,14 @@ export class RepuestosService {
       }
     }
   }
+
+  async searchRepuesto(producto: string): Promise<Repuesto[]> {
+    if (producto === '') {
+      return this.respuestoModel.find().exec();
+    } else {
+      return this.respuestoModel
+        .find({ producto: new RegExp(producto, 'i') })
+        .exec();
+    }
+  }
 }
