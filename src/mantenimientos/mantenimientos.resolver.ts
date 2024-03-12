@@ -238,8 +238,8 @@ export class MantenimientosResolver {
     @Args('id', { type: () => String }) id: string,
     @Args('repuestosAjuste', { type: () => [CreateRepuestoAjusteDto] })
     repuestosAjuste: CreateRepuestoAjusteDto[],
-    @Args('cambiosSolicitados', { type: () => String })
-    cambiosSolicitados: string,
+    @Args('cambiosSolicitados', { type: () => String, nullable: true })
+    cambiosSolicitados?: string,
   ) {
     if (denegado) {
       await this.mantenimientosService.deny(id, cambiosSolicitados);
