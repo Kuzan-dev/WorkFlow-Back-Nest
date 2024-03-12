@@ -478,7 +478,7 @@ export class MantenimientosService {
     const mantenimientos = await this.mantenimientoModel
       .find({
         fecha: { $gte: startOfToday, $lte: endOfToday },
-        tipo: { $nin: ['expirado', 'completado'] },
+        estado: { $nin: ['expirado', 'completado'] },
       })
       .exec();
 
@@ -547,7 +547,7 @@ export class MantenimientosService {
     const mantenimientos = await this.mantenimientoModel
       .find({
         fecha: { $gte: startOfToday },
-        tipo: { $nin: ['expirado', 'completado'] },
+        estado: { $nin: ['expirado', 'completado'] },
       })
       .exec();
 
