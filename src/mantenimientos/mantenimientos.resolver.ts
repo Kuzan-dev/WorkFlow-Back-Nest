@@ -30,7 +30,7 @@ export class MantenimientosResolver {
   @Subscription(() => CalendarAndMantenimientosDTO, {
     name: 'Calendar_Hoy_Tecnico',
     description:
-      'Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy',
+      'Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de los ultimos 7 días',
     nullable: true,
     resolve: (payload) => payload.calendarTecnico,
   })

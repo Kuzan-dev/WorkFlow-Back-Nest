@@ -465,6 +465,7 @@ export class MantenimientosService {
 
   async getMantenimientosDeHoy(): Promise<Mantenimiento[]> {
     const startOfToday = new Date();
+    startOfToday.setDate(startOfToday.getDate() - 7); // Resta 7 días a la fecha actual
     startOfToday.setHours(0, 0, 0, 0);
 
     const endOfToday = new Date();

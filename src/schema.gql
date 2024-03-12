@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 type RepuestoType {
-  id: String!
+  id: String
   cantidadReserva: Float
   marca: String
   producto: String
@@ -533,7 +533,7 @@ input ContratoInput {
 
 type Subscription {
   """
-  Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy
+  Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de los ultimos 7 días
   """
   Calendar_Hoy_Tecnico: CalendarAndMantenimientosDTO
 

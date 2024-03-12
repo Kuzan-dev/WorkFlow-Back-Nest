@@ -36,8 +36,7 @@ export class RepuestoDto {
 
 @ObjectType()
 export class RepuestoType {
-  @Field()
-  @IsNotEmpty()
+  @Field({ nullable: true })
   @IsString()
   id: string;
 
