@@ -127,6 +127,59 @@ export class RepuestosService {
     }
   }
 
+  async finalizarRep(
+    verifyRepuestoDto: VerifyRepuestoDto,
+    session?: any,
+  ): Promise<boolean> {
+    const transactionSession =
+      session || (await this.respuestoModel.db.startSession());
+    if (!session) {
+      transactionSession.startTransaction();
+    }
+    try {
+      const repuestos = verifyRepuestoDto.repuestos;
+
+      await Promise.all(
+        repuestos.map(async (repuesto) => {
+          console.log('Buscando repuesto con ID:', repuesto.id);
+          const foundRepuesto = await this.respuestoModel
+            .findById(repuesto.id)
+            .session(transactionSession);
+          console.log('Repuesto encontrado:', foundRepuesto);
+          if (
+            foundRepuesto &&
+            foundRepuesto.cantidadReserva >= repuesto.cantidad
+          ) {
+            foundRepuesto.cantidadReserva -= repuesto.cantidad;
+            await foundRepuesto.save({ session: transactionSession });
+            console.log('Repuesto actualizado:', foundRepuesto);
+          } else {
+            throw new HttpException(
+              `Repuesto ${repuesto.id} no encontrado o cantidad insuficiente`,
+              HttpStatus.NOT_FOUND,
+            );
+          }
+        }),
+      );
+
+      if (!session) {
+        await transactionSession.commitTransaction();
+      }
+      console.log('Transacción completada con éxito');
+      return true;
+    } catch (error) {
+      console.log('Error en la transacción:', error);
+      if (!session) {
+        await transactionSession.abortTransaction();
+      }
+      throw error;
+    } finally {
+      if (!session) {
+        transactionSession.endSession();
+      }
+    }
+  }
+
   async searchRepuesto(producto: string): Promise<Repuesto[]> {
     if (producto === '') {
       return this.respuestoModel.find().exec();
