@@ -45,6 +45,9 @@ export class MantenimientoInfoDto {
   @Field({ nullable: true })
   diagnosticoFinal: string;
 
+  @Field({ nullable: true })
+  cambiosSolicitados: string;
+
   @Field(() => [RepuestoType], { nullable: true })
   repuestos: RepuestoType[];
 
@@ -95,6 +98,9 @@ export class MantenimientoInfoDto56 {
 
   @Field({ nullable: true })
   anotaciones: string;
+
+  @Field({ nullable: true })
+  cambiosSolicitados: string;
 
   @Field({ nullable: true })
   diagnostico: string;

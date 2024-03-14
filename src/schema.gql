@@ -50,6 +50,7 @@ type MantenimientoInfoDto {
   anotaciones: String
   diagnostico: String
   diagnosticoFinal: String
+  cambiosSolicitados: String
   repuestos: [RepuestoType!]
   repuestosAjuste: [RepuestoType!]
   documentos: [String!]
@@ -69,6 +70,7 @@ type MantenimientoInfoDto56 {
   fechaFin: DateTime
   fechaSoat: DateTime
   anotaciones: String
+  cambiosSolicitados: String
   diagnostico: String
   diagnosticoFinal: String
   repuestos: [RepuestoType!]
