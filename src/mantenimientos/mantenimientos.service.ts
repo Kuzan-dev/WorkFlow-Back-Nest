@@ -603,7 +603,7 @@ export class MantenimientosService {
       })
       .exec();
 
-    //console.log('Mantenimientos encontrados: ', mantenimientos);
+    //consoleg.log('Mantenimientos encontrados: ', mantenimientos);
 
     // Asegurarse de que siempre se devuelva un array
     return mantenimientos || [];
