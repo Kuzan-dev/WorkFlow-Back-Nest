@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Instala las dependencias de la aplicación
-RUN npm install --production
+RUN npm install
 
 # Instala la CLI de NestJS globalmente
 RUN npm install -g @nestjs/cli
