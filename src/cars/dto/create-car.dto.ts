@@ -49,7 +49,7 @@ export class CreateCarDto {
   @IsNotEmpty()
   vigenciaContrato: Date;
 
-  @Field(() => Int, { nullable: true })
+  @Field({ nullable: true })
   @IsNumber()
   @IsOptional()
   puntaje: number;

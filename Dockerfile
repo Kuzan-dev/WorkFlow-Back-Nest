@@ -25,7 +25,7 @@ COPY . .
 # Construye la aplicación
 RUN npm run build
 
-# Expone el puerto 3000 en el contenedor
+# Expone el puerto 4500 en el contenedor
 EXPOSE 4500
 
 # Construye la aplicación y luego la inicia

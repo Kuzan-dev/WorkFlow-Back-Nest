@@ -69,7 +69,7 @@ export class DocumentosController {
   @Get('download/*')
   async getFile(@Res() res: Response, @Param() params: any) {
     const filePath = params[0]; // La ruta completa del archivo se almacena en params[0]
-    const path = join(process.cwd(), 'uploads', filePath);
+    const path = join(process.cwd(), filePath);
     fs.access(path, fs.constants.F_OK, (err) => {
       if (err) {
         console.error('El archivo no existe');
