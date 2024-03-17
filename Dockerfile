@@ -15,6 +15,9 @@ RUN npm install -g @nestjs/cli
 # Copia el resto de la aplicación al directorio de trabajo
 COPY . .
 
+# Construye la aplicación
+RUN npm run build
+
 # Expone el puerto 3000 en el contenedor
 EXPOSE 4500
 
