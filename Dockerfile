@@ -1,6 +1,13 @@
 # Usa la imagen oficial de Node.js como base
 FROM node:20
 
+# Define los argumentos de construcción y las variables de entorno
+ARG TOKEN_SECRET
+ARG DB_CONNECTION
+
+ENV TOKEN_SECRET=$TOKEN_SECRET
+ENV DB_CONNECTION=$DB_CONNECTION
+
 # Establece el directorio de trabajo en /usr/src/app
 WORKDIR /usr/src/app
 
