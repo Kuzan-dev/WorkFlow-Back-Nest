@@ -7,6 +7,7 @@ import { Factura } from '../facturas/schemas/factura.schema';
 import { Mantenimiento } from '../mantenimientos/schemas/mantenimiento.schema';
 import { Car } from '../cars/schemas/car.schema';
 import { Personal } from '../personal/schemas/personal.schema';
+import * as Multer from 'multer';
 
 @Injectable()
 export class DocumentosService {
