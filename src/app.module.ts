@@ -32,7 +32,7 @@ import { TasksModule } from './tasks/tasks.module';
       subscriptions: {
         'graphql-ws': true,
       },
-      playground: true,
+      playground: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
