@@ -11,7 +11,7 @@ export class SalarioFechaInput {
 
 @InputType()
 export class PersonalInput {
-  @Field()
+  @Field({ nullable: true })
   _id: string;
 
   @Field()
