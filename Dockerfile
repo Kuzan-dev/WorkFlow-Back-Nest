@@ -18,5 +18,5 @@ COPY . .
 # Expone el puerto 3000 en el contenedor
 EXPOSE 4500
 
-# Comando para iniciar la aplicación cuando el contenedor se ejecute
-CMD ["npm", "start"]
+# Construye la aplicación y luego la inicia
+CMD ["npm", "run", "start:prod"]
