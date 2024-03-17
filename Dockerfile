@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Instalar las dependencias
-RUN npm install
+RUN npm install --production
 
 # Exponer el puerto en el que la aplicación escucha
 EXPOSE 4500
