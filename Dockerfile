@@ -1,17 +1,20 @@
-# Use Node.js versión 20
+# Usa la imagen oficial de Node.js como base
 FROM node:20
 
-# Establecer el directorio de trabajo dentro del contenedor
-WORKDIR /app
+# Establece el directorio de trabajo en /usr/src/app
+WORKDIR /usr/src/app
 
-# Copiar los archivos de la aplicación
-COPY . .
+# Copia los archivos de package.json y package-lock.json a /usr/src/app
+COPY package*.json ./
 
-# Instalar las dependencias
+# Instala las dependencias de la aplicación
 RUN npm install --production
 
-# Exponer el puerto en el que la aplicación escucha
+# Copia el resto de la aplicación al directorio de trabajo
+COPY . .
+
+# Expone el puerto 3000 en el contenedor
 EXPOSE 4500
 
-# Comando para iniciar la aplicación
+# Comando para iniciar la aplicación cuando el contenedor se ejecute
 CMD ["npm", "start"]
