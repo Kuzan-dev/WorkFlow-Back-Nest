@@ -37,7 +37,7 @@ export class ClientesResolver {
   }
 
   @Mutation(() => ClienteDto, {
-    name: 'Agregar_Contrato',
+    name: 'Agregar_Contrato_Cliente',
     description:
       'Esta Función agrega un nuevo contrato al cliente en la base de datos y retorna el documento actualizado',
   })
