@@ -55,9 +55,17 @@ export class DocumentosService {
     if (!documento) {
       throw new Error('Documento no encontrado.');
     }
-    documento.documentos = paths;
-    await documento.save();
-    console.log('Documento:', documento);
+    // documento.documentos = paths;
+    // await documento.save();
+    // console.log('Documento:', documento);
+
+    await model.updateOne(
+      { _id: query2 },
+      { $push: { documentos: { $each: paths } } },
+    );
+
+    const updatedDocumento = await model.findById(query2);
+    console.log('Documento:', updatedDocumento);
 
     return paths;
   }
