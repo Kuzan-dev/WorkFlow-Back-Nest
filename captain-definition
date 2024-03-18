@@ -1,7 +1,4 @@
 {
   "schemaVersion": 2,
-  "dockerfilePath": "./Dockerfile",
-  "persistentFolders": [
-    "/usr/src/app/uploads"
-  ]
+  "dockerfilePath": "./Dockerfile"
 }
