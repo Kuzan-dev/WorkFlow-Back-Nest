@@ -1,6 +1,9 @@
 # Usa la imagen oficial de Node.js como base
 FROM node:20
 
+# Establece la zona horaria en Lima, Perú
+ENV TZ=America/Lima
+
 # Define los argumentos de construcción y las variables de entorno
 ARG TOKEN_SECRET
 ARG DB_CONNECTION
