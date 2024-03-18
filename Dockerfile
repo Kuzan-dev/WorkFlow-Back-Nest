@@ -31,5 +31,8 @@ RUN npm run build
 # Expone el puerto 4500 en el contenedor
 EXPOSE 4500
 
+# Define la carpeta uploads como un volumen persistente
+VOLUME /usr/src/app/uploads
+
 # Construye la aplicación y luego la inicia
 CMD ["npm", "run", "start:prod"]
