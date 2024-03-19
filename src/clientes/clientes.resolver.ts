@@ -2,11 +2,17 @@ import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
 import { ClienteInput, ContratoInput } from './dto/cliente.input';
 import { ClienteDto } from './dto/cliente.dto';
+//Importaciones de Seguridad
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 
 @Resolver()
 export class ClientesResolver {
   constructor(private clienteService: ClientesService) {}
-
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => String, {
     name: 'crear_Cliente',
     description:
@@ -18,6 +24,8 @@ export class ClientesResolver {
     return this.clienteService.createCliente(cliente);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => Boolean, {
     name: 'borrar_Cliente',
     description:
@@ -27,6 +35,8 @@ export class ClientesResolver {
     return this.clienteService.deleteCliente(id);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => ClienteDto, {
     name: 'obtener_Cliente_ID',
     description:
@@ -36,6 +46,8 @@ export class ClientesResolver {
     return this.clienteService.getClienteById(id);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => ClienteDto, {
     name: 'Agregar_Contrato_Cliente',
     description:
@@ -48,6 +60,8 @@ export class ClientesResolver {
     return this.clienteService.addContrato(id, contrato);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [ClienteDto], {
     name: 'obtener_Todos_Clientes',
     description:
@@ -57,6 +71,8 @@ export class ClientesResolver {
     return this.clienteService.getAllClientes();
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [ClienteDto], {
     name: 'buscar_Clientes',
     description:

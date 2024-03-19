@@ -4,9 +4,11 @@ import { Cliente, ClienteSchema } from './schemas/cliente.schema';
 import { ClientesResolver } from './clientes.resolver';
 import { ClientesController } from './clientes.controller';
 import { ClientesService } from './clientes.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     MongooseModule.forFeature([{ name: Cliente.name, schema: ClienteSchema }]),
   ],
   providers: [ClientesResolver, ClientesService],

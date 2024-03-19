@@ -16,6 +16,12 @@ import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 
+// Importaciones de seguridad
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+import { RolesRestGuard } from '../auth/roles-rest.guard';
+import { Roles } from '../auth/roles.decorator';
+
 const allowedMimetypes = [
   'application/pdf', // PDF
   'image/jpeg', // JPEG images
@@ -47,6 +53,8 @@ const storage = multer.diskStorage({
 export class DocumentosController {
   constructor(private readonly documentosService: DocumentosService) {}
 
+  @UseGuards(JwtAuthGuard, RolesRestGuard)
+  @Roles('admin', 'tecnico')
   @Post('upload')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'files', maxCount: 20 }], {
@@ -66,6 +74,8 @@ export class DocumentosController {
     console.log('Paths:', paths); // Log the paths
   }
 
+  @UseGuards(JwtAuthGuard, RolesRestGuard)
+  @Roles('admin', 'tecnico')
   @Get('download/*')
   async getFile(@Res() res: Response, @Param() params: any) {
     const filePath = params[0]; // La ruta completa del archivo se almacena en params[0]
