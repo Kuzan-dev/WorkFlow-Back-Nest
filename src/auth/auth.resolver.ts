@@ -11,6 +11,18 @@ export class AuthResolver {
     await this.usersService.create(user);
     return true;
   }
+
+  @Mutation(() => Boolean, {
+    name: 'crear_multiples_users',
+    description: 'Esta Función crea multiples usuarios en la base de datos',
+  })
+  async createUsers(
+    @Args({ name: 'users', type: () => [CreateUserDto] })
+    users: CreateUserDto[],
+  ) {
+    await Promise.all(users.map((user) => this.usersService.create(user)));
+    return true;
+  }
   @Mutation(() => Boolean)
   async updatePassword(
     @Args('username') username: string,

@@ -340,6 +340,9 @@ type Query {
 
 type Mutation {
   createUser(username: CreateUserDto!): Boolean!
+
+  """Esta Función crea multiples usuarios en la base de datos"""
+  crear_multiples_users(users: [CreateUserDto!]!): Boolean!
   updatePassword(username: String!, newPassword: String!): Boolean!
 
   """
@@ -411,7 +414,7 @@ type Mutation {
   """
   Esta Función agrega un nuevo contrato al cliente en la base de datos y retorna el documento actualizado
   """
-  Agregar_Contrato(id: String!, contrato: ContratoInput!): ClienteDto!
+  Agregar_Contrato_Cliente(id: String!, contrato: ContratoInput!): ClienteDto!
 }
 
 input CreateUserDto {
@@ -483,7 +486,7 @@ input CreateCarDto {
   tipoContrato: String!
   fechaRevision: DateTime!
   vigenciaContrato: DateTime!
-  puntaje: Int
+  puntaje: Float
 }
 
 input CreateRepuestoDto {
@@ -511,7 +514,7 @@ input CreateFacturaDto {
 }
 
 input PersonalInput {
-  _id: String!
+  _id: String
   nombre: String!
   numero: Int
   email: String
