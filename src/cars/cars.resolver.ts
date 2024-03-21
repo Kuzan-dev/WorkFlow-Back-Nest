@@ -35,4 +35,12 @@ export class CarsResolver {
   async getCarInfo(@Args('placa', { type: () => String }) placa: string) {
     return this.carsService.getCarInfo(placa);
   }
+
+  @Query(() => [String], {
+    name: 'buscar_placas_autos',
+    description: 'Esta Función retorna las placas de los autos',
+  })
+  async searchCars(@Args('placa', { type: () => String }) placa: string) {
+    return this.carsService.searchCars(placa);
+  }
 }

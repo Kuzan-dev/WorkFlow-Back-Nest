@@ -335,7 +335,7 @@ type Query {
   """
   Esta función retorna: 1. el kilometraje recorrido por mes de un vehiculo, la matriz de salida tendra un formato de [mes, kmRecorridoTotal] donde mes es "MM/YYYY" y kmRecorridoTotal es un numero, 2. los costos de mantenimiento por mes, la matriz de salida tendra un formato de [mes, costoTotal] donde mes es "MM/YYYY" y costoTotal es un numero, 3. el puntaje de un vehiculo, 4. la cantidad de mantenimientos realizados por mes, 5. la cantidad de mantenimientos denegados por mes, 6. los repuestos mas consumidos por mes, la matriz de salida tendra un formato de [mes, repuesto1, repuesto2, repuesto3, repuesto4, otros] donde mes es "MM/YYYY" y repuesto1, repuesto2, repuesto3, repuesto4, otros son objetos con la estructura de RepuestoConsumido
   """
-  estadi_web_km_recorrido_por_mes(placa: String!, fecha: String!): EstadisticWebDTO!
+  estadisticas_web(placa: String!, fecha: String!): EstadisticWebDTO!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)
@@ -344,6 +344,9 @@ type Query {
 
   """Esta Función retorna la información de un auto por medio de su placa"""
   obtener_info_for_placa(placa: String!): GetForPlacasDto!
+
+  """Esta Función retorna las placas de los autos"""
+  buscar_placas_autos(placa: String!): [String!]!
 
   """
   Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)
