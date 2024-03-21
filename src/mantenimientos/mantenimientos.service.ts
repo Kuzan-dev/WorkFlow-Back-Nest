@@ -21,7 +21,11 @@ import { Subject } from 'rxjs';
 import * as moment from 'moment-timezone';
 import { pubSub } from 'src/shared/pubsub';
 import { CreateRepuestoAjusteDto } from './dto/create-repuesto-ajuste.dto';
-
+import { KmRecorridoPorMes } from './dto/km-recorrido-mes.dto';
+import { Costos } from './dto/costos-mes-prev-correc.dto';
+import { RepuestosMasConsumidosPorMes } from './dto/costo-repuesto-mes.dto';
+import { RepuestoConsumido } from './dto/costo-repuesto.dto';
+import { OperatividadPorMes } from './dto/operatividad-mes.dto';
 @Injectable()
 export class MantenimientosService {
   private readonly mantenimientoChanges = new Subject<any>();
@@ -693,5 +697,254 @@ export class MantenimientosService {
     });
 
     return await mantenimiento.save();
+  }
+
+  //Estadisticas
+  async getKmRecorridoPorMes(
+    placa: string,
+    fecha: Date,
+  ): Promise<KmRecorridoPorMes[]> {
+    const oneYearAgo = new Date(fecha);
+    oneYearAgo.setMonth(oneYearAgo.getMonth() - 12);
+
+    const mantenimientos = await this.mantenimientoModel.find({
+      placa,
+      estado: 'completado',
+      fecha: { $gte: oneYearAgo, $lte: fecha },
+    });
+
+    const kmRecorridoPorMes = Array(12)
+      .fill(0)
+      .map((_, index) => {
+        const month = new Date(oneYearAgo);
+        month.setMonth(month.getMonth() + index + 1);
+
+        const kmRecorridoTotal = mantenimientos
+          .filter((mantenimiento) => {
+            const mantenimientoDate = new Date(mantenimiento.fecha);
+            return (
+              mantenimientoDate.getMonth() === month.getMonth() &&
+              mantenimientoDate.getFullYear() === month.getFullYear()
+            );
+          })
+          .reduce(
+            (total, mantenimiento) =>
+              total + (mantenimiento.kmMedido - mantenimiento.kmPrevio),
+            0,
+          );
+
+        return {
+          mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
+          kmRecorridoTotal,
+        };
+      });
+
+    return kmRecorridoPorMes;
+  }
+
+  async getCostos(placa: string, fecha: Date): Promise<Costos> {
+    const startOfMonth = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+    const endOfMonth = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
+    const startOfLastMonth = new Date(
+      fecha.getFullYear(),
+      fecha.getMonth() - 1,
+      1,
+    );
+    const endOfLastMonth = new Date(fecha.getFullYear(), fecha.getMonth(), 0);
+
+    const mantenimientos = await this.mantenimientoModel
+      .find({
+        placa,
+        estado: 'completado',
+        fecha: { $gte: startOfLastMonth, $lte: endOfMonth },
+      })
+      .populate('repuestosAjuste');
+
+    const calculateCost = (mantenimientos: Mantenimiento[]) =>
+      mantenimientos.reduce(
+        (total, mantenimiento) =>
+          total +
+          mantenimiento.repuestosAjuste.reduce(
+            (total, repuesto) => total + repuesto.cantidad * repuesto.precio,
+            0,
+          ),
+        0,
+      );
+
+    const mantenimientosThisMonth = mantenimientos.filter(
+      (mantenimiento) =>
+        mantenimiento.fecha >= startOfMonth &&
+        mantenimiento.fecha <= endOfMonth,
+    );
+    const mantenimientosLastMonth = mantenimientos.filter(
+      (mantenimiento) =>
+        mantenimiento.fecha >= startOfLastMonth &&
+        mantenimiento.fecha <= endOfLastMonth,
+    );
+
+    const costoTotal = calculateCost(mantenimientosThisMonth);
+    const costoPreventivos = calculateCost(
+      mantenimientosThisMonth.filter(
+        (mantenimiento) => mantenimiento.tipo === 'Mantenimiento Preventivo',
+      ),
+    );
+    const costoCorrectivos = calculateCost(
+      mantenimientosThisMonth.filter(
+        (mantenimiento) => mantenimiento.tipo === 'Mantenimiento Correctivo',
+      ),
+    );
+    const costoMesPasado = calculateCost(mantenimientosLastMonth);
+
+    return { costoTotal, costoPreventivos, costoCorrectivos, costoMesPasado };
+  }
+
+  async getNumeroMantenimientos(placa: string, fecha: Date): Promise<number> {
+    const startOfMonth = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+    const endOfMonth = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
+
+    const mantenimientos = await this.mantenimientoModel.countDocuments({
+      placa,
+      estado: 'completado',
+      fecha: { $gte: startOfMonth, $lte: endOfMonth },
+    });
+
+    return mantenimientos;
+  }
+  async getNumeroMantCance(placa: string, fecha: Date): Promise<number> {
+    const startOfMonth = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+    const endOfMonth = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
+
+    const mantenimientos = await this.mantenimientoModel.countDocuments({
+      placa,
+      estado: 'denegado',
+      fecha: { $gte: startOfMonth, $lte: endOfMonth },
+    });
+
+    return mantenimientos;
+  }
+
+  async getRepuestosMasConsumidos(
+    placa: string,
+    fecha: Date,
+  ): Promise<RepuestosMasConsumidosPorMes[]> {
+    const oneYearAgo = new Date(fecha);
+    oneYearAgo.setMonth(oneYearAgo.getMonth() - 12);
+
+    const mantenimientos = await this.mantenimientoModel
+      .find({
+        placa,
+        estado: 'completado',
+        fecha: { $gte: oneYearAgo, $lte: fecha },
+      })
+      .populate('repuestosAjuste');
+
+    const repuestosMasConsumidosPorMes = Array(12)
+      .fill(0)
+      .map((_, index) => {
+        const month = new Date(oneYearAgo);
+        month.setMonth(month.getMonth() + index + 1);
+
+        const mantenimientosThisMonth = mantenimientos.filter(
+          (mantenimiento) => {
+            const mantenimientoDate = new Date(mantenimiento.fecha);
+            return (
+              mantenimientoDate.getMonth() === month.getMonth() &&
+              mantenimientoDate.getFullYear() === month.getFullYear()
+            );
+          },
+        );
+
+        const repuestos = mantenimientosThisMonth.flatMap((mantenimiento) =>
+          mantenimiento.repuestosAjuste.map((repuesto) => ({
+            producto: repuesto.producto,
+            costo: repuesto.cantidad * repuesto.precio,
+          })),
+        );
+
+        const repuestosGrouped = repuestos.reduce(
+          (grouped, repuesto) => {
+            grouped[repuesto.producto] =
+              (grouped[repuesto.producto] || 0) + repuesto.costo;
+            return grouped;
+          },
+          {} as Record<string, number>,
+        );
+
+        const repuestosSorted = Object.entries(repuestosGrouped)
+          .map(([producto, costo]) => ({ producto, costo: costo as number }))
+          .sort((a, b) => b.costo - a.costo);
+
+        const [repuesto1, repuesto2, repuesto3, repuesto4, ...otrosRepuestos] =
+          repuestosSorted;
+
+        const otros = otrosRepuestos.reduce(
+          (total, repuesto) => total + (repuesto.costo as number),
+          0,
+        );
+
+        return {
+          mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
+          repuesto1: repuesto1 || new RepuestoConsumido(),
+          repuesto2: repuesto2 || new RepuestoConsumido(),
+          repuesto3: repuesto3 || new RepuestoConsumido(),
+          repuesto4: repuesto4 || new RepuestoConsumido(),
+          otros,
+        };
+      });
+
+    return repuestosMasConsumidosPorMes;
+  }
+
+  async getOperatividadPorMes(
+    placa: string,
+    fecha: Date,
+  ): Promise<OperatividadPorMes[]> {
+    const oneYearAgo = new Date(fecha);
+    oneYearAgo.setMonth(oneYearAgo.getMonth() - 12);
+
+    const mantenimientos = await this.mantenimientoModel.find({
+      placa,
+      estado: 'completado',
+      fecha: { $gte: oneYearAgo, $lte: fecha },
+    });
+
+    const operatividadPorMes = Array(12)
+      .fill(0)
+      .map((_, index) => {
+        const month = new Date(oneYearAgo);
+        month.setMonth(month.getMonth() + index + 1);
+
+        const mantenimientosThisMonth = mantenimientos.filter(
+          (mantenimiento) => {
+            const mantenimientoDate = new Date(mantenimiento.fecha);
+            return (
+              mantenimientoDate.getMonth() === month.getMonth() &&
+              mantenimientoDate.getFullYear() === month.getFullYear()
+            );
+          },
+        );
+
+        const horasMuertas = mantenimientosThisMonth.reduce(
+          (total, mantenimiento) => {
+            const inicio = new Date(mantenimiento.fechaInicio);
+            const fin = new Date(mantenimiento.fechaFin);
+            const horas = (fin.getTime() - inicio.getTime()) / 1000 / 60 / 60;
+            return total + horas;
+          },
+          0,
+        );
+
+        const horasDelMes =
+          new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate() * 24;
+
+        const operatividad = horasDelMes - horasMuertas;
+
+        return {
+          mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
+          operatividad,
+        };
+      });
+
+    return operatividadPorMes;
   }
 }

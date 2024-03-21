@@ -53,4 +53,20 @@ export class CarsService {
   async getCarInfo(placa: string): Promise<Car> {
     return this.carModel.findOne({ placa }).exec();
   }
+  //Función de busqueda de una placa en especifico usando SearchParams
+  async searchCars(placa: string): Promise<string[]> {
+    if (placa === '') {
+      return this.carModel.find().distinct('placa').exec();
+    } else {
+      return this.carModel
+        .find({ placa: new RegExp(placa, 'i') })
+        .distinct('placa')
+        .exec();
+    }
+  }
+
+  async getPuntaje(placa: string): Promise<number> {
+    const car = await this.carModel.findOne({ placa }).exec();
+    return car.puntaje;
+  }
 }

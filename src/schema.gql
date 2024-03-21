@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type RepuestoConsumido {
+  producto: String
+  costo: Float
+}
+
 type RepuestoType {
   id: String
   cantidadReserva: Float
@@ -176,6 +181,42 @@ type MesRepuestos {
   otros: ProductoConsumido
 }
 
+type Costos {
+  costoTotal: Float
+  costoPreventivos: Float
+  costoCorrectivos: Float
+  costoMesPasado: Float
+}
+
+type KmRecorridoPorMes {
+  mes: String
+  kmRecorridoTotal: Float
+}
+
+type RepuestosMasConsumidosPorMes {
+  mes: String
+  repuesto1: RepuestoConsumido!
+  repuesto2: RepuestoConsumido!
+  repuesto3: RepuestoConsumido!
+  repuesto4: RepuestoConsumido!
+  otros: Float
+}
+
+type OperatividadPorMes {
+  mes: String
+  operatividad: Float
+}
+
+type EstadisticWebDTO {
+  kmRecorrido: [KmRecorridoPorMes!]!
+  costos: Costos!
+  puntaje: Float
+  cantidadMatenimientos: Float
+  cantidadMatDenegados: Float
+  repuestosConsumidos: [RepuestosMasConsumidosPorMes!]!
+  operatividad: [OperatividadPorMes!]!
+}
+
 type GetPlacasDto {
   _id: String!
   placa: String!
@@ -290,6 +331,11 @@ type Query {
   Esta funcion retorna la cantidad de mantenimientos por estado y los mantenimientos (información compleja) por estado y fecha
   """
   mantenimientoChanges(estado: String!, fecha: DateTime!): MantenimientoResult!
+
+  """
+  Esta función retorna: 1. el kilometraje recorrido por mes de un vehiculo, la matriz de salida tendra un formato de [mes, kmRecorridoTotal] donde mes es "MM/YYYY" y kmRecorridoTotal es un numero, 2. los costos de mantenimiento por mes, la matriz de salida tendra un formato de [mes, costoTotal] donde mes es "MM/YYYY" y costoTotal es un numero, 3. el puntaje de un vehiculo, 4. la cantidad de mantenimientos realizados por mes, 5. la cantidad de mantenimientos denegados por mes, 6. los repuestos mas consumidos por mes, la matriz de salida tendra un formato de [mes, repuesto1, repuesto2, repuesto3, repuesto4, otros] donde mes es "MM/YYYY" y repuesto1, repuesto2, repuesto3, repuesto4, otros son objetos con la estructura de RepuestoConsumido
+  """
+  estadi_web_km_recorrido_por_mes(placa: String!, fecha: String!): EstadisticWebDTO!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)

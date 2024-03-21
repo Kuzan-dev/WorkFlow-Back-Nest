@@ -22,10 +22,15 @@ import {
 import { pubSub } from 'src/shared/pubsub';
 import { MesRepuestos } from './dto/repuestos.mant-busqueda.dto';
 import { CreateRepuestoAjusteDto } from './dto/create-repuesto-ajuste.dto';
+import { EstadisticWebDTO } from './dto/estadistic-web.dto';
+import { CarsService } from 'src/cars/cars.service';
 
 @Resolver()
 export class MantenimientosResolver {
-  constructor(private readonly mantenimientosService: MantenimientosService) {}
+  constructor(
+    private readonly mantenimientosService: MantenimientosService,
+    private readonly carService: CarsService,
+  ) {}
 
   @Subscription(() => CalendarAndMantenimientosDTO, {
     name: 'Calendar_Hoy_Tecnico',
@@ -312,5 +317,60 @@ export class MantenimientosResolver {
       id,
       diagnosticoFinal,
     );
+  }
+
+  //EstadisticasWeb
+  @Query(() => EstadisticWebDTO, {
+    name: 'estadi_web_km_recorrido_por_mes',
+    description:
+      'Esta función retorna: 1. el kilometraje recorrido por mes de un vehiculo, la matriz de salida tendra un formato de [mes, kmRecorridoTotal] donde mes es "MM/YYYY" y kmRecorridoTotal es un numero, 2. los costos de mantenimiento por mes, la matriz de salida tendra un formato de [mes, costoTotal] donde mes es "MM/YYYY" y costoTotal es un numero, 3. el puntaje de un vehiculo, 4. la cantidad de mantenimientos realizados por mes, 5. la cantidad de mantenimientos denegados por mes, 6. los repuestos mas consumidos por mes, la matriz de salida tendra un formato de [mes, repuesto1, repuesto2, repuesto3, repuesto4, otros] donde mes es "MM/YYYY" y repuesto1, repuesto2, repuesto3, repuesto4, otros son objetos con la estructura de RepuestoConsumido',
+  })
+  async getKmRecorridoPorMes(
+    @Args('placa') placa: string,
+    @Args('fecha') fecha: string,
+  ): Promise<EstadisticWebDTO> {
+    const kmRecorrido = await this.mantenimientosService.getKmRecorridoPorMes(
+      placa,
+      new Date(fecha),
+    );
+
+    const costos = await this.mantenimientosService.getCostos(
+      placa,
+      new Date(fecha),
+    );
+
+    const puntaje = await this.carService.getPuntaje(placa);
+
+    const cantidadMatenimientos =
+      await this.mantenimientosService.getNumeroMantenimientos(
+        placa,
+        new Date(fecha),
+      );
+
+    const cantidadMatDenegados =
+      await this.mantenimientosService.getNumeroMantCance(
+        placa,
+        new Date(fecha),
+      );
+
+    const repuestosConsumidos =
+      await this.mantenimientosService.getRepuestosMasConsumidos(
+        placa,
+        new Date(fecha),
+      );
+
+    const operatividad = await this.mantenimientosService.getOperatividadPorMes(
+      placa,
+      new Date(fecha),
+    );
+    return {
+      kmRecorrido: kmRecorrido,
+      costos: costos,
+      puntaje: puntaje,
+      cantidadMatenimientos: cantidadMatenimientos,
+      cantidadMatDenegados: cantidadMatDenegados,
+      repuestosConsumidos: repuestosConsumidos,
+      operatividad: operatividad,
+    };
   }
 }
