@@ -31,7 +31,7 @@ export class AuthResolver {
     users: CreateUserDto[],
   ) {
     if (!users) {
-      return {};
+      return true;
     }
     await Promise.all(users.map((user) => this.usersService.create(user)));
     return true;
