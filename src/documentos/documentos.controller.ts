@@ -29,6 +29,8 @@ const allowedMimetypes = [
   'image/gif', // GIF images
   'image/heic', // HEIC images (iOS)
   'image/heif', // HEIF images (iOS)
+  'application/msword', // Word 2003 and earlier
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Word 2007 and later
 ];
 
 const fileFilter = (req, file, callback) => {
@@ -60,6 +62,7 @@ export class DocumentosController {
     FileFieldsInterceptor([{ name: 'files', maxCount: 20 }], {
       storage,
       fileFilter,
+      limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
     }),
   )
   async uploadFiles(
