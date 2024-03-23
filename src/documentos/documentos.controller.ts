@@ -107,7 +107,7 @@ export class DocumentosController {
         }
       });
     } catch (error) {
-      console.error('Error getting file:', error);
+      console.error('Error descargando archivos:', error);
       throw error;
     }
   }
