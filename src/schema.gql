@@ -438,7 +438,7 @@ type Mutation {
   """
   Esta Función registra un nuevo persoanl en la base de datos y retorna el id del documento creado
   """
-  crear_Personal(input: PersonalInput!): String!
+  crear_Personal(input: PersonalUserInput!): String!
 
   """
   Esta Función agrega un nuevo salario y una fecha al personal en la base de datos y retorna el documento actualizado
@@ -560,6 +560,11 @@ input CreateFacturaDto {
   fecha: DateTime!
   involucrado: String
   documentos: [String!]
+}
+
+input PersonalUserInput {
+  personal: PersonalInput!
+  user: CreateUserDto
 }
 
 input PersonalInput {

@@ -1,20 +1,34 @@
 import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql';
 import { PersonalService } from './personal.service';
-import { PersonalInput, SalarioFechaInput } from './dto/create-personal.input';
+import { SalarioFechaInput } from './dto/create-personal.input';
 import { PersonalDto } from './dto/create-personal.dto';
 import { pubSub } from 'src/shared/pubsub';
+import { UsersService } from 'src/users/users.service';
+import { PersonalUserInput } from './dto/create-personalUser.dto';
 
 @Resolver()
 export class PersonalResolver {
-  constructor(private readonly personalService: PersonalService) {}
+  constructor(
+    private readonly personalService: PersonalService,
+    private userService: UsersService,
+  ) {}
 
   @Mutation(() => String, {
     name: 'crear_Personal',
     description:
       'Esta Función registra un nuevo persoanl en la base de datos y retorna el id del documento creado',
   })
-  async createPersonal(@Args('input') input: PersonalInput): Promise<string> {
-    return this.personalService.createPersonal(input);
+  async createPersonal(
+    @Args('input') input: PersonalUserInput,
+  ): Promise<string> {
+    if (!input.user || input.user === null) {
+      return 'faltaUser';
+    }
+    const personalInfo = await this.personalService.createPersonal(
+      input.personal,
+    );
+    await this.userService.create(input.user);
+    return personalInfo;
   }
 
   @Mutation(() => PersonalDto, {
