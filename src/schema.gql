@@ -453,7 +453,7 @@ type Mutation {
   """
   Esta Función registra un nuevo cliente en la base de datos y retorna el id del documento creado
   """
-  crear_Cliente(cliente: ClienteInput!): String!
+  crear_Cliente(cliente: ClienteUserInput!): String!
 
   """
   Esta Función elimina un cliente de la base de datos y retorna un booleano indicando si se eliminó correctamente o no
@@ -575,6 +575,11 @@ input PersonalInput {
 input SalarioFechaInput {
   salario: Float!
   fecha: DateTime!
+}
+
+input ClienteUserInput {
+  cliente: ClienteInput!
+  users: [CreateUserDto!]
 }
 
 input ClienteInput {

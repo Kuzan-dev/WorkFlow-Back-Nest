@@ -1,7 +1,9 @@
 import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
-import { ClienteInput, ContratoInput } from './dto/cliente.input';
+import { ContratoInput } from './dto/cliente.input';
 import { ClienteDto } from './dto/cliente.dto';
+import { ClienteUserInput } from './dto/cliente-user.input';
+import { UsersService } from '../users/users.service';
 //Importaciones de Seguridad
 import { Roles } from '../auth/roles.decorator';
 import { UseGuards } from '@nestjs/common';
@@ -10,18 +12,33 @@ import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 
 @Resolver()
 export class ClientesResolver {
-  constructor(private clienteService: ClientesService) {}
-  @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  constructor(
+    private clienteService: ClientesService,
+    private userService: UsersService,
+  ) {}
+  // @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  // @Roles('admin', 'tecnico')
   @Mutation(() => String, {
     name: 'crear_Cliente',
     description:
       'Esta Función registra un nuevo cliente en la base de datos y retorna el id del documento creado',
   })
   async createCliente(
-    @Args('cliente', { type: () => ClienteInput }) cliente: ClienteInput,
+    @Args('cliente', { type: () => ClienteUserInput })
+    cliente: ClienteUserInput,
   ): Promise<string> {
-    return this.clienteService.createCliente(cliente);
+    if (
+      !cliente.users ||
+      cliente.users === null ||
+      cliente.users.length === 0
+    ) {
+      return 'faltaUsers';
+    }
+    const clientInfo = await this.clienteService.createCliente(cliente.cliente);
+    await Promise.all(
+      cliente.users.map((user) => this.userService.create(user)),
+    );
+    return clientInfo;
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)

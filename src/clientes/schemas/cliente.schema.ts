@@ -30,6 +30,7 @@ export class Cliente {
   @Prop({
     required: true,
     trim: true,
+    unique: true,
   })
   ruc: string;
 
