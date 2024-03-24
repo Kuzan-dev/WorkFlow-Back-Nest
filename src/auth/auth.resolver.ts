@@ -47,4 +47,35 @@ export class AuthResolver {
     await this.usersService.updatePassword(username, newPassword);
     return true;
   }
+
+  @Mutation(() => String, {
+    name: 'actualizar_datos_usuario_por_id',
+    description:
+      'Esta Función actualiza la información de un usuario en la base de datos',
+  })
+  async updateUser(
+    @Args('_id') _id: string,
+    @Args('newUsername', { nullable: true }) newUsername: string,
+    @Args('newPassword', { nullable: true }) newPassword: string,
+  ): Promise<string> {
+    try {
+      await this.usersService.updateDataUser(_id, newUsername, newPassword);
+      return 'operación exitosa';
+    } catch (error) {
+      return 'fallo la operación';
+    }
+  }
+
+  @Mutation(() => String, {
+    name: 'borrar_usuario_por_id',
+    description: 'Esta Función elimina un usuario de la base de datos',
+  })
+  async deleteUser(@Args('_id') _id: string): Promise<string> {
+    try {
+      await this.usersService.deleteUser(_id);
+      return 'Usuario eliminado correctamente';
+    } catch (error) {
+      return 'Fallo al eliminar user';
+    }
+  }
 }

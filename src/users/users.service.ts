@@ -37,4 +37,30 @@ export class UsersService {
     const users = await this.userModel.find({ clienteAsociado: clienteName });
     return users;
   }
+
+  async updateDataUser(
+    _id: string,
+    newUsername?: string,
+    newPassword?: string,
+  ): Promise<User> {
+    const user = await this.userModel.findById(_id).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (newUsername) {
+      user.username = newUsername;
+    }
+    if (newPassword) {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+    }
+    return user.save();
+  }
+  async deleteUser(_id: string): Promise<string> {
+    const result = await this.userModel.findByIdAndDelete(_id).exec();
+    if (!result) {
+      throw new Error('User not found');
+    }
+    return 'User deleted successfully';
+  }
 }
