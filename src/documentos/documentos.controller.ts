@@ -7,6 +7,7 @@ import {
   Get,
   Res,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
@@ -108,6 +109,35 @@ export class DocumentosController {
       });
     } catch (error) {
       console.error('Error descargando archivos:', error);
+      throw error;
+    }
+  }
+
+  @UseGuards(JwtAuthGuard, RolesRestGuard)
+  @Roles('admin', 'tecnico')
+  @Delete('delete/*')
+  async deleteFile(@Res() res: Response, @Param() params: any) {
+    try {
+      const filePath = params[0]; // La ruta completa del archivo se almacena en params[0]
+      const path = join(process.cwd(), filePath);
+      fs.unlink(path, (err) => {
+        if (err) {
+          console.error('Error al eliminar el archivo', err);
+          res.status(500).send('Error al eliminar el archivo');
+        } else {
+          res.send('Archivo eliminado con éxito');
+        }
+      });
+      const parts = filePath.split('/');
+      const query1 = parts[1];
+      const query2 = parts[2];
+      await this.documentosService.deleteFileReference(
+        query1,
+        query2,
+        filePath,
+      );
+    } catch (error) {
+      console.error('Error eliminando archivos:', error);
       throw error;
     }
   }

@@ -72,4 +72,38 @@ export class DocumentosService {
 
     return paths;
   }
+
+  async deleteFileReference(
+    query1: string,
+    query2: string,
+    filePath: string,
+  ): Promise<void> {
+    let model: Model<any>;
+    switch (query1) {
+      case 'clientes':
+        model = this.clienteModel;
+        break;
+      case 'facturas':
+        model = this.facturaModel;
+        break;
+      case 'personals':
+        model = this.personalModel;
+        break;
+      case 'mantenimientos':
+        model = this.mantenimientoModel;
+        break;
+      case 'cars':
+        model = this.carModel;
+        break;
+      default:
+        throw new Error('Modelo no encontrado.');
+    }
+
+    const documento = await model.findById(query2);
+    if (!documento) {
+      throw new Error('Documento no encontrado.');
+    }
+
+    await model.updateOne({ _id: query2 }, { $pull: { documentos: filePath } });
+  }
 }
