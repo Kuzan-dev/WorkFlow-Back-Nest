@@ -3,11 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ClienteDto, ContratoDto } from './dto/cliente.dto';
 import { Cliente, ClienteDocument } from './schemas/cliente.schema';
+import { UsersService } from 'src/users/users.service';
+import { UserOutput } from 'src/users/dto/create-user.dto';
 
 @Injectable()
 export class ClientesService {
   constructor(
     @InjectModel(Cliente.name) private clienteModel: Model<ClienteDocument>,
+    private usersService: UsersService,
   ) {}
 
   async createCliente(cliente: ClienteDto): Promise<string> {
@@ -37,12 +40,24 @@ export class ClientesService {
 
   async searchClientes(nombreCliente: string): Promise<Cliente[]> {
     // eslint-disable-next-line prettier/prettier
-    if (nombreCliente === "") {
+    if (nombreCliente === '') {
       return this.clienteModel.find().exec();
     } else {
       return this.clienteModel
         .find({ nombreCliente: new RegExp(nombreCliente, 'i') })
         .exec();
     }
+  }
+
+  async getUsersByClienteId(clienteId: string): Promise<UserOutput[]> {
+    const cliente = await this.clienteModel.findById(clienteId);
+    if (!cliente) {
+      throw new Error('Cliente no encontrado');
+    }
+
+    const users = await this.usersService.getUsersByClienteName(
+      cliente.nombreCliente,
+    );
+    return users;
   }
 }

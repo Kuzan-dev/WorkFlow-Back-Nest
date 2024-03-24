@@ -7,6 +7,8 @@ export type UserDocument = User & Document;
   timestamps: true,
 })
 export class User {
+  _id: string;
+
   @Prop({
     required: true,
     trim: true,

@@ -6,9 +6,10 @@ import { ClienteUserInput } from './dto/cliente-user.input';
 import { UsersService } from '../users/users.service';
 //Importaciones de Seguridad
 import { Roles } from '../auth/roles.decorator';
-import { UseGuards } from '@nestjs/common';
+import { NotFoundException, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+import { UserOutput } from 'src/users/dto/create-user.dto';
 
 @Resolver()
 export class ClientesResolver {
@@ -16,8 +17,8 @@ export class ClientesResolver {
     private clienteService: ClientesService,
     private userService: UsersService,
   ) {}
-  // @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  // @Roles('admin', 'tecnico')
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => String, {
     name: 'crear_Cliente',
     description:
@@ -99,5 +100,22 @@ export class ClientesResolver {
     @Args('nombreCliente') nombreCliente: string,
   ): Promise<ClienteDto[]> {
     return this.clienteService.searchClientes(nombreCliente);
+  }
+
+  @Query(() => [UserOutput], {
+    name: 'obtener_Usuarios_por_IDcliente',
+    description:
+      'Esta Función retorna la información de los usuarios asociados a un cliente',
+  })
+  async getUsersByClienteId(
+    @Args('clienteId') clienteId: string,
+  ): Promise<UserOutput[]> {
+    try {
+      return this.clienteService.getUsersByClienteId(clienteId);
+    } catch (error) {
+      throw new NotFoundException(
+        `El cliente con el ID ${clienteId} no existe`,
+      );
+    }
   }
 }

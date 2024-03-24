@@ -6,10 +6,13 @@ import {
   MaxLength,
   IsOptional,
 } from 'class-validator';
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, ObjectType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateUserDto {
+  @Field({ nullable: true })
+  _id: string;
+
   @Field()
   @IsNotEmpty()
   @IsString()
@@ -40,5 +43,26 @@ export class CreateUserDto {
   @Field()
   @IsNotEmpty()
   @IsString()
+  nivelUser: string;
+}
+
+@ObjectType()
+export class UserOutput {
+  @Field()
+  _id: string;
+
+  @Field()
+  name: string;
+
+  @Field()
+  username: string;
+
+  @Field()
+  email: string;
+
+  @Field({ nullable: true })
+  clienteAsociado?: string;
+
+  @Field()
   nivelUser: string;
 }

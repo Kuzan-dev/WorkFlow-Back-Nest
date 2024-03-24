@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UserOutput {
+  _id: String!
+  name: String!
+  username: String!
+  email: String!
+  clienteAsociado: String
+  nivelUser: String!
+}
+
 type RepuestoConsumido {
   producto: String
   costo: Float
@@ -380,6 +389,11 @@ type Query {
   """
   buscar_Clientes(nombreCliente: String!): [ClienteDto!]!
 
+  """
+  Esta Función retorna la información de los usuarios asociados a un cliente
+  """
+  obtener_Usuarios_por_IDcliente(clienteId: String!): [UserOutput!]!
+
   """Obtiene el resumen mensual de gastos"""
   grafica_gastos_generales(inputDate: String!): [MonthlySummaryDto!]!
 
@@ -467,6 +481,7 @@ type Mutation {
 }
 
 input CreateUserDto {
+  _id: String
   name: String!
   username: String!
   email: String!

@@ -32,4 +32,9 @@ export class UsersService {
     user.password = hashedPassword;
     return user.save();
   }
+
+  async getUsersByClienteName(clienteName: string): Promise<User[]> {
+    const users = await this.userModel.find({ clienteAsociado: clienteName });
+    return users;
+  }
 }
