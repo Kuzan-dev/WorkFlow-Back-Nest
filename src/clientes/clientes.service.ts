@@ -5,6 +5,7 @@ import { ClienteDto, ContratoDto } from './dto/cliente.dto';
 import { Cliente, ClienteDocument } from './schemas/cliente.schema';
 import { UsersService } from 'src/users/users.service';
 import { UserOutput } from 'src/users/dto/create-user.dto';
+import { omit } from 'lodash';
 
 @Injectable()
 export class ClientesService {
@@ -22,6 +23,16 @@ export class ClientesService {
   async deleteCliente(id: string): Promise<boolean> {
     const result = await this.clienteModel.findByIdAndDelete(id).exec();
     return result != null;
+  }
+  async updateCliente(
+    id: string,
+    cliente: ClienteDto,
+  ): Promise<ClienteDto | null> {
+    const clienteToUpdate = omit(cliente, 'contratos');
+    const updatedCliente = await this.clienteModel
+      .findByIdAndUpdate(id, clienteToUpdate, { new: true })
+      .exec();
+    return updatedCliente;
   }
 
   async getClienteById(id: string): Promise<ClienteDto> {

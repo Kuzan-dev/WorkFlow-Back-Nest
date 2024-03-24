@@ -39,7 +39,7 @@ export class ClienteInput {
   rubro: string;
 
   @Field(() => [ContratoInput], { nullable: 'itemsAndList' })
-  contratos: ContratoInput[];
+  contratos?: ContratoInput[];
 
   @Field(() => [String], { nullable: 'itemsAndList' })
   documentos: Array<string>;

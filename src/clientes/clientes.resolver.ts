@@ -2,6 +2,7 @@ import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
 import { ContratoInput } from './dto/cliente.input';
 import { ClienteDto } from './dto/cliente.dto';
+import { ClienteInput } from './dto/cliente.input';
 import { ClienteUserInput } from './dto/cliente-user.input';
 import { UsersService } from '../users/users.service';
 //Importaciones de Seguridad
@@ -10,6 +11,7 @@ import { NotFoundException, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 import { UserOutput } from 'src/users/dto/create-user.dto';
+import { omit } from 'lodash';
 
 @Resolver()
 export class ClientesResolver {
@@ -40,6 +42,30 @@ export class ClientesResolver {
       cliente.users.map((user) => this.userService.create(user)),
     );
     return clientInfo;
+  }
+
+  @Mutation(() => String, {
+    name: 'actualizar_Cliente',
+    description:
+      'Esta Función actualizar un cliente en la base de datos por su id',
+  })
+  async actualizarCliente(
+    @Args('cliente', { type: () => ClienteInput })
+    cliente: ClienteInput,
+    @Args('id') id: string,
+  ): Promise<string> {
+    if (!cliente || cliente === null) {
+      return 'no hay datos';
+    }
+    const clientInfo = omit(cliente, 'contratos', '_id');
+    const updatedCliente = await this.clienteService.updateCliente(
+      id,
+      clientInfo,
+    );
+    if (!updatedCliente) {
+      return 'No se encontró ningún cliente con el id proporcionado';
+    }
+    return 'operación exitosa';
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)

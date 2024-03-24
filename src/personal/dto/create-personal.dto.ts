@@ -11,7 +11,7 @@ export class SalarioFechaDto {
 
 @ObjectType()
 export class PersonalDto {
-  @Field()
+  @Field({ nullable: true })
   _id: string;
 
   @Field()

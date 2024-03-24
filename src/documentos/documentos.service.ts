@@ -24,6 +24,9 @@ export class DocumentosService {
     query1: string,
     query2: string,
   ): Promise<string[]> {
+    if (query2 === undefined) {
+      throw new Error('Se requiere un ID de documento.');
+    }
     const paths = files.files.map((file) =>
       join('uploads', query1, query2, file.originalname),
     );
