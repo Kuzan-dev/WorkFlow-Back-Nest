@@ -79,12 +79,22 @@ export class PersonalService {
 
   async searchPersonal(nombre: string): Promise<Personal[]> {
     // eslint-disable-next-line prettier/prettier
-    if (nombre === "") {
+    if (nombre === '') {
       return this.personalModel.find().exec();
     } else {
       return this.personalModel
         .find({ nombre: new RegExp(nombre, 'i') })
         .exec();
     }
+  }
+
+  // Función para actualizar uno o mas parametros de personal
+  async updateInfoPersonal(
+    id: string,
+    updatePersonalDto: Partial<Personal>,
+  ): Promise<Personal> {
+    return this.personalModel.findByIdAndUpdate(id, updatePersonalDto, {
+      new: true,
+    });
   }
 }

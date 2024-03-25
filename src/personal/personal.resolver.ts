@@ -5,6 +5,7 @@ import { PersonalDto } from './dto/create-personal.dto';
 import { pubSub } from 'src/shared/pubsub';
 import { UsersService } from 'src/users/users.service';
 import { PersonalUserInput } from './dto/create-personalUser.dto';
+import { UpdatePersonalInput } from './dto/update-personal.dto';
 
 @Resolver()
 export class PersonalResolver {
@@ -82,5 +83,24 @@ export class PersonalResolver {
   })
   async searchPersonal(@Args('nombre') nombre: string): Promise<PersonalDto[]> {
     return this.personalService.searchPersonal(nombre);
+  }
+
+  @Mutation(() => Boolean, {
+    name: 'actualizar_Info_Personal',
+    description:
+      'Esta función actualiza uno o mas parametros de un personal en la base de datos',
+  })
+  async updateInfoPersonal(
+    @Args('id') id: string,
+    @Args('input', { type: () => UpdatePersonalInput })
+    input: Partial<UpdatePersonalInput>,
+    @Args('salarioFecha', { type: () => SalarioFechaInput, nullable: true })
+    salarioFecha?: SalarioFechaInput,
+  ): Promise<boolean> {
+    await this.personalService.updateInfoPersonal(id, input);
+    if (salarioFecha) {
+      await this.personalService.addSalarioFecha(id, salarioFecha);
+    }
+    return true;
   }
 }

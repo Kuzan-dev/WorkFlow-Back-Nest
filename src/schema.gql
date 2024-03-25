@@ -473,6 +473,11 @@ type Mutation {
   borrar_Personal(id: String!): Boolean!
 
   """
+  Esta función actualiza uno o mas parametros de un personal en la base de datos
+  """
+  actualizar_Info_Personal(id: String!, input: UpdatePersonalInput!, salarioFecha: SalarioFechaInput): Boolean!
+
+  """
   Esta Función registra un nuevo cliente en la base de datos y retorna el id del documento creado
   """
   crear_Cliente(cliente: ClienteUserInput!): String!
@@ -606,6 +611,13 @@ input PersonalInput {
 input SalarioFechaInput {
   salario: Float!
   fecha: DateTime!
+}
+
+input UpdatePersonalInput {
+  nombre: String
+  numero: Int
+  email: String
+  fechaIngreso: DateTime
 }
 
 input ClienteUserInput {
