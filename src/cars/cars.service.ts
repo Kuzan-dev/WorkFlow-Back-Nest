@@ -69,4 +69,10 @@ export class CarsService {
     const car = await this.carModel.findOne({ placa }).exec();
     return car.puntaje;
   }
+
+  //Función para encontrar las placas de los carros de un cliente
+  async findPlatesByClient(clientName: string): Promise<string[]> {
+    const cars = await this.carModel.find({ cliente: clientName }).exec();
+    return cars.map((car) => car.placa);
+  }
 }

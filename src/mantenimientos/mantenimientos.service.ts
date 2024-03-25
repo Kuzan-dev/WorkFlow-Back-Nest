@@ -947,4 +947,19 @@ export class MantenimientosService {
 
     return operatividadPorMes;
   }
+
+  // Mantenimientos por placas(matriz) y rango de fechas
+  async findByPlatesAndDateRange(
+    placas: string[],
+    fechaDesde: Date,
+    fechaHasta: Date,
+  ): Promise<Mantenimiento[]> {
+    return this.mantenimientoModel
+      .find({
+        placa: { $in: placas },
+        fechaInicio: { $gte: fechaDesde, $lte: fechaHasta },
+        estado: 'completado',
+      })
+      .exec();
+  }
 }

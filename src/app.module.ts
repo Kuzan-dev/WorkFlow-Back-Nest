@@ -21,6 +21,7 @@ import { ClientesModule } from './clientes/clientes.module';
 import { DocumentosModule } from './documentos/documentos.module';
 import { EstadisticasModule } from './estadisticas/estadisticas.module';
 import { TasksModule } from './tasks/tasks.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TasksModule } from './tasks/tasks.module';
     DocumentosModule,
     EstadisticasModule,
     TasksModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

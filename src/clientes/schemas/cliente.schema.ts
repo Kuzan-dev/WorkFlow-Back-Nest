@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 @Schema()
 class Contrato {
-  @Prop()
+  @Prop({ unique: true })
   numeroContrato: string;
 
   @Prop()
