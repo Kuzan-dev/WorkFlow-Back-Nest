@@ -226,6 +226,25 @@ type EstadisticWebDTO {
   operatividad: [OperatividadPorMes!]!
 }
 
+type HistorialCarData {
+  placa: String!
+  fechaSoat: DateTime!
+  ultimaRevision: DateTime
+  vigenciaContrato: DateTime!
+  kmActual: Float!
+  operatividad: Float!
+}
+
+type MantenimientoTableType {
+  placa: String!
+  cliente: String!
+  fechaInicio: DateTime!
+  fechaFin: DateTime
+  tipo: String!
+  repuestoUsados: Float!
+  costoRepuestos: Float!
+}
+
 type GetPlacasDto {
   _id: String!
   placa: String!
@@ -345,6 +364,16 @@ type Query {
   Esta función retorna: 1. el kilometraje recorrido por mes de un vehiculo, la matriz de salida tendra un formato de [mes, kmRecorridoTotal] donde mes es "MM/YYYY" y kmRecorridoTotal es un numero, 2. los costos de mantenimiento por mes, la matriz de salida tendra un formato de [mes, costoTotal] donde mes es "MM/YYYY" y costoTotal es un numero, 3. el puntaje de un vehiculo, 4. la cantidad de mantenimientos realizados por mes, 5. la cantidad de mantenimientos denegados por mes, 6. los repuestos mas consumidos por mes, la matriz de salida tendra un formato de [mes, repuesto1, repuesto2, repuesto3, repuesto4, otros] donde mes es "MM/YYYY" y repuesto1, repuesto2, repuesto3, repuesto4, otros son objetos con la estructura de RepuestoConsumido
   """
   estadisticas_web(placa: String!, fecha: String!): EstadisticWebDTO!
+
+  """
+  Esta función retorna la información de un auto incluyendo su operatividad porcentual por medio de su placa
+  """
+  Historial_Car_Admin(searchParam: String!): HistorialCarData!
+
+  """
+  Esta función retorna los mantenimientos que cumplan con los criterios de busqueda
+  """
+  table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, tipo: String, placa: String): [MantenimientoTableType!]!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)

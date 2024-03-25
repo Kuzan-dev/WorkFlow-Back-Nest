@@ -75,4 +75,16 @@ export class CarsService {
     const cars = await this.carModel.find({ cliente: clientName }).exec();
     return cars.map((car) => car.placa);
   }
+  //Función de busqueda de una placa en especifico usando SearchParams y devuelve el primer resultado
+  async findFirstByPlaca(placa: string): Promise<Car> {
+    return this.carModel
+      .findOne({ placa: { $regex: new RegExp(placa, 'i') } })
+      .exec();
+  }
+
+  async getCliente(placa: string): Promise<string> {
+    const car = await this.carModel.findOne({ placa }).exec();
+    console.log('Car:', car);
+    return car ? car.cliente : null;
+  }
 }

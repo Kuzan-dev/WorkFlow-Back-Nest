@@ -24,6 +24,8 @@ import { MesRepuestos } from './dto/repuestos.mant-busqueda.dto';
 import { CreateRepuestoAjusteDto } from './dto/create-repuesto-ajuste.dto';
 import { EstadisticWebDTO } from './dto/estadistic-web.dto';
 import { CarsService } from 'src/cars/cars.service';
+import { HistorialCarData } from './dto/historial-admin.dto';
+import { MantenimientoTableType } from './dto/historial-admin-table.dto';
 
 @Resolver()
 export class MantenimientosResolver {
@@ -372,5 +374,37 @@ export class MantenimientosResolver {
       repuestosConsumidos: repuestosConsumidos,
       operatividad: operatividad,
     };
+  }
+
+  @Query(() => HistorialCarData, {
+    name: 'Historial_Car_Admin',
+    description:
+      'Esta función retorna la información de un auto incluyendo su operatividad porcentual por medio de su placa',
+  })
+  async getCarData(
+    @Args('searchParam', { type: () => String }) searchParam: string,
+  ): Promise<HistorialCarData> {
+    return this.mantenimientosService.getCarData(searchParam);
+  }
+
+  @Query(() => [MantenimientoTableType], {
+    name: 'table_historial_Mantenimientos_admin',
+    description:
+      'Esta función retorna los mantenimientos que cumplan con los criterios de busqueda',
+  })
+  async searchMantenimientos(
+    @Args('fechaInicio', { type: () => Date, nullable: true })
+    fechaInicio: Date,
+    @Args('fechaTermino', { type: () => Date, nullable: true })
+    fechaTermino: Date,
+    @Args('tipo', { type: () => String, nullable: true }) tipo: string,
+    @Args('placa', { type: () => String, nullable: true }) placa: string,
+  ) {
+    return this.mantenimientosService.searchMantenimientos(
+      fechaInicio,
+      fechaTermino,
+      tipo,
+      placa,
+    );
   }
 }

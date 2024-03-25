@@ -962,4 +962,125 @@ export class MantenimientosService {
       })
       .exec();
   }
+
+  //Operatividad total por vehículo
+  async getOperatividadPorcentual(placa: string): Promise<number> {
+    const mantenimientos = await this.mantenimientoModel.find({
+      placa,
+      estado: 'completado',
+    });
+    if (mantenimientos.length === 0) {
+      throw new Error(
+        'No se encontraron mantenimientos completados para la placa especificada',
+      );
+    }
+
+    const horasMuertas = mantenimientos.reduce((total, mantenimiento) => {
+      const inicio = new Date(mantenimiento.fechaInicio);
+      const fin = new Date(mantenimiento.fechaFin);
+      const horas = (fin.getTime() - inicio.getTime()) / 1000 / 60 / 60;
+      return total + horas;
+    }, 0);
+
+    const primerMantenimiento = mantenimientos[0];
+    const ahora = new Date();
+    const horasTotales =
+      (ahora.getTime() - new Date(primerMantenimiento.fechaInicio).getTime()) /
+      1000 /
+      60 /
+      60;
+
+    const operatividad = horasTotales - horasMuertas;
+    const operatividadPorcentual = operatividad / horasTotales;
+
+    return operatividadPorcentual;
+  }
+
+  async getCarData(searchParam: string): Promise<any> {
+    const car = await this.carsService.findFirstByPlaca(searchParam);
+    if (!car) {
+      throw new Error('Car not found');
+    }
+
+    const fechaSoat = car.fechaSoat;
+    const vigenciaContrato = car.vigenciaContrato;
+    const kmActual = car.kmActual;
+
+    const mantenimientos = await this.mantenimientoModel
+      .find({
+        placa: car.placa,
+        estado: 'completado',
+      })
+      .sort({ fecha: -1 });
+
+    const ultimaRevision =
+      mantenimientos.length > 0 ? mantenimientos[0].fecha : null;
+
+    const operatividad = await this.getOperatividadPorcentual(car.placa);
+
+    return {
+      placa: car.placa,
+      fechaSoat,
+      ultimaRevision,
+      vigenciaContrato,
+      kmActual,
+      operatividad,
+    };
+  }
+
+  async searchMantenimientos(
+    fechaInicio?: Date,
+    fechaTermino?: Date,
+    tipo?: string,
+    placa?: string,
+  ) {
+    const query = {};
+
+    // Agrega esta línea para buscar solo mantenimientos completados
+    query['estado'] = 'completado';
+
+    if (fechaInicio) {
+      query['fechaInicio'] = { $gte: fechaInicio };
+    }
+
+    if (fechaTermino) {
+      query['$or'] = [
+        { fecha: { $lte: fechaTermino } },
+        { fechaFin: { $exists: false } },
+      ];
+    }
+    if (tipo) {
+      query['tipo'] = tipo;
+    }
+
+    if (placa) {
+      query['placa'] = { $regex: new RegExp(placa, 'i') };
+    }
+    console.log('Query:', query);
+
+    const mantenimientos = await this.mantenimientoModel.find(query).exec();
+
+    console.log('Mantenimientos encontrados:', mantenimientos);
+
+    return Promise.all(
+      mantenimientos.map(async (mantenimiento) => {
+        const repuestoUsados = mantenimiento.repuestosAjuste.length;
+        const costoRepuestos = mantenimiento.repuestosAjuste.reduce(
+          (sum, repuesto) => sum + repuesto.cantidad * repuesto.precio,
+          0,
+        );
+        const cliente = await this.carsService.getCliente(mantenimiento.placa);
+
+        return {
+          placa: mantenimiento.placa,
+          cliente,
+          fechaInicio: mantenimiento.fechaInicio,
+          fechaFin: mantenimiento.fechaFin || null,
+          tipo: mantenimiento.tipo,
+          repuestoUsados,
+          costoRepuestos,
+        };
+      }),
+    );
+  }
 }
