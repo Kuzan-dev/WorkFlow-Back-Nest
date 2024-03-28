@@ -57,7 +57,8 @@ export class RepuestosResolver {
   })
   async searchRepuesto(
     @Args('producto') producto: string,
+    @Args('page') page: number,
   ): Promise<RepuestoSearchType[]> {
-    return this.repuestoService.searchRepuesto(producto);
+    return this.repuestoService.searchRepuesto(producto, page);
   }
 }

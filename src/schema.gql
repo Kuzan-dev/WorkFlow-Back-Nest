@@ -392,7 +392,7 @@ type Query {
   obtener_todos_los_repuestos: [RepuestoType!]!
 
   """Esta Función r"""
-  buscar_repuestos(producto: String!): [RepuestoType!]!
+  buscar_repuestos(producto: String!, page: Float!): [RepuestoType!]!
 
   """
   Esta Función retorna la información de todo el personal en la base de datos
@@ -403,7 +403,7 @@ type Query {
   obtener_Personal_Por_Id(id: String!): PersonalDto!
 
   """Esta Función retorna la información del personal en base a su nombre"""
-  buscar_Pesonal(nombre: String!): [PersonalDto!]!
+  buscar_Pesonal(nombre: String!, page: Float!): [PersonalDto!]!
 
   """Esta Función retorna la información de un cliente en base a su ID"""
   obtener_Cliente_ID(id: String!): ClienteDto!
@@ -416,7 +416,7 @@ type Query {
   """
   Esta Función retorna la información de los clientes en base a su nombre
   """
-  buscar_Clientes(nombreCliente: String!): [ClienteDto!]!
+  buscar_Clientes(nombreCliente: String!, page: Float!): [ClienteDto!]!
 
   """
   Esta Función retorna la información de los usuarios asociados a un cliente

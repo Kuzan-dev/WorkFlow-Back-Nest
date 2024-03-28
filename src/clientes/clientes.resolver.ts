@@ -124,8 +124,9 @@ export class ClientesResolver {
   })
   async searchClientes(
     @Args('nombreCliente') nombreCliente: string,
+    @Args('page') page: number,
   ): Promise<ClienteDto[]> {
-    return this.clienteService.searchClientes(nombreCliente);
+    return this.clienteService.searchClientes(nombreCliente, page);
   }
 
   @Query(() => [UserOutput], {

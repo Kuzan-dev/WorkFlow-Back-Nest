@@ -49,17 +49,23 @@ export class ClientesService {
     return this.clienteModel.find().exec();
   }
 
-  async searchClientes(nombreCliente: string): Promise<Cliente[]> {
-    // eslint-disable-next-line prettier/prettier
+  async searchClientes(
+    nombreCliente: string,
+    page?: number,
+  ): Promise<Cliente[]> {
+    const limit = 10;
+    const skip = page > 0 ? (page - 1) * limit : 0;
+
     if (nombreCliente === '') {
-      return this.clienteModel.find().exec();
+      return this.clienteModel.find().skip(skip).limit(limit).exec();
     } else {
       return this.clienteModel
         .find({ nombreCliente: new RegExp(nombreCliente, 'i') })
+        .skip(skip)
+        .limit(limit)
         .exec();
     }
   }
-
   async getUsersByClienteId(clienteId: string): Promise<UserOutput[]> {
     const cliente = await this.clienteModel.findById(clienteId);
     if (!cliente) {

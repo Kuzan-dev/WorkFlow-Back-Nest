@@ -180,12 +180,17 @@ export class RepuestosService {
     }
   }
 
-  async searchRepuesto(producto: string): Promise<Repuesto[]> {
+  async searchRepuesto(producto: string, page?: number): Promise<Repuesto[]> {
+    const limit = 7;
+    const skip = page > 0 ? (page - 1) * limit : 0;
+
     if (producto === '') {
-      return this.respuestoModel.find().exec();
+      return this.respuestoModel.find().skip(skip).limit(limit).exec();
     } else {
       return this.respuestoModel
         .find({ producto: new RegExp(producto, 'i') })
+        .skip(skip)
+        .limit(limit)
         .exec();
     }
   }

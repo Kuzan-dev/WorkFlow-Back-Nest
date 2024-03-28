@@ -77,13 +77,17 @@ export class PersonalService {
     return totalSalary || 0;
   }
 
-  async searchPersonal(nombre: string): Promise<Personal[]> {
-    // eslint-disable-next-line prettier/prettier
+  async searchPersonal(nombre: string, page?: number): Promise<Personal[]> {
+    const limit = 10;
+    const skip = page > 0 ? (page - 1) * limit : 0;
+
     if (nombre === '') {
-      return this.personalModel.find().exec();
+      return this.personalModel.find().skip(skip).limit(limit).exec();
     } else {
       return this.personalModel
         .find({ nombre: new RegExp(nombre, 'i') })
+        .skip(skip)
+        .limit(limit)
         .exec();
     }
   }

@@ -81,8 +81,11 @@ export class PersonalResolver {
     description:
       'Esta Función retorna la información del personal en base a su nombre',
   })
-  async searchPersonal(@Args('nombre') nombre: string): Promise<PersonalDto[]> {
-    return this.personalService.searchPersonal(nombre);
+  async searchPersonal(
+    @Args('nombre') nombre: string,
+    @Args('page') page: number,
+  ): Promise<PersonalDto[]> {
+    return this.personalService.searchPersonal(nombre, page);
   }
 
   @Mutation(() => Boolean, {
