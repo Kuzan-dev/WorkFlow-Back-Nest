@@ -1029,8 +1029,8 @@ export class MantenimientosService {
   }
 
   async searchMantenimientos(
-    fechaInicio?: Date,
-    fechaTermino?: Date,
+    fechaInicio?: Date | null,
+    fechaTermino?: Date | null,
     tipo?: string,
     placa?: string,
   ) {
@@ -1039,17 +1039,17 @@ export class MantenimientosService {
     // Agrega esta línea para buscar solo mantenimientos completados
     query['estado'] = 'completado';
 
-    if (fechaInicio) {
+    if (fechaInicio != null) {
       query['fechaInicio'] = { $gte: fechaInicio };
     }
 
-    if (fechaTermino) {
+    if (fechaTermino != null) {
       query['$or'] = [
         { fecha: { $lte: fechaTermino } },
         { fechaFin: { $exists: false } },
       ];
     }
-    if (tipo) {
+    if (tipo && tipo !== '') {
       query['tipo'] = tipo;
     }
 
