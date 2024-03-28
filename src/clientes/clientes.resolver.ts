@@ -144,4 +144,23 @@ export class ClientesResolver {
       );
     }
   }
+
+  @Mutation(() => Boolean, {
+    name: 'eliminar_Contrato',
+    description:
+      'Esta Función elimina un contrato de un cliente en la base de datos y retorna el documento actualizado',
+  })
+  async removeContrato(
+    @Args('clienteId') clienteId: string,
+    @Args('numeroContrato') numeroContrato: string,
+  ): Promise<boolean> {
+    try {
+      await this.clienteService.removeContrato(clienteId, numeroContrato);
+      return true;
+    } catch (error) {
+      throw new NotFoundException(
+        `No se pudo eliminar el contrato del cliente con el ID ${clienteId}`,
+      );
+    }
+  }
 }

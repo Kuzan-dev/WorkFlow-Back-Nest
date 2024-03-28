@@ -71,4 +71,22 @@ export class ClientesService {
     );
     return users;
   }
+
+  async removeContrato(
+    clienteId: string,
+    numeroContrato: string,
+  ): Promise<Cliente> {
+    const updatedCliente = await this.clienteModel
+      .updateOne(
+        { _id: clienteId },
+        { $pull: { contratos: { numeroContrato: numeroContrato } } },
+      )
+      .exec();
+
+    if (!updatedCliente.modifiedCount) {
+      throw new Error('No se pudo eliminar el contrato');
+    }
+
+    return this.clienteModel.findById(clienteId).exec();
+  }
 }
