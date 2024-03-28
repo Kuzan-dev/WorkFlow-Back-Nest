@@ -1033,8 +1033,10 @@ export class MantenimientosService {
     fechaTermino?: Date | null,
     tipo?: string,
     placa?: string,
+    page?: number,
   ) {
     const query = {};
+    const limit = 7;
 
     // Agrega esta línea para buscar solo mantenimientos completados
     query['estado'] = 'completado';
@@ -1058,7 +1060,13 @@ export class MantenimientosService {
     }
     console.log('Query:', query);
 
-    const mantenimientos = await this.mantenimientoModel.find(query).exec();
+    const skip = page > 0 ? (page - 1) * limit : 0;
+
+    const mantenimientos = await this.mantenimientoModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .exec();
 
     console.log('Mantenimientos encontrados:', mantenimientos);
 

@@ -1,4 +1,11 @@
-import { Resolver, Args, Mutation, Query, Subscription } from '@nestjs/graphql';
+import {
+  Resolver,
+  Args,
+  Mutation,
+  Query,
+  Subscription,
+  Int,
+} from '@nestjs/graphql';
 import { MantenimientosService } from './mantenimientos.service';
 import { PrograMantenimientoDto } from './dto/create-mantenimiento.dto';
 import { UpdateMantenimientoDto } from './dto/update-mantenimiento.dto';
@@ -399,12 +406,14 @@ export class MantenimientosResolver {
     fechaTermino: Date,
     @Args('tipo', { type: () => String, nullable: true }) tipo: string,
     @Args('placa', { type: () => String, nullable: true }) placa: string,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
   ) {
     return this.mantenimientosService.searchMantenimientos(
       fechaInicio,
       fechaTermino,
       tipo,
       placa,
+      page,
     );
   }
 }

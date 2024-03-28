@@ -373,7 +373,7 @@ type Query {
   """
   Esta función retorna los mantenimientos que cumplan con los criterios de busqueda
   """
-  table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, tipo: String, placa: String): [MantenimientoTableType!]!
+  table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, tipo: String, placa: String, page: Int): [MantenimientoTableType!]!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)
