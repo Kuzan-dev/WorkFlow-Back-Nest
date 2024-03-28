@@ -53,7 +53,8 @@ export class RepuestosResolver {
 
   @Query(() => [RepuestoType], {
     name: 'buscar_repuestos',
-    description: 'Esta Función r',
+    description:
+      'Esta Función retorna la información de los repuestos que coincidan con el producto',
   })
   async searchRepuesto(
     @Args('producto') producto: string,

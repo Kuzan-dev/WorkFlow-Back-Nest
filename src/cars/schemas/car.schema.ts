@@ -9,6 +9,7 @@ export class Car {
   @Prop({
     required: true,
     trim: true,
+    unique: true,
   })
   placa: string;
 
