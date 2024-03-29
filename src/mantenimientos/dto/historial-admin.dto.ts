@@ -5,6 +5,9 @@ export class HistorialCarData {
   @Field(() => String, { nullable: true })
   placa: string;
 
+  @Field(() => String, { nullable: true })
+  cliente: string;
+
   @Field(() => Date, { nullable: true })
   fechaSoat: Date;
 

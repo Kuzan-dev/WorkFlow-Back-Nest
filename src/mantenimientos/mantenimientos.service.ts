@@ -980,6 +980,7 @@ export class MantenimientosService {
     const fechaSoat = car.fechaSoat;
     const vigenciaContrato = car.vigenciaContrato;
     const kmActual = car.kmActual;
+    const cliente = await this.carsService.getCliente(car.placa);
 
     const mantenimientos = await this.mantenimientoModel
       .find({
@@ -996,6 +997,7 @@ export class MantenimientosService {
     return {
       placa: car.placa,
       fechaSoat,
+      cliente,
       ultimaRevision,
       vigenciaContrato,
       kmActual,
