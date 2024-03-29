@@ -77,9 +77,13 @@ export class CarsService {
   }
   //Función de busqueda de una placa en especifico usando SearchParams y devuelve el primer resultado
   async findFirstByPlaca(placa: string): Promise<Car> {
-    return this.carModel
-      .findOne({ placa: { $regex: new RegExp(placa, 'i') } })
-      .exec();
+    if (placa === '') {
+      return this.carModel.findOne().exec();
+    } else {
+      return this.carModel
+        .findOne({ placa: { $regex: new RegExp(placa, 'i') } })
+        .exec();
+    }
   }
 
   async getCliente(placa: string): Promise<string> {
