@@ -408,14 +408,12 @@ export class MantenimientosResolver {
     fechaInicio: Date,
     @Args('fechaTermino', { type: () => Date, nullable: true })
     fechaTermino: Date,
-    @Args('tipo', { type: () => String, nullable: true }) tipo: string,
     @Args('placa', { type: () => String, nullable: true }) placa: string,
     @Args('page', { type: () => Int, nullable: true }) page: number,
   ): Promise<MantenimientoTableType> {
     return this.mantenimientosService.searchMantenimientos(
       fechaInicio,
       fechaTermino,
-      tipo,
       placa,
       page,
     );

@@ -235,7 +235,7 @@ type HistorialCarData {
   operatividad: Float!
 }
 
-type MantenimientoTableType {
+type Mantenimientos {
   placa: String!
   cliente: String!
   fechaInicio: DateTime!
@@ -243,6 +243,25 @@ type MantenimientoTableType {
   tipo: String!
   repuestoUsados: Float!
   costoRepuestos: Float!
+}
+
+type MantenimientoTableType {
+  mantenimientos: [Mantenimientos!]!
+  totalPages: Int!
+}
+
+type RepuestoSearchType {
+  _id: String
+  cantidadReserva: Float
+  marca: String
+  producto: String
+  cantidad: Float!
+  precio: Float
+}
+
+type RepuestosResult {
+  repuestos: [RepuestoSearchType!]!
+  totalPages: Int!
 }
 
 type GetPlacasDto {
@@ -279,6 +298,11 @@ type PersonalDto {
   documentos: [String]
 }
 
+type PersonalResult {
+  personal: [PersonalDto!]!
+  totalPages: Int!
+}
+
 type ContratoDto {
   numeroContrato: String!
   fechaInicio: DateTime!
@@ -296,6 +320,11 @@ type ClienteDto {
   rubro: String!
   contratos: [ContratoDto]
   documentos: [String]
+}
+
+type ClientesResult {
+  clientes: [ClienteDto!]!
+  totalPages: Int!
 }
 
 type MonthlySummaryDto {
@@ -373,7 +402,7 @@ type Query {
   """
   Esta función retorna los mantenimientos que cumplan con los criterios de busqueda
   """
-  table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, tipo: String, placa: String, page: Int): [MantenimientoTableType!]!
+  table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, placa: String, page: Int): MantenimientoTableType!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)
@@ -391,8 +420,10 @@ type Query {
   """
   obtener_todos_los_repuestos: [RepuestoType!]!
 
-  """Esta Función r"""
-  buscar_repuestos(producto: String!, page: Float!): [RepuestoType!]!
+  """
+  Esta función retorna la información de los repuestos que coincidan con el producto
+  """
+  buscar_repuestos(producto: String!, page: Int): RepuestosResult!
 
   """
   Esta Función retorna la información de todo el personal en la base de datos
@@ -402,8 +433,8 @@ type Query {
   """Esta Función retorna la información de un personal por su id"""
   obtener_Personal_Por_Id(id: String!): PersonalDto!
 
-  """Esta Función retorna la información del personal en base a su nombre"""
-  buscar_Pesonal(nombre: String!, page: Float!): [PersonalDto!]!
+  """Esta función retorna la información del personal en base a su nombre"""
+  buscar_Pesonal(nombre: String!, page: Int): PersonalResult!
 
   """Esta Función retorna la información de un cliente en base a su ID"""
   obtener_Cliente_ID(id: String!): ClienteDto!
@@ -414,9 +445,9 @@ type Query {
   obtener_Todos_Clientes: [ClienteDto!]!
 
   """
-  Esta Función retorna la información de los clientes en base a su nombre
+  Esta función retorna la información de los clientes en base a su nombre
   """
-  buscar_Clientes(nombreCliente: String!, page: Float!): [ClienteDto!]!
+  buscar_Clientes(nombreCliente: String!, page: Int): ClientesResult!
 
   """
   Esta Función retorna la información de los usuarios asociados a un cliente

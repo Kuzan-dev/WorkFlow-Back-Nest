@@ -1005,7 +1005,6 @@ export class MantenimientosService {
   async searchMantenimientos(
     fechaInicio?: Date | null,
     fechaTermino?: Date | null,
-    tipo?: string,
     placa?: string,
     page?: number,
   ) {
@@ -1024,9 +1023,6 @@ export class MantenimientosService {
         { fecha: { $lte: fechaTermino } },
         { fechaFin: { $exists: false } },
       ];
-    }
-    if (tipo && tipo !== '') {
-      query['tipo'] = tipo;
     }
 
     if (placa) {
