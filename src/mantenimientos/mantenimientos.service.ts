@@ -944,7 +944,7 @@ export class MantenimientosService {
       estado: 'completado',
     });
     if (mantenimientos.length === 0) {
-      throw new Error(
+      console.log(
         'No se encontraron mantenimientos completados para la placa especificada',
       );
     }
