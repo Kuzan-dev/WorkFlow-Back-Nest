@@ -3,6 +3,9 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 @ObjectType()
 class Mantenimientos {
   @Field()
+  _id: string;
+
+  @Field()
   placa: string;
 
   @Field()

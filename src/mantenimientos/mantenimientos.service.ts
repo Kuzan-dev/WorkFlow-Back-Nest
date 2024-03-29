@@ -1054,6 +1054,7 @@ export class MantenimientosService {
           );
 
           return {
+            _id: mantenimiento._id,
             placa: mantenimiento.placa,
             cliente,
             fechaInicio: mantenimiento.fechaInicio,

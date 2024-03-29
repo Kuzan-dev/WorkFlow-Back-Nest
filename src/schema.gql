@@ -236,6 +236,7 @@ type HistorialCarData {
 }
 
 type Mantenimientos {
+  _id: String!
   placa: String!
   cliente: String!
   fechaInicio: DateTime!
