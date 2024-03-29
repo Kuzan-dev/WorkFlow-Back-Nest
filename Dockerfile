@@ -29,7 +29,7 @@ COPY . .
 RUN npm run build
 
 # Expone el puerto 4500 en el contenedor
-EXPOSE 4600
+EXPOSE 4500
 
 # Construye la aplicación y luego la inicia
 CMD ["npm", "run", "start:prod"]

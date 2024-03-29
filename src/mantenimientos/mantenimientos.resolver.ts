@@ -391,7 +391,11 @@ export class MantenimientosResolver {
   async getCarData(
     @Args('searchParam', { type: () => String }) searchParam: string,
   ): Promise<HistorialCarData> {
-    return this.mantenimientosService.getCarData(searchParam);
+    try {
+      return this.mantenimientosService.getCarData(searchParam);
+    } catch (error) {
+      return null;
+    }
   }
 
   @Query(() => [MantenimientoTableType], {
