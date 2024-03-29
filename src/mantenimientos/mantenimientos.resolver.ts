@@ -321,7 +321,7 @@ export class MantenimientosResolver {
   async actualizarDiagnosticoFinal(
     @Args('id', { type: () => String }) id: string,
     @Args('diagnosticoFinal', { type: () => String }) diagnosticoFinal: string,
-    @Args('fechaFin', { type: () => Date, nullable: true }) fechaFin: Date,
+    @Args('fechaFin', { type: () => Date }) fechaFin: Date,
   ): Promise<string> {
     return await this.mantenimientosService.completarMantenimiento(
       id,
