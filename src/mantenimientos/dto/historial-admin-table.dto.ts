@@ -1,7 +1,7 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
-export class MantenimientoTableType {
+class Mantenimientos {
   @Field()
   placa: string;
 
@@ -22,4 +22,13 @@ export class MantenimientoTableType {
 
   @Field()
   costoRepuestos: number;
+}
+
+@ObjectType()
+export class MantenimientoTableType {
+  @Field(() => [Mantenimientos])
+  mantenimientos: Mantenimientos[];
+
+  @Field(() => Int)
+  totalPages: number;
 }

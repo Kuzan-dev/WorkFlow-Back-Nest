@@ -52,19 +52,28 @@ export class ClientesService {
   async searchClientes(
     nombreCliente: string,
     page?: number,
-  ): Promise<Cliente[]> {
+  ): Promise<{ clientes: Cliente[]; totalPages: number }> {
     const limit = 10;
-    const skip = page > 0 ? (page - 1) * limit : 0;
+    const skip = page && page > 0 ? (page - 1) * limit : 0;
 
-    if (nombreCliente === '') {
-      return this.clienteModel.find().skip(skip).limit(limit).exec();
-    } else {
-      return this.clienteModel
-        .find({ nombreCliente: new RegExp(nombreCliente, 'i') })
-        .skip(skip)
-        .limit(limit)
-        .exec();
-    }
+    const query =
+      nombreCliente === ''
+        ? {}
+        : { nombreCliente: new RegExp(nombreCliente, 'i') };
+
+    const totalDocuments = await this.clienteModel.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / limit);
+
+    const clientes = await this.clienteModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    return {
+      clientes,
+      totalPages,
+    };
   }
   async getUsersByClienteId(clienteId: string): Promise<UserOutput[]> {
     const cliente = await this.clienteModel.findById(clienteId);

@@ -1,4 +1,4 @@
-import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
+import { Resolver, Args, Mutation, Query, Int } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
 import { ContratoInput } from './dto/cliente.input';
 import { ClienteDto } from './dto/cliente.dto';
@@ -12,7 +12,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 import { UserOutput } from 'src/users/dto/create-user.dto';
 import { omit } from 'lodash';
-
+import { ClientesResult } from './dto/search-clientes.dto';
 @Resolver()
 export class ClientesResolver {
   constructor(
@@ -117,15 +117,15 @@ export class ClientesResolver {
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
   @Roles('admin', 'tecnico')
-  @Query(() => [ClienteDto], {
+  @Query(() => ClientesResult, {
     name: 'buscar_Clientes',
     description:
-      'Esta Función retorna la información de los clientes en base a su nombre',
+      'Esta función retorna la información de los clientes en base a su nombre',
   })
   async searchClientes(
     @Args('nombreCliente') nombreCliente: string,
-    @Args('page') page: number,
-  ): Promise<ClienteDto[]> {
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+  ): Promise<ClientesResult> {
     return this.clienteService.searchClientes(nombreCliente, page);
   }
 

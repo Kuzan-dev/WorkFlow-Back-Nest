@@ -1058,7 +1058,9 @@ export class MantenimientosService {
     if (placa) {
       query['placa'] = { $regex: new RegExp(placa, 'i') };
     }
-    console.log('Query:', query);
+
+    const totalDocuments = await this.mantenimientoModel.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / limit);
 
     const skip = page > 0 ? (page - 1) * limit : 0;
 
@@ -1068,27 +1070,30 @@ export class MantenimientosService {
       .limit(limit)
       .exec();
 
-    console.log('Mantenimientos encontrados:', mantenimientos);
+    return {
+      totalPages,
+      mantenimientos: await Promise.all(
+        mantenimientos.map(async (mantenimiento) => {
+          const repuestoUsados = mantenimiento.repuestosAjuste.length;
+          const costoRepuestos = mantenimiento.repuestosAjuste.reduce(
+            (sum, repuesto) => sum + repuesto.cantidad * repuesto.precio,
+            0,
+          );
+          const cliente = await this.carsService.getCliente(
+            mantenimiento.placa,
+          );
 
-    return Promise.all(
-      mantenimientos.map(async (mantenimiento) => {
-        const repuestoUsados = mantenimiento.repuestosAjuste.length;
-        const costoRepuestos = mantenimiento.repuestosAjuste.reduce(
-          (sum, repuesto) => sum + repuesto.cantidad * repuesto.precio,
-          0,
-        );
-        const cliente = await this.carsService.getCliente(mantenimiento.placa);
-
-        return {
-          placa: mantenimiento.placa,
-          cliente,
-          fechaInicio: mantenimiento.fechaInicio,
-          fechaFin: mantenimiento.fechaFin || null,
-          tipo: mantenimiento.tipo,
-          repuestoUsados,
-          costoRepuestos,
-        };
-      }),
-    );
+          return {
+            placa: mantenimiento.placa,
+            cliente,
+            fechaInicio: mantenimiento.fechaInicio,
+            fechaFin: mantenimiento.fechaFin || null,
+            tipo: mantenimiento.tipo,
+            repuestoUsados,
+            costoRepuestos,
+          };
+        }),
+      ),
+    };
   }
 }

@@ -1,4 +1,11 @@
-import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Resolver,
+  Query,
+  Subscription,
+  Int,
+} from '@nestjs/graphql';
 import { PersonalService } from './personal.service';
 import { SalarioFechaInput } from './dto/create-personal.input';
 import { PersonalDto } from './dto/create-personal.dto';
@@ -6,6 +13,7 @@ import { pubSub } from 'src/shared/pubsub';
 import { UsersService } from 'src/users/users.service';
 import { PersonalUserInput } from './dto/create-personalUser.dto';
 import { UpdatePersonalInput } from './dto/update-personal.dto';
+import { PersonalResult } from './dto/search-personal.dto';
 
 @Resolver()
 export class PersonalResolver {
@@ -76,15 +84,15 @@ export class PersonalResolver {
     return pubSub.asyncIterator('Personal');
   }
 
-  @Query(() => [PersonalDto], {
+  @Query(() => PersonalResult, {
     name: 'buscar_Pesonal',
     description:
-      'Esta Función retorna la información del personal en base a su nombre',
+      'Esta función retorna la información del personal en base a su nombre',
   })
   async searchPersonal(
     @Args('nombre') nombre: string,
-    @Args('page') page: number,
-  ): Promise<PersonalDto[]> {
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+  ): Promise<PersonalResult> {
     return this.personalService.searchPersonal(nombre, page);
   }
 

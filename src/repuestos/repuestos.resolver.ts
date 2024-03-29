@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Mutation, Resolver, Args, Query } from '@nestjs/graphql';
+import { Mutation, Resolver, Args, Query, Int } from '@nestjs/graphql';
 import { RepuestosService } from './repuestos.service';
 import { CreateRepuestoDto } from './dto/create-repuesto.dto';
 import { VerifyRepuestoDto } from './dto/verify-repuesto.dto';
 import { RepuestoDto, RepuestoType } from './dto/repuesto.dto';
 import { RepuestoSearchType } from './dto/search-repuesto.dto';
+import { RepuestosResult } from './dto/search-table-repuesto.dto';
 
 @Resolver()
 export class RepuestosResolver {
@@ -51,15 +52,15 @@ export class RepuestosResolver {
     return true;
   }
 
-  @Query(() => [RepuestoType], {
+  @Query(() => RepuestosResult, {
     name: 'buscar_repuestos',
     description:
-      'Esta Función retorna la información de los repuestos que coincidan con el producto',
+      'Esta función retorna la información de los repuestos que coincidan con el producto',
   })
   async searchRepuesto(
     @Args('producto') producto: string,
-    @Args('page') page: number,
-  ): Promise<RepuestoSearchType[]> {
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+  ): Promise<RepuestosResult> {
     return this.repuestoService.searchRepuesto(producto, page);
   }
 }

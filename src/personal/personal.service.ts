@@ -77,19 +77,28 @@ export class PersonalService {
     return totalSalary || 0;
   }
 
-  async searchPersonal(nombre: string, page?: number): Promise<Personal[]> {
+  async searchPersonal(
+    nombre: string,
+    page?: number,
+  ): Promise<{ personal: Personal[]; totalPages: number }> {
     const limit = 10;
-    const skip = page > 0 ? (page - 1) * limit : 0;
+    const skip = page && page > 0 ? (page - 1) * limit : 0;
 
-    if (nombre === '') {
-      return this.personalModel.find().skip(skip).limit(limit).exec();
-    } else {
-      return this.personalModel
-        .find({ nombre: new RegExp(nombre, 'i') })
-        .skip(skip)
-        .limit(limit)
-        .exec();
-    }
+    const query = nombre === '' ? {} : { nombre: new RegExp(nombre, 'i') };
+
+    const totalDocuments = await this.personalModel.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / limit);
+
+    const personal = await this.personalModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    return {
+      personal,
+      totalPages,
+    };
   }
 
   // Función para actualizar uno o mas parametros de personal
