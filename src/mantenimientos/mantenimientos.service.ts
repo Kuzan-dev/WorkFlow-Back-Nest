@@ -437,6 +437,7 @@ export class MantenimientosService {
   async completarMantenimiento(
     id: string,
     diagnosticoFinal: string,
+    fechaFin: Date,
   ): Promise<string> {
     const session = await this.mantenimientoModel.db.startSession();
     session.startTransaction();
@@ -466,6 +467,7 @@ export class MantenimientosService {
         throw new BadRequestException('Repuestos correction failed');
       }
       mantenimiento.estado = 'completado';
+      mantenimiento.fechaFin = fechaFin;
       mantenimiento.diagnosticoFinal = diagnosticoFinal;
       const updatedMant = await mantenimiento.save({ session });
       await session.commitTransaction();
