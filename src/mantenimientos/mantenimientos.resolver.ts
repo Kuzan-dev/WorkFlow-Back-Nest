@@ -261,13 +261,13 @@ export class MantenimientosResolver {
     } else {
       if (revision) {
         await this.mantenimientosService.revision(id, cambiosSolicitados);
+        return true;
+      } else {
+        await this.mantenimientosService.Aprobado(id);
         await this.mantenimientosService.addRepuestosAjuste(
           id,
           repuestosAjuste,
         );
-        return true;
-      } else {
-        await this.mantenimientosService.Aprobado(id);
         return true;
       }
     }

@@ -486,32 +486,6 @@ export class MantenimientosService {
       session.endSession();
     }
   }
-  // async completarMantenimiento(
-  //   id: string,
-  //   diagnosticoFinal: string,
-  // ): Promise<string> {
-  //   const updatedMantenimiento =
-  //     await this.mantenimientoModel.findByIdAndUpdate(
-  //       id,
-  //       {
-  //         diagnosticoFinal,
-  //         estado: 'completado',
-  //       },
-  //       { new: true },
-  //     );
-
-  //   if (!updatedMantenimiento) {
-  //     throw new NotFoundException(`Mantenimiento with ID ${id} not found`);
-  //   }
-  //   const mantToday = await this.getMantAPartirDeHoy();
-  //   const allMantenimientos = await this.getMantenimientosDeHoy();
-  //   const calendar = await this.getProgrammedMaintenanceCount();
-  //   pubSub.publish('calendarTecnico', {
-  //     calendarTecnico: { calendar, mantenimientos: allMantenimientos },
-  //   });
-  //   pubSub.publish('Actividades', { Actividades: mantToday });
-  //   return updatedMantenimiento.id.toString();
-  // }
 
   async getMantenimientosExceptoEstado(
     estado: string,
