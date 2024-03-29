@@ -81,7 +81,7 @@ export class PersonalService {
     nombre: string,
     page?: number,
   ): Promise<{ personal: Personal[]; totalPages: number }> {
-    const limit = 10;
+    const limit = 8;
     const skip = page && page > 0 ? (page - 1) * limit : 0;
 
     const query = nombre === '' ? {} : { nombre: new RegExp(nombre, 'i') };

@@ -53,7 +53,7 @@ export class ClientesService {
     nombreCliente: string,
     page?: number,
   ): Promise<{ clientes: Cliente[]; totalPages: number }> {
-    const limit = 10;
+    const limit = 8;
     const skip = page && page > 0 ? (page - 1) * limit : 0;
 
     const query =

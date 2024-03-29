@@ -184,7 +184,7 @@ export class RepuestosService {
     producto: string,
     page?: number,
   ): Promise<{ repuestos: Repuesto[]; totalPages: number }> {
-    const limit = 7;
+    const limit = 8;
     const skip = page && page > 0 ? (page - 1) * limit : 0;
 
     const query =

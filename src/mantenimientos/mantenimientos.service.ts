@@ -1036,7 +1036,7 @@ export class MantenimientosService {
     page?: number,
   ) {
     const query = {};
-    const limit = 7;
+    const limit = 6;
 
     // Agrega esta línea para buscar solo mantenimientos completados
     query['estado'] = 'completado';
