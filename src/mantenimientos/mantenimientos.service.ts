@@ -947,6 +947,7 @@ export class MantenimientosService {
       console.log(
         'No se encontraron mantenimientos completados para la placa especificada',
       );
+      return 0;
     }
 
     const horasMuertas = mantenimientos.reduce((total, mantenimiento) => {
