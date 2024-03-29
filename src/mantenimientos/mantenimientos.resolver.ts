@@ -393,7 +393,7 @@ export class MantenimientosResolver {
   ): Promise<HistorialCarData> {
     try {
       return this.mantenimientosService.getCarData(searchParam);
-    } catch (error) {
+    } catch {
       return null;
     }
   }
