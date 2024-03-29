@@ -398,7 +398,7 @@ export class MantenimientosResolver {
     }
   }
 
-  @Query(() => [MantenimientoTableType], {
+  @Query(() => MantenimientoTableType, {
     name: 'table_historial_Mantenimientos_admin',
     description:
       'Esta función retorna los mantenimientos que cumplan con los criterios de busqueda',
@@ -411,7 +411,7 @@ export class MantenimientosResolver {
     @Args('tipo', { type: () => String, nullable: true }) tipo: string,
     @Args('placa', { type: () => String, nullable: true }) placa: string,
     @Args('page', { type: () => Int, nullable: true }) page: number,
-  ) {
+  ): Promise<MantenimientoTableType> {
     return this.mantenimientosService.searchMantenimientos(
       fechaInicio,
       fechaTermino,
