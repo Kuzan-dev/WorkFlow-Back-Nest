@@ -2,28 +2,28 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
 class Mantenimientos {
-  @Field()
+  @Field({ nullable: true })
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   placa: string;
 
-  @Field()
+  @Field({ nullable: true })
   cliente: string;
 
-  @Field()
+  @Field({ nullable: true })
   fechaInicio: Date;
 
   @Field({ nullable: true })
   fechaFin: Date;
 
-  @Field()
+  @Field({ nullable: true })
   tipo: string;
 
-  @Field()
+  @Field({ nullable: true })
   repuestoUsados: number;
 
-  @Field()
+  @Field({ nullable: true })
   costoRepuestos: number;
 }
 
