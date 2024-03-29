@@ -227,23 +227,23 @@ type EstadisticWebDTO {
 }
 
 type HistorialCarData {
-  placa: String!
-  fechaSoat: DateTime!
+  placa: String
+  fechaSoat: DateTime
   ultimaRevision: DateTime
-  vigenciaContrato: DateTime!
-  kmActual: Float!
-  operatividad: Float!
+  vigenciaContrato: DateTime
+  kmActual: Float
+  operatividad: Float
 }
 
 type Mantenimientos {
-  _id: String!
-  placa: String!
-  cliente: String!
-  fechaInicio: DateTime!
+  _id: String
+  placa: String
+  cliente: String
+  fechaInicio: DateTime
   fechaFin: DateTime
-  tipo: String!
-  repuestoUsados: Float!
-  costoRepuestos: Float!
+  tipo: String
+  repuestoUsados: Float
+  costoRepuestos: Float
 }
 
 type MantenimientoTableType {
@@ -398,7 +398,7 @@ type Query {
   """
   Esta función retorna la información de un auto incluyendo su operatividad porcentual por medio de su placa
   """
-  Historial_Car_Admin(searchParam: String!): HistorialCarData!
+  Historial_Car_Admin(searchParam: String): HistorialCarData!
 
   """
   Esta función retorna los mantenimientos que cumplan con los criterios de busqueda

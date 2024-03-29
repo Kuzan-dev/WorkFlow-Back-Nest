@@ -973,7 +973,7 @@ export class MantenimientosService {
   async getCarData(searchParam: string): Promise<any> {
     const car = await this.carsService.findFirstByPlaca(searchParam);
     if (!car) {
-      throw new Error('Car not found');
+      return {};
     }
 
     const fechaSoat = car.fechaSoat;

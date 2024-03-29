@@ -389,7 +389,8 @@ export class MantenimientosResolver {
       'Esta función retorna la información de un auto incluyendo su operatividad porcentual por medio de su placa',
   })
   async getCarData(
-    @Args('searchParam', { type: () => String }) searchParam: string,
+    @Args('searchParam', { type: () => String, nullable: true })
+    searchParam: string,
   ): Promise<HistorialCarData> {
     try {
       return this.mantenimientosService.getCarData(searchParam);
