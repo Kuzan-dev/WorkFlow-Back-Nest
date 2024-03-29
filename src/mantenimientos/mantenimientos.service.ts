@@ -1020,14 +1020,15 @@ export class MantenimientosService {
     query['estado'] = 'completado';
 
     if (fechaInicio != null) {
-      query['fechaInicio'] = { $gte: fechaInicio };
+      query['fechaFin'] = { $gte: fechaInicio };
     }
 
     if (fechaTermino != null) {
-      query['$or'] = [
-        { fecha: { $lte: fechaTermino } },
-        { fechaFin: { $exists: false } },
-      ];
+      if (query['fechaFin']) {
+        query['fechaFin']['$lte'] = fechaTermino;
+      } else {
+        query['fechaFin'] = { $lte: fechaTermino };
+      }
     }
 
     if (placa) {
