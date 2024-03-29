@@ -11,7 +11,13 @@ export class CarsService {
   constructor(@InjectModel(Car.name) private readonly carModel: Model<Car>) {}
   // Esta funcion crea un carro en la base de datos
   async create(createCarDto: CreateCarDto): Promise<string> {
-    const createCar = await this.carModel.create(createCarDto);
+    // Crea un nuevo objeto con todas las propiedades del DTO más kmActual
+    const carData = {
+      ...createCarDto,
+      kmActual: createCarDto.kmRegistroInicial,
+    };
+
+    const createCar = await this.carModel.create(carData);
     return createCar.id.toString();
   }
   // Esta funcion verifica si un carro existe en la base de datos
