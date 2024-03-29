@@ -411,11 +411,15 @@ export class MantenimientosResolver {
     @Args('placa', { type: () => String, nullable: true }) placa: string,
     @Args('page', { type: () => Int, nullable: true }) page: number,
   ): Promise<MantenimientoTableType> {
-    return this.mantenimientosService.searchMantenimientos(
-      fechaInicio,
-      fechaTermino,
-      placa,
-      page,
-    );
+    try {
+      return this.mantenimientosService.searchMantenimientos(
+        fechaInicio,
+        fechaTermino,
+        placa,
+        page,
+      );
+    } catch {
+      return null;
+    }
   }
 }
