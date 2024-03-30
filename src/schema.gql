@@ -220,6 +220,8 @@ type EstadisticWebDTO {
   kmRecorrido: [KmRecorridoPorMes!]
   costos: Costos
   puntaje: Float
+  placa: String
+  cliente: String
   cantidadMatenimientos: Float
   cantidadMatDenegados: Float
   repuestosConsumidos: [RepuestosMasConsumidosPorMes!]

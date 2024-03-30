@@ -378,6 +378,7 @@ export class MantenimientosResolver {
         );
       return {
         placa: placaSelect.placa,
+        cliente: placaSelect.cliente,
         kmRecorrido: kmRecorrido,
         costos: costos,
         puntaje: puntaje,
@@ -390,6 +391,7 @@ export class MantenimientosResolver {
       return {
         kmRecorrido: [],
         placa: null,
+        cliente: null,
         costos: {
           costoTotal: null,
           costoPreventivos: null,
