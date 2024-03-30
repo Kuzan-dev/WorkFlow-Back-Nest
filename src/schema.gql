@@ -11,11 +11,6 @@ type UserOutput {
   nivelUser: String!
 }
 
-type RepuestoConsumido {
-  producto: String
-  costo: Float
-}
-
 type RepuestoType {
   id: String
   cantidadReserva: Float
@@ -200,6 +195,11 @@ type Costos {
 type KmRecorridoPorMes {
   mes: String
   kmRecorridoTotal: Float
+}
+
+type RepuestoConsumido {
+  producto: String
+  costo: Float
 }
 
 type RepuestosMasConsumidosPorMes {

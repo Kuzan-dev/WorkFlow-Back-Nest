@@ -24,7 +24,6 @@ import { CreateRepuestoAjusteDto } from './dto/create-repuesto-ajuste.dto';
 import { KmRecorridoPorMes } from './dto/km-recorrido-mes.dto';
 import { Costos } from './dto/costos-mes-prev-correc.dto';
 import { RepuestosMasConsumidosPorMes } from './dto/costo-repuesto-mes.dto';
-import { RepuestoConsumido } from './dto/costo-repuesto.dto';
 import { OperatividadPorMes } from './dto/operatividad-mes.dto';
 import { CalendarGrafica } from './dto/calendar-graph.dt';
 
@@ -862,17 +861,16 @@ export class MantenimientosService {
 
         return {
           mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
-          repuesto1: repuesto1 || new RepuestoConsumido(),
-          repuesto2: repuesto2 || new RepuestoConsumido(),
-          repuesto3: repuesto3 || new RepuestoConsumido(),
-          repuesto4: repuesto4 || new RepuestoConsumido(),
-          otros,
+          repuesto1: repuesto1 || { producto: '-', costo: 0 },
+          repuesto2: repuesto2 || { producto: '-', costo: 0 },
+          repuesto3: repuesto3 || { producto: '-', costo: 0 },
+          repuesto4: repuesto4 || { producto: '-', costo: 0 },
+          otros: otros || 0,
         };
       });
 
     return repuestosMasConsumidosPorMes;
   }
-
   async getOperatividadPorMes(
     placa: string,
     fecha: Date,
