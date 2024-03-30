@@ -224,7 +224,7 @@ type EstadisticWebDTO {
   cliente: String
   cantidadMatenimientos: Float
   cantidadMatDenegados: Float
-  repuestosConsumidos: [RepuestosMasConsumidosPorMes!]
+  repuestosConsumidos: RepuestosMasConsumidosPorMes
   operatividad: [OperatividadPorMes!]
 }
 
@@ -347,6 +347,22 @@ type GeneralReportDto {
   fact: Float
   personalTotal: Float
   otros: Float
+}
+
+type Operatividad {
+  operatividadPorcentual: Float
+  operatividadHoras: Float
+}
+
+type Dashboard {
+  ingresosMensuales: Float
+  mantenimientosRealizados: Float
+  mantenimientosCancelados: Float
+  gastosGenerales: [GeneralReportDto!]
+  operatividad: Operatividad
+  calendario: [CalendarGrafica!]
+  ingresosEgresos: [MonthlySummaryDto!]
+  repuestos: MesRepuestos
 }
 
 type Query {
@@ -481,6 +497,9 @@ type Query {
 
   """Obtiene el resumen mensual de ingresos y egresos"""
   grafica_ingresos_egresos(inputDate: String!): [MonthlySummaryDto!]!
+
+  """Obtiene el resumen mensual de ingresos y egresos"""
+  dashboard_web(inputDate: String!): Dashboard!
 }
 
 type Mutation {

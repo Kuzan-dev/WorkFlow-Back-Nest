@@ -803,74 +803,56 @@ export class MantenimientosService {
   async getRepuestosMasConsumidos(
     placa: string,
     fecha: Date,
-  ): Promise<RepuestosMasConsumidosPorMes[]> {
-    const oneYearAgo = new Date(fecha);
-    oneYearAgo.setMonth(oneYearAgo.getMonth() - 12);
-
+  ): Promise<RepuestosMasConsumidosPorMes> {
     const mantenimientos = await this.mantenimientoModel
       .find({
         placa,
         estado: 'completado',
-        fecha: { $gte: oneYearAgo, $lte: fecha },
+        fecha: {
+          $gte: new Date(fecha.getFullYear(), fecha.getMonth(), 1),
+          $lte: fecha,
+        },
       })
       .populate('repuestosAjuste');
 
-    const repuestosMasConsumidosPorMes = Array(12)
-      .fill(0)
-      .map((_, index) => {
-        const month = new Date(oneYearAgo);
-        month.setMonth(month.getMonth() + index + 1);
+    const repuestos = mantenimientos.flatMap((mantenimiento) =>
+      mantenimiento.repuestosAjuste.map((repuesto) => ({
+        producto: repuesto.producto,
+        costo: repuesto.cantidad * repuesto.precio,
+      })),
+    );
 
-        const mantenimientosThisMonth = mantenimientos.filter(
-          (mantenimiento) => {
-            const mantenimientoDate = new Date(mantenimiento.fecha);
-            return (
-              mantenimientoDate.getMonth() === month.getMonth() &&
-              mantenimientoDate.getFullYear() === month.getFullYear()
-            );
-          },
-        );
+    const repuestosGrouped = repuestos.reduce(
+      (grouped, repuesto) => {
+        grouped[repuesto.producto] =
+          (grouped[repuesto.producto] || 0) + repuesto.costo;
+        return grouped;
+      },
+      {} as Record<string, number>,
+    );
 
-        const repuestos = mantenimientosThisMonth.flatMap((mantenimiento) =>
-          mantenimiento.repuestosAjuste.map((repuesto) => ({
-            producto: repuesto.producto,
-            costo: repuesto.cantidad * repuesto.precio,
-          })),
-        );
+    const repuestosSorted = Object.entries(repuestosGrouped)
+      .map(([producto, costo]) => ({ producto, costo: costo as number }))
+      .sort((a, b) => b.costo - a.costo);
 
-        const repuestosGrouped = repuestos.reduce(
-          (grouped, repuesto) => {
-            grouped[repuesto.producto] =
-              (grouped[repuesto.producto] || 0) + repuesto.costo;
-            return grouped;
-          },
-          {} as Record<string, number>,
-        );
+    const [repuesto1, repuesto2, repuesto3, repuesto4, ...otrosRepuestos] =
+      repuestosSorted;
 
-        const repuestosSorted = Object.entries(repuestosGrouped)
-          .map(([producto, costo]) => ({ producto, costo: costo as number }))
-          .sort((a, b) => b.costo - a.costo);
+    const otros = otrosRepuestos.reduce(
+      (total, repuesto) => total + (repuesto.costo as number),
+      0,
+    );
 
-        const [repuesto1, repuesto2, repuesto3, repuesto4, ...otrosRepuestos] =
-          repuestosSorted;
-
-        const otros = otrosRepuestos.reduce(
-          (total, repuesto) => total + (repuesto.costo as number),
-          0,
-        );
-
-        return {
-          mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
-          repuesto1: repuesto1 || { producto: '-', costo: 0 },
-          repuesto2: repuesto2 || { producto: '-', costo: 0 },
-          repuesto3: repuesto3 || { producto: '-', costo: 0 },
-          repuesto4: repuesto4 || { producto: '-', costo: 0 },
-          otros: otros || 0,
-        };
-      });
-
-    return repuestosMasConsumidosPorMes;
+    return {
+      mes: `${fecha.getMonth() + 1}/${fecha.getFullYear()}`,
+      repuesto1: repuesto1 || { producto: '-', costo: 0 },
+      repuesto2: repuesto2 || { producto: '-', costo: 0 },
+      repuesto3: repuesto3 || { producto: '-', costo: 0 },
+      repuesto4: repuesto4 || { producto: '-', costo: 0 },
+      otros: otros || 0,
+    };
   }
+
   async getOperatividadPorMes(
     placa: string,
     fecha: Date,

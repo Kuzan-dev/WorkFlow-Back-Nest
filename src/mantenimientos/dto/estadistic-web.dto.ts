@@ -27,8 +27,8 @@ export class EstadisticWebDTO {
   @Field({ nullable: true })
   cantidadMatDenegados: number;
 
-  @Field(() => [RepuestosMasConsumidosPorMes], { nullable: true })
-  repuestosConsumidos: RepuestosMasConsumidosPorMes[];
+  @Field(() => RepuestosMasConsumidosPorMes, { nullable: true })
+  repuestosConsumidos: RepuestosMasConsumidosPorMes;
 
   @Field(() => [OperatividadPorMes], { nullable: true })
   operatividad: OperatividadPorMes[];

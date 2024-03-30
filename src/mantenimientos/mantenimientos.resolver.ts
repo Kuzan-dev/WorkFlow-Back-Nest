@@ -401,7 +401,7 @@ export class MantenimientosResolver {
         puntaje: null,
         cantidadMatenimientos: null,
         cantidadMatDenegados: null,
-        repuestosConsumidos: [],
+        repuestosConsumidos: null,
         operatividad: [],
       };
     }
