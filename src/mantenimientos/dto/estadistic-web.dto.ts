@@ -6,10 +6,10 @@ import { OperatividadPorMes } from './operatividad-mes.dto';
 
 @ObjectType()
 export class EstadisticWebDTO {
-  @Field(() => [KmRecorridoPorMes])
+  @Field(() => [KmRecorridoPorMes], { nullable: true })
   kmRecorrido: KmRecorridoPorMes[];
 
-  @Field(() => Costos)
+  @Field(() => Costos, { nullable: true })
   costos: Costos;
 
   @Field({ nullable: true })
@@ -21,9 +21,9 @@ export class EstadisticWebDTO {
   @Field({ nullable: true })
   cantidadMatDenegados: number;
 
-  @Field(() => [RepuestosMasConsumidosPorMes])
+  @Field(() => [RepuestosMasConsumidosPorMes], { nullable: true })
   repuestosConsumidos: RepuestosMasConsumidosPorMes[];
 
-  @Field(() => [OperatividadPorMes])
+  @Field(() => [OperatividadPorMes], { nullable: true })
   operatividad: OperatividadPorMes[];
 }

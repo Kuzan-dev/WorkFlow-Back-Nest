@@ -72,8 +72,12 @@ export class CarsService {
   }
 
   async getPuntaje(placa: string): Promise<number> {
-    const car = await this.carModel.findOne({ placa }).exec();
-    return car.puntaje;
+    try {
+      const car = await this.carModel.findOne({ placa }).exec();
+      return car.puntaje;
+    } catch (error) {
+      return 0;
+    }
   }
 
   //Función para encontrar las placas de los carros de un cliente

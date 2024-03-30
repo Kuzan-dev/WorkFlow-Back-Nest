@@ -340,49 +340,67 @@ export class MantenimientosResolver {
     @Args('placa') placa: string,
     @Args('fecha') fecha: string,
   ): Promise<EstadisticWebDTO> {
-    const kmRecorrido = await this.mantenimientosService.getKmRecorridoPorMes(
-      placa,
-      new Date(fecha),
-    );
-
-    const costos = await this.mantenimientosService.getCostos(
-      placa,
-      new Date(fecha),
-    );
-
-    const puntaje = await this.carService.getPuntaje(placa);
-
-    const cantidadMatenimientos =
-      await this.mantenimientosService.getNumeroMantenimientos(
-        placa,
+    try {
+      const placaSelect = await this.carService.findFirstByPlaca(placa);
+      const kmRecorrido = await this.mantenimientosService.getKmRecorridoPorMes(
+        placaSelect.placa,
         new Date(fecha),
       );
 
-    const cantidadMatDenegados =
-      await this.mantenimientosService.getNumeroMantCance(
-        placa,
+      const costos = await this.mantenimientosService.getCostos(
+        placaSelect.placa,
         new Date(fecha),
       );
 
-    const repuestosConsumidos =
-      await this.mantenimientosService.getRepuestosMasConsumidos(
-        placa,
-        new Date(fecha),
-      );
+      const puntaje = await this.carService.getPuntaje(placa);
+      const cantidadMatenimientos =
+        await this.mantenimientosService.getNumeroMantenimientos(
+          placaSelect.placa,
+          new Date(fecha),
+        );
 
-    const operatividad = await this.mantenimientosService.getOperatividadPorMes(
-      placa,
-      new Date(fecha),
-    );
-    return {
-      kmRecorrido: kmRecorrido,
-      costos: costos,
-      puntaje: puntaje,
-      cantidadMatenimientos: cantidadMatenimientos,
-      cantidadMatDenegados: cantidadMatDenegados,
-      repuestosConsumidos: repuestosConsumidos,
-      operatividad: operatividad,
-    };
+      const cantidadMatDenegados =
+        await this.mantenimientosService.getNumeroMantCance(
+          placaSelect.placa,
+          new Date(fecha),
+        );
+
+      const repuestosConsumidos =
+        await this.mantenimientosService.getRepuestosMasConsumidos(
+          placaSelect.placa,
+          new Date(fecha),
+        );
+
+      const operatividad =
+        await this.mantenimientosService.getOperatividadPorMes(
+          placaSelect.placa,
+          new Date(fecha),
+        );
+      return {
+        kmRecorrido: kmRecorrido,
+        costos: costos,
+        puntaje: puntaje,
+        cantidadMatenimientos: cantidadMatenimientos,
+        cantidadMatDenegados: cantidadMatDenegados,
+        repuestosConsumidos: repuestosConsumidos,
+        operatividad: operatividad,
+      };
+    } catch {
+      return {
+        kmRecorrido: [],
+        costos: {
+          costoTotal: null,
+          costoPreventivos: null,
+          costoCorrectivos: null,
+          costoMesPasado: null,
+        },
+        puntaje: null,
+        cantidadMatenimientos: null,
+        cantidadMatDenegados: null,
+        repuestosConsumidos: [],
+        operatividad: [],
+      };
+    }
   }
 
   @Query(() => HistorialCarData, {

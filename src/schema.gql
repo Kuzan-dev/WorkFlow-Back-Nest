@@ -204,10 +204,10 @@ type KmRecorridoPorMes {
 
 type RepuestosMasConsumidosPorMes {
   mes: String
-  repuesto1: RepuestoConsumido!
-  repuesto2: RepuestoConsumido!
-  repuesto3: RepuestoConsumido!
-  repuesto4: RepuestoConsumido!
+  repuesto1: RepuestoConsumido
+  repuesto2: RepuestoConsumido
+  repuesto3: RepuestoConsumido
+  repuesto4: RepuestoConsumido
   otros: Float
 }
 
@@ -217,17 +217,18 @@ type OperatividadPorMes {
 }
 
 type EstadisticWebDTO {
-  kmRecorrido: [KmRecorridoPorMes!]!
-  costos: Costos!
+  kmRecorrido: [KmRecorridoPorMes!]
+  costos: Costos
   puntaje: Float
   cantidadMatenimientos: Float
   cantidadMatDenegados: Float
-  repuestosConsumidos: [RepuestosMasConsumidosPorMes!]!
-  operatividad: [OperatividadPorMes!]!
+  repuestosConsumidos: [RepuestosMasConsumidosPorMes!]
+  operatividad: [OperatividadPorMes!]
 }
 
 type HistorialCarData {
   placa: String
+  cliente: String
   fechaSoat: DateTime
   ultimaRevision: DateTime
   vigenciaContrato: DateTime
@@ -498,7 +499,7 @@ type Mutation {
   """
   Esta función actualiza el campo diagnosticoFinal de un mantenimiento y cambia su estado a "completado"
   """
-  completar_mantenimiento(id: String!, diagnosticoFinal: String!): String!
+  completar_mantenimiento(id: String!, diagnosticoFinal: String!, fechaFin: DateTime!): String!
 
   """Esta Función registra un auto en la base de datos"""
   crear_auto(createCarInput: CreateCarDto!): String!
