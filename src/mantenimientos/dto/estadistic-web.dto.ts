@@ -16,6 +16,9 @@ export class EstadisticWebDTO {
   puntaje: number;
 
   @Field({ nullable: true })
+  placa: string;
+
+  @Field({ nullable: true })
   cantidadMatenimientos: number;
 
   @Field({ nullable: true })

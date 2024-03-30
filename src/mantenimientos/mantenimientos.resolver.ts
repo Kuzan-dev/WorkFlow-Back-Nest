@@ -377,6 +377,7 @@ export class MantenimientosResolver {
           new Date(fecha),
         );
       return {
+        placa: placaSelect.placa,
         kmRecorrido: kmRecorrido,
         costos: costos,
         puntaje: puntaje,
@@ -388,6 +389,7 @@ export class MantenimientosResolver {
     } catch {
       return {
         kmRecorrido: [],
+        placa: null,
         costos: {
           costoTotal: null,
           costoPreventivos: null,
