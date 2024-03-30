@@ -26,6 +26,8 @@ import { Costos } from './dto/costos-mes-prev-correc.dto';
 import { RepuestosMasConsumidosPorMes } from './dto/costo-repuesto-mes.dto';
 import { RepuestoConsumido } from './dto/costo-repuesto.dto';
 import { OperatividadPorMes } from './dto/operatividad-mes.dto';
+import { CalendarGrafica } from './dto/calendar-graph.dt';
+
 @Injectable()
 export class MantenimientosService {
   private readonly mantenimientoChanges = new Subject<any>();
@@ -1072,5 +1074,35 @@ export class MantenimientosService {
         }),
       ),
     };
+  }
+
+  async getCalendarGraficaRange(inputDate: Date): Promise<CalendarGrafica[]> {
+    const startDate = new Date(inputDate);
+    startDate.setMonth(inputDate.getMonth() - 6);
+    const endDate = new Date(inputDate);
+    endDate.setMonth(inputDate.getMonth() + 6);
+
+    const mantenimientos = await this.mantenimientoModel.aggregate([
+      {
+        $match: {
+          estado: 'programado',
+          fecha: { $gte: startDate, $lte: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            day: { $dayOfMonth: '$fecha' },
+            month: { $month: '$fecha' },
+            year: { $year: '$fecha' },
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    return mantenimientos.map(({ _id, count }) => ({
+      fecha: new Date(_id.year, _id.month - 1, _id.day),
+      cantidad: count,
+    }));
   }
 }

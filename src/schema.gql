@@ -254,6 +254,11 @@ type MantenimientoTableType {
   totalPages: Int!
 }
 
+type CalendarGrafica {
+  fecha: DateTime
+  cantidad: Float
+}
+
 type RepuestoSearchType {
   _id: String
   cantidadReserva: Float
@@ -400,6 +405,11 @@ type Query {
   Esta función retorna los mantenimientos que cumplan con los criterios de busqueda
   """
   table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, placa: String, page: Int): MantenimientoTableType!
+
+  """
+  Esta función retorna la cantidad de mantenimientos programados, pendientes, completados y denegados por mes
+  """
+  calendar_grafica(fechaInput: DateTime): [CalendarGrafica!]!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)

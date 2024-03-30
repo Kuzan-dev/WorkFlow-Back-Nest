@@ -33,7 +33,7 @@ import { EstadisticWebDTO } from './dto/estadistic-web.dto';
 import { CarsService } from 'src/cars/cars.service';
 import { HistorialCarData } from './dto/historial-admin.dto';
 import { MantenimientoTableType } from './dto/historial-admin-table.dto';
-
+import { CalendarGrafica } from './dto/calendar-graph.dt';
 @Resolver()
 export class MantenimientosResolver {
   constructor(
@@ -446,5 +446,17 @@ export class MantenimientosResolver {
     } catch {
       return null;
     }
+  }
+
+  @Query(() => [CalendarGrafica], {
+    name: 'calendar_grafica',
+    description:
+      'Esta función retorna la cantidad de mantenimientos programados, pendientes, completados y denegados por mes',
+  })
+  async getCalendarGrafica(
+    @Args('fechaInput', { type: () => Date, nullable: true })
+    fechaInput: Date,
+  ) {
+    return this.mantenimientosService.getCalendarGraficaRange(fechaInput);
   }
 }
