@@ -31,76 +31,104 @@ export class FacturasService {
     return facturas || [];
   }
 
-  async getMonthlySummary(inputDate: string): Promise<any[]> {
-    const date = new Date(inputDate);
-    const promises = [];
+  async getEgresosDelMes(date: Date): Promise<number> {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-    for (let i = 0; i < 12; i++) {
-      const startOfMonth = new Date(date.getFullYear(), date.getMonth() - i, 1);
-      const endOfMonth = new Date(
-        date.getFullYear(),
-        date.getMonth() - i + 1,
-        0,
-      );
-
-      const ingresosPromise = this.facturaModel.aggregate([
-        {
-          $match: {
-            fecha: { $gte: startOfMonth, $lte: endOfMonth },
-            tipo: 'cliente',
+    const egresos = await this.facturaModel.aggregate([
+      {
+        $match: {
+          tipo: {
+            $in: [
+              'Factura a Propietario Vehicular',
+              'Compra Adicional',
+              'Compra de Repuestos',
+            ],
           },
+          fecha: { $gte: start, $lte: end },
         },
-        {
-          $group: {
-            _id: null,
-            monto: { $sum: '$monto' },
-            igv: { $sum: '$igv' },
-          },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$monto' },
         },
-      ]);
+      },
+    ]);
 
-      const egresosPromise = this.facturaModel.aggregate([
-        {
-          $match: {
-            fecha: { $gte: startOfMonth, $lte: endOfMonth },
-            tipo: { $in: ['proveedores', 'auto', 'adicional'] },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            monto: { $sum: '$monto' },
-            igv: { $sum: '$igv' },
-          },
-        },
-      ]);
+    return egresos[0]?.total || 0;
+  }
 
-      const detraccionesPromise = this.facturaModel.aggregate([
-        {
-          $match: {
-            fecha: { $gte: startOfMonth, $lte: endOfMonth },
-            tipo: 'auto',
+  async getIngresosDelMes(date: Date): Promise<number> {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const ingresos = await this.facturaModel.aggregate([
+      {
+        $match: {
+          tipo: {
+            $in: ['Factura a Cliente'],
           },
+          fecha: { $gte: start, $lte: end },
         },
-        { $group: { _id: null, detraccion: { $sum: '$detraccion' } } },
-      ]);
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$monto' },
+        },
+      },
+    ]);
+    console.log(ingresos); // Agrega esta línea
+    return ingresos[0]?.total || 0;
+  }
 
-      promises.push(
-        Promise.all([
-          ingresosPromise,
-          egresosPromise,
-          detraccionesPromise,
-        ]).then(([ingresos, egresos, detracciones]) => ({
-          mesYear: `${startOfMonth.getMonth() + 1}/${startOfMonth.getFullYear()}`,
-          ingresoFact: ingresos[0]?.monto || 0,
-          egresosFact: egresos[0]?.monto || 0,
-          igvIngresos: ingresos[0]?.igv || 0,
-          igvEgresos: egresos[0]?.igv || 0,
-          detracciones: detracciones[0]?.detraccion || 0,
-        })),
-      );
-    }
+  async getGastosFacDelMes(date: Date): Promise<number> {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
-    return Promise.all(promises);
+    const egresos = await this.facturaModel.aggregate([
+      {
+        $match: {
+          tipo: {
+            $in: ['Factura a Propietario Vehicular', 'Compra de Repuestos'],
+          },
+          fecha: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$monto' },
+        },
+      },
+    ]);
+
+    return egresos[0]?.total || 0;
+  }
+
+  //Obtiene los gastos realizados en compras de repuestos y otros
+  async getGastosOtrosDelMes(date: Date): Promise<number> {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const egresos = await this.facturaModel.aggregate([
+      {
+        $match: {
+          tipo: {
+            $in: ['Compra Adicional'],
+          },
+          fecha: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$monto' },
+        },
+      },
+    ]);
+
+    return egresos[0]?.total || 0;
   }
 }

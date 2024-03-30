@@ -9,80 +9,65 @@ export class EstadisticasService {
     private personalService: PersonalService,
   ) {}
 
-  async getMonthlySummary(inputDate: Date): Promise<any[]> {
-    const promises = Array.from({ length: 12 }, async (_, i) => {
-      const monthDate = new Date(
-        inputDate.getFullYear(),
-        inputDate.getMonth() - i,
-        1,
+  async getGastosMensuales(inputDateISO: string): Promise<any[]> {
+    const date = new Date(inputDateISO);
+    const promises = [];
+
+    for (let i = 0; i < 12; i++) {
+      date.setMonth(date.getMonth() - 1);
+
+      const factPromise = this.facturasService.getGastosFacDelMes(
+        new Date(date),
       );
-      monthDate.setHours(0, 0, 0, 0);
+      const personalPromise = this.personalService.getTotalSalaryForMonth(
+        date.toISOString(),
+      );
+      const otrosPromise = this.facturasService.getGastosOtrosDelMes(
+        new Date(date),
+      );
 
-      const nextMonthDate = new Date(monthDate);
-      nextMonthDate.setMonth(monthDate.getMonth() + 1);
-
-      const [facturas, personalTotal, otrosFacturas] = await Promise.all([
-        this.facturasService.getFacturasByDateAndType(
-          monthDate,
-          nextMonthDate,
-          ['proveedores', 'autos'],
+      promises.push(
+        Promise.all([factPromise, personalPromise, otrosPromise]).then(
+          ([fact, personalTotal, otros]) => ({
+            mesYear: `${date.getMonth() + 1}/${date.getFullYear()}`,
+            fact,
+            personalTotal,
+            otros,
+          }),
         ),
-        this.personalService.getTotalSalaryAtDate(monthDate),
-        this.facturasService.getFacturasByDateAndType(
-          monthDate,
-          nextMonthDate,
-          'otros',
-        ),
-      ]);
-
-      const fact = facturas.reduce((sum, factura) => sum + factura.monto, 0);
-      const igv = facturas.reduce(
-        (sum, factura) => sum + (factura.igv || 0),
-        0,
       );
-      const detraccion = facturas.reduce(
-        (sum, factura) => sum + (factura.detraccion || 0),
-        0,
-      );
-      const otros = otrosFacturas.reduce(
-        (sum, factura) => sum + factura.monto,
-        0,
-      );
-      const igvOtros = otrosFacturas.reduce(
-        (sum, factura) => sum + (factura.igv || 0),
-        0,
-      );
-
-      return {
-        mesYear: `${monthDate.getMonth() + 1}/${monthDate.getFullYear()}`,
-        fact,
-        igv,
-        detraccion,
-        personalTotal,
-        otros,
-        igvOtros,
-      };
-    });
+    }
 
     return Promise.all(promises);
   }
 
-  async getGeneralReport(inputDate: string): Promise<any[]> {
-    const monthlySummary =
-      await this.facturasService.getMonthlySummary(inputDate);
+  async getIngresosEgresosMensuales(inputDateISO: string): Promise<any[]> {
+    const inputDate = new Date(inputDateISO);
+    const promises = [];
 
-    const salaryPromises = monthlySummary.map((month) => {
-      const date = new Date(`01/${month.mesYear}`);
-      return this.personalService.getTotalSalaryAtDate(date);
-    });
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(
+        inputDate.getFullYear(),
+        inputDate.getMonth() - i,
+        1,
+      );
+      const egresosPromise = this.facturasService.getEgresosDelMes(date);
+      const personalPromise = this.personalService.getTotalSalaryForMonth(
+        date.toISOString(),
+      );
+      const ingresosPromise = this.facturasService.getIngresosDelMes(date);
 
-    const totalSalaries = await Promise.all(salaryPromises);
+      promises.push(
+        Promise.all([egresosPromise, personalPromise, ingresosPromise]).then(
+          ([egresos, personal, ingresos]) => ({
+            mesYear: `${date.getMonth() + 1}/${date.getFullYear()}`,
+            ingresoFact: ingresos,
+            egresosTotalFact: egresos + personal,
+          }),
+        ),
+      );
+    }
 
-    const results = monthlySummary.map((month, index) => ({
-      ...month,
-      egresosTotalFact: month.egresosFact + totalSalaries[index],
-    }));
-
-    return results;
+    return Promise.all(promises);
   }
 }

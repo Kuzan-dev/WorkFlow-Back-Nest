@@ -1,25 +1,16 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class GeneralReportDto {
-  @Field()
+  @Field({ nullable: true })
   mesYear: string;
 
-  @Field()
-  ingresoFact: number;
+  @Field({ nullable: true })
+  fact: number;
 
-  @Field()
-  egresosFact: number;
+  @Field({ nullable: true })
+  personalTotal: number;
 
-  @Field()
-  egresosTotalFact: number;
-
-  @Field()
-  igvIngresos: number;
-
-  @Field()
-  igvEgresos: number;
-
-  @Field()
-  detracciones: number;
+  @Field({ nullable: true })
+  otros: number;
 }

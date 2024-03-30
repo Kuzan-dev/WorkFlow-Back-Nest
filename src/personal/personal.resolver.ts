@@ -114,4 +114,15 @@ export class PersonalResolver {
     }
     return true;
   }
+
+  @Query(() => Number, {
+    name: 'obtener_Salari_Total',
+    description:
+      'Esta Función retorna el total de salarios de todo el personal en la base de dato',
+  })
+  async getTotalSalary(
+    @Args('inputDate', { type: () => String }) inputDate: string,
+  ): Promise<number> {
+    return this.personalService.getTotalSalaryForMonth(inputDate);
+  }
 }

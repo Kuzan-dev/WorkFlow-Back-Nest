@@ -45,15 +45,13 @@ export class PersonalService {
     return this.personalModel.findById(id).exec();
   }
 
-  async getTotalSalaryAtDate(queryDate: Date): Promise<number> {
+  async getTotalSalaryForMonth(queryDateISO: string): Promise<number> {
+    const queryDate = new Date(queryDateISO);
     const personals = await this.personalModel.find().exec();
     let totalSalary = 0;
 
-    const queryDateWithoutTime = new Date(
-      queryDate.getFullYear(),
-      queryDate.getMonth(),
-      queryDate.getDate(),
-    );
+    const queryMonth = queryDate.getMonth();
+    const queryYear = queryDate.getFullYear();
 
     for (const personal of personals) {
       personal.salarioFecha.sort(
@@ -61,13 +59,11 @@ export class PersonalService {
       );
 
       for (const sf of personal.salarioFecha) {
-        const sfDateWithoutTime = new Date(
-          sf.fecha.getFullYear(),
-          sf.fecha.getMonth(),
-          sf.fecha.getDate(),
-        );
-
-        if (sfDateWithoutTime <= queryDateWithoutTime) {
+        if (
+          sf.fecha.getFullYear() < queryYear ||
+          (sf.fecha.getFullYear() === queryYear &&
+            sf.fecha.getMonth() <= queryMonth)
+        ) {
           totalSalary += sf.salario;
           break;
         }

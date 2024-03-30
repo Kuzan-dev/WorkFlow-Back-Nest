@@ -2,24 +2,12 @@ import { Field, ObjectType, Float } from '@nestjs/graphql';
 
 @ObjectType()
 export class MonthlySummaryDto {
-  @Field()
+  @Field({ nullable: true })
   mesYear: string;
 
-  @Field(() => Float)
-  fact: number;
+  @Field(() => Float, { nullable: true })
+  ingresoFact: number;
 
-  @Field(() => Float)
-  igv: number;
-
-  @Field(() => Float)
-  detraccion: number;
-
-  @Field(() => Float)
-  igvOtros: number;
-
-  @Field(() => Float)
-  personalTotal: number;
-
-  @Field(() => Float)
-  otros: number;
+  @Field(() => Float, { nullable: true })
+  egresosTotalFact: number;
 }

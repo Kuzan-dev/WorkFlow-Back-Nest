@@ -332,23 +332,16 @@ type ClientesResult {
 }
 
 type MonthlySummaryDto {
-  mesYear: String!
-  fact: Float!
-  igv: Float!
-  detraccion: Float!
-  igvOtros: Float!
-  personalTotal: Float!
-  otros: Float!
+  mesYear: String
+  ingresoFact: Float
+  egresosTotalFact: Float
 }
 
 type GeneralReportDto {
-  mesYear: String!
-  ingresoFact: Float!
-  egresosFact: Float!
-  egresosTotalFact: Float!
-  igvIngresos: Float!
-  igvEgresos: Float!
-  detracciones: Float!
+  mesYear: String
+  fact: Float
+  personalTotal: Float
+  otros: Float
 }
 
 type Query {
@@ -430,6 +423,16 @@ type Query {
   buscar_repuestos(producto: String!, page: Int): RepuestosResult!
 
   """
+  Esta Función retorna el total de salarios de todo el personal en la base de dato
+  """
+  Egreso_Facturas_Mensual(inputDate: String!): Float!
+
+  """
+  Esta Función retorna el total de salarios de todo el personal en la base de dato
+  """
+  Ingreso_Facturas_Mensual(inputDate: String!): Float!
+
+  """
   Esta Función retorna la información de todo el personal en la base de datos
   """
   obtener_Todo_Personal: [PersonalDto!]!
@@ -439,6 +442,11 @@ type Query {
 
   """Esta función retorna la información del personal en base a su nombre"""
   buscar_Pesonal(nombre: String!, page: Int): PersonalResult!
+
+  """
+  Esta Función retorna el total de salarios de todo el personal en la base de dato
+  """
+  obtener_Salari_Total(inputDate: String!): Float!
 
   """Esta Función retorna la información de un cliente en base a su ID"""
   obtener_Cliente_ID(id: String!): ClienteDto!
@@ -458,11 +466,11 @@ type Query {
   """
   obtener_Usuarios_por_IDcliente(clienteId: String!): [UserOutput!]!
 
-  """Obtiene el resumen mensual de gastos"""
-  grafica_gastos_generales(inputDate: String!): [MonthlySummaryDto!]!
+  """Obtiene el resumen mensual de ingresos y egresos"""
+  grafica_gastos_generales(inputDate: String!): [GeneralReportDto!]!
 
   """Obtiene el resumen mensual de ingresos y egresos"""
-  grafica_ingresos_egresos(inputDate: String!): [GeneralReportDto!]!
+  grafica_ingresos_egresos(inputDate: String!): [MonthlySummaryDto!]!
 }
 
 type Mutation {
