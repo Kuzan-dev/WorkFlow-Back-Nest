@@ -79,7 +79,6 @@ export class FacturasService {
         },
       },
     ]);
-    console.log(ingresos); // Agrega esta línea
     return ingresos[0]?.total || 0;
   }
 
