@@ -352,7 +352,7 @@ export class MantenimientosResolver {
         new Date(fecha),
       );
 
-      const puntaje = await this.carService.getPuntaje(placa);
+      const puntaje = await this.carService.getPuntaje(placaSelect.placa);
       const cantidadMatenimientos =
         await this.mantenimientosService.getNumeroMantenimientos(
           placaSelect.placa,
