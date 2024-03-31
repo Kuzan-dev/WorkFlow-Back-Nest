@@ -11,6 +11,65 @@ type UserOutput {
   nivelUser: String!
 }
 
+type GeneralReportDto {
+  mesYear: String
+  fact: Float
+  personalTotal: Float
+  otros: Float
+}
+
+type CalendarGrafica {
+  fecha: DateTime
+  cantidad: Float
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MonthlySummaryDto {
+  mesYear: String
+  ingresoFact: Float
+  egresosTotalFact: Float
+}
+
+type OperatividadOut {
+  operatividadPorcentual: Float
+  operatividadHoras: Float
+}
+
+type IngresosDtoOut {
+  ingresos: Float
+  detracciones: Float
+  igv: Float
+}
+
+type ProductoConsumidoDash {
+  producto: String!
+  cantidadConsumida: Int!
+}
+
+type DashRepuestos {
+  prod1: ProductoConsumidoDash
+  prod2: ProductoConsumidoDash
+  prod3: ProductoConsumidoDash
+  prod4: ProductoConsumidoDash
+  prod5: ProductoConsumidoDash
+  otros: ProductoConsumidoDash
+}
+
+type Dashboard {
+  ingresosMensuales: IngresosDtoOut
+  mantenimientosRealizados: Float
+  mantenimientosDenegados: Float
+  gastosGenerales: [GeneralReportDto!]
+  operatividad: OperatividadOut
+  calendario: [CalendarGrafica!]
+  ingresosEgresos: [MonthlySummaryDto!]
+  repuestosMasConsumidos: DashRepuestos
+}
+
 type RepuestoType {
   id: String
   cantidadReserva: Float
@@ -31,11 +90,6 @@ type CarInfo {
   Puntaje: Float!
   Mantenimientos: [MantenimientoInfo!]
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type MantenimientoInfo {
   id: String!
@@ -176,7 +230,7 @@ type ProductoConsumido {
 }
 
 type MesRepuestos {
-  mesYear: String!
+  mesYear: String
   prod1: ProductoConsumido
   prod2: ProductoConsumido
   prod3: ProductoConsumido
@@ -254,11 +308,6 @@ type MantenimientoTableType {
   totalPages: Int!
 }
 
-type CalendarGrafica {
-  fecha: DateTime
-  cantidad: Float
-}
-
 type RepuestoSearchType {
   _id: String
   cantidadReserva: Float
@@ -334,35 +383,6 @@ type ClienteDto {
 type ClientesResult {
   clientes: [ClienteDto!]!
   totalPages: Int!
-}
-
-type MonthlySummaryDto {
-  mesYear: String
-  ingresoFact: Float
-  egresosTotalFact: Float
-}
-
-type GeneralReportDto {
-  mesYear: String
-  fact: Float
-  personalTotal: Float
-  otros: Float
-}
-
-type Operatividad {
-  operatividadPorcentual: Float
-  operatividadHoras: Float
-}
-
-type Dashboard {
-  ingresosMensuales: Float
-  mantenimientosRealizados: Float
-  mantenimientosCancelados: Float
-  gastosGenerales: [GeneralReportDto!]
-  operatividad: Operatividad
-  calendario: [CalendarGrafica!]
-  ingresosEgresos: [MonthlySummaryDto!]
-  repuestos: MesRepuestos
 }
 
 type Query {
@@ -499,7 +519,7 @@ type Query {
   grafica_ingresos_egresos(inputDate: String!): [MonthlySummaryDto!]!
 
   """Obtiene el resumen mensual de ingresos y egresos"""
-  dashboard_web(inputDate: String!): Dashboard!
+  dashboard_web: Dashboard!
 }
 
 type Mutation {

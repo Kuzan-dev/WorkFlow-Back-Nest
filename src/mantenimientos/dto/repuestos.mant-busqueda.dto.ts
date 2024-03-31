@@ -11,7 +11,7 @@ class ProductoConsumido {
 
 @ObjectType()
 export class MesRepuestos {
-  @Field()
+  @Field({ nullable: true })
   mesYear: string;
 
   @Field(() => ProductoConsumido, { nullable: true })

@@ -26,6 +26,10 @@ import { Costos } from './dto/costos-mes-prev-correc.dto';
 import { RepuestosMasConsumidosPorMes } from './dto/costo-repuesto-mes.dto';
 import { OperatividadPorMes } from './dto/operatividad-mes.dto';
 import { CalendarGrafica } from './dto/calendar-graph.dt';
+import {
+  DashRepuestos,
+  ProductoConsumidoDash,
+} from 'src/estadisticas/dto/dashboard.dto';
 
 @Injectable()
 export class MantenimientosService {
@@ -591,20 +595,22 @@ export class MantenimientosService {
   }
 
   async getConsumedRepuestos(inputDate: Date, months: number): Promise<any> {
+    console.log('inputDate:', inputDate);
+    console.log('months:', months);
     const startDate = new Date(
       inputDate.getFullYear(),
       inputDate.getMonth() + 1,
       0,
     );
     startDate.setHours(23, 59, 59, 999); // Set the time to the end of the day
-
+    console.log('startDate:', startDate);
     const endDate = new Date(
       inputDate.getFullYear(),
       inputDate.getMonth() - months,
       1,
     );
     endDate.setHours(0, 0, 0, 0); // Set the time to the start of the day
-
+    console.log('endDate:', endDate);
     const mantenimientos = await this.mantenimientoModel.aggregate([
       {
         $match: {
@@ -629,7 +635,7 @@ export class MantenimientosService {
         $sort: { cantidadConsumida: -1 },
       },
     ]);
-
+    console.log('mantenimientos:', mantenimientos);
     const results = [];
     for (const mant of mantenimientos) {
       const key = `${mant._id.month}/${mant._id.year}`;
@@ -651,7 +657,7 @@ export class MantenimientosService {
       }
     }
 
-    return results;
+    return results || [];
   }
 
   async addRepuestosAjuste(
@@ -955,6 +961,39 @@ export class MantenimientosService {
     return operatividadPorcentual;
   }
 
+  //Operatividad total por vehículo
+  async getOperatividadHoras(placa: string): Promise<number> {
+    const mantenimientos = await this.mantenimientoModel.find({
+      placa,
+      estado: 'completado',
+    });
+    if (mantenimientos.length === 0) {
+      console.log(
+        'No se encontraron mantenimientos completados para la placa especificada',
+      );
+      return 0;
+    }
+
+    const horasMuertas = mantenimientos.reduce((total, mantenimiento) => {
+      const inicio = new Date(mantenimiento.fechaInicio);
+      const fin = new Date(mantenimiento.fechaFin);
+      const horas = (fin.getTime() - inicio.getTime()) / 1000 / 60 / 60;
+      return total + horas;
+    }, 0);
+
+    const primerMantenimiento = mantenimientos[0];
+    const ahora = new Date();
+    const horasTotales =
+      (ahora.getTime() - new Date(primerMantenimiento.fechaInicio).getTime()) /
+      1000 /
+      60 /
+      60;
+
+    const operatividad = horasTotales - horasMuertas;
+
+    return operatividad;
+  }
+
   async getCarData(searchParam: string): Promise<any> {
     const car = await this.carsService.findFirstByPlaca(searchParam);
     if (!car) {
@@ -1084,5 +1123,78 @@ export class MantenimientosService {
       fecha: new Date(_id.year, _id.month - 1, _id.day),
       cantidad: count,
     }));
+  }
+
+  //Mantenimientos completados en x mes
+  async getCompletedMaintenancesInMonth(date: Date): Promise<number> {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const count = await this.mantenimientoModel.countDocuments({
+      estado: 'completado',
+      fecha: {
+        $gte: startOfMonth,
+        $lte: endOfMonth,
+      },
+    });
+
+    return count;
+  }
+
+  //Mantenimientos cancelados en x mes
+  async getDenegadosMaintenancesInMonth(date: Date): Promise<number> {
+    const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const count = await this.mantenimientoModel.countDocuments({
+      estado: 'denegado',
+      fecha: {
+        $gte: startOfMonth,
+        $lte: endOfMonth,
+      },
+    });
+
+    return count;
+  }
+
+  async getMostConsumedParts(date: Date): Promise<DashRepuestos> {
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const mostConsumedParts = await this.mantenimientoModel.aggregate([
+      {
+        $match: {
+          fecha: { $gte: firstDayOfMonth, $lte: lastDayOfMonth },
+          estado: 'completado',
+        },
+      },
+      { $unwind: '$repuestosAjuste' },
+      {
+        $group: {
+          _id: '$repuestosAjuste.producto',
+          count: {
+            $sum: {
+              $multiply: [
+                '$repuestosAjuste.cantidad',
+                '$repuestosAjuste.precio',
+              ],
+            },
+          },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 3 },
+    ]);
+
+    const dashRepuestos = new DashRepuestos();
+    mostConsumedParts.forEach((part, index) => {
+      const productoConsumido = new ProductoConsumidoDash();
+      productoConsumido.producto = part._id;
+      productoConsumido.cantidadConsumida = part.count;
+
+      dashRepuestos[`prod${index + 1}`] = productoConsumido;
+    });
+
+    return dashRepuestos;
   }
 }

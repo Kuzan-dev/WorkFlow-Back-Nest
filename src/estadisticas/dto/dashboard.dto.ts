@@ -1,10 +1,10 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { GeneralReportDto } from './ingresos-egresos.dto';
 import { CalendarGrafica } from 'src/mantenimientos/dto/calendar-graph.dt';
 import { MonthlySummaryDto } from './monthly-summary.dto';
-import { MesRepuestos } from 'src/mantenimientos/dto/repuestos.mant-busqueda.dto';
+
 @ObjectType()
-class Operatividad {
+export class OperatividadOut {
   @Field({ nullable: true })
   operatividadPorcentual: number;
 
@@ -13,21 +13,63 @@ class Operatividad {
 }
 
 @ObjectType()
-export class Dashboard {
+export class IngresosDtoOut {
   @Field({ nullable: true })
-  ingresosMensuales: number;
+  ingresos: number;
+
+  @Field({ nullable: true })
+  detracciones: number;
+
+  @Field({ nullable: true })
+  igv: number;
+}
+
+@ObjectType()
+export class ProductoConsumidoDash {
+  @Field()
+  producto: string;
+
+  @Field(() => Int)
+  cantidadConsumida: number;
+}
+
+@ObjectType()
+export class DashRepuestos {
+  @Field(() => ProductoConsumidoDash, { nullable: true })
+  prod1?: ProductoConsumidoDash;
+
+  @Field(() => ProductoConsumidoDash, { nullable: true })
+  prod2?: ProductoConsumidoDash;
+
+  @Field(() => ProductoConsumidoDash, { nullable: true })
+  prod3?: ProductoConsumidoDash;
+
+  @Field(() => ProductoConsumidoDash, { nullable: true })
+  prod4?: ProductoConsumidoDash;
+
+  @Field(() => ProductoConsumidoDash, { nullable: true })
+  prod5?: ProductoConsumidoDash;
+
+  @Field(() => ProductoConsumidoDash, { nullable: true })
+  otros?: ProductoConsumidoDash;
+}
+
+@ObjectType()
+export class Dashboard {
+  @Field(() => IngresosDtoOut, { nullable: true })
+  ingresosMensuales: IngresosDtoOut;
 
   @Field({ nullable: true })
   mantenimientosRealizados: number;
 
   @Field({ nullable: true })
-  mantenimientosCancelados: number;
+  mantenimientosDenegados: number;
 
   @Field(() => [GeneralReportDto], { nullable: true })
   gastosGenerales: GeneralReportDto[];
 
-  @Field(() => Operatividad, { nullable: true })
-  operatividad: Operatividad;
+  @Field(() => OperatividadOut, { nullable: true })
+  operatividad: OperatividadOut;
 
   @Field(() => [CalendarGrafica], { nullable: true })
   calendario: CalendarGrafica[];
@@ -35,6 +77,6 @@ export class Dashboard {
   @Field(() => [MonthlySummaryDto], { nullable: true })
   ingresosEgresos: MonthlySummaryDto[];
 
-  @Field(() => MesRepuestos, { nullable: true })
-  repuestos: MesRepuestos;
+  @Field(() => DashRepuestos, { nullable: true })
+  repuestosMasConsumidos: DashRepuestos;
 }

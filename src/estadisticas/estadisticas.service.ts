@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
 //import { CarsService } from 'src/cars/cars.service';
 import { FacturasService } from 'src/facturas/facturas.service';
+import { MantenimientosService } from 'src/mantenimientos/mantenimientos.service';
 import { PersonalService } from 'src/personal/personal.service';
+import { OperatividadOut } from './dto/dashboard.dto';
+import { IngresosDtoOut } from './dto/dashboard.dto';
+
 @Injectable()
 export class EstadisticasService {
   constructor(
     private facturasService: FacturasService,
     private personalService: PersonalService,
+    private mantenimientosService: MantenimientosService,
   ) {}
 
   async getGastosMensuales(inputDateISO: string): Promise<any[]> {
@@ -74,5 +79,36 @@ export class EstadisticasService {
     }
 
     return Promise.all(promises);
+  }
+
+  async getOperatividadGraf(inputDate: string): Promise<OperatividadOut> {
+    const operatividad =
+      this.mantenimientosService.getOperatividadHoras(inputDate);
+    const operatividadPorcentual =
+      this.mantenimientosService.getOperatividadPorcentual(inputDate);
+    return Promise.all([operatividad, operatividadPorcentual]).then(
+      ([operatividadPorcentual, operatividadHoras]) => {
+        return {
+          operatividadPorcentual,
+          operatividadHoras,
+        };
+      },
+    );
+  }
+
+  async getIngresosTabla(inputDate: string): Promise<IngresosDtoOut> {
+    const date = new Date(inputDate);
+    const ingresos = this.facturasService.getIngresosDelMes(date);
+    const detracciones = this.facturasService.getDetraccionesDelMes(date);
+    const igv = this.facturasService.getIGVDelMes(date);
+    return Promise.all([ingresos, detracciones, igv]).then(
+      ([ingresos, detracciones, igv]) => {
+        return {
+          ingresos,
+          detracciones,
+          igv,
+        };
+      },
+    );
   }
 }

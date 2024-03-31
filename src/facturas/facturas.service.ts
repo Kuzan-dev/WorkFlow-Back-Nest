@@ -82,6 +82,57 @@ export class FacturasService {
     return ingresos[0]?.total || 0;
   }
 
+  async getDetraccionesDelMes(date: Date): Promise<number> {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const detracciones = await this.facturaModel.aggregate([
+      {
+        $match: {
+          tipo: {
+            $in: ['Factura a Propietario Vehicular'],
+          },
+          fecha: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$detraccion' },
+        },
+      },
+    ]);
+    return detracciones[0]?.total || 0;
+  }
+
+  async getIGVDelMes(date: Date): Promise<number> {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+    const igv = await this.facturaModel.aggregate([
+      {
+        $match: {
+          tipo: {
+            $in: [
+              'Factura a Propietario Vehicular',
+              'Compra de Repuestos',
+              'Factura a Cliente',
+              'Compra Adicional',
+            ],
+          },
+          fecha: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$igv' },
+        },
+      },
+    ]);
+    return igv[0]?.total || 0;
+  }
+
   async getGastosFacDelMes(date: Date): Promise<number> {
     const start = new Date(date.getFullYear(), date.getMonth(), 1);
     const end = new Date(date.getFullYear(), date.getMonth() + 1, 0);

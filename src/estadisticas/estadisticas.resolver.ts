@@ -3,10 +3,16 @@ import { EstadisticasService } from './estadisticas.service';
 import { MonthlySummaryDto } from './dto/monthly-summary.dto';
 import { GeneralReportDto } from './dto/ingresos-egresos.dto';
 import { Dashboard } from './dto/dashboard.dto';
+import { MantenimientosService } from 'src/mantenimientos/mantenimientos.service';
+import { FacturasService } from 'src/facturas/facturas.service';
 
 @Resolver()
 export class EstadisticasResolver {
-  constructor(private estadisticasService: EstadisticasService) {}
+  constructor(
+    private estadisticasService: EstadisticasService,
+    private mantenimientosService: MantenimientosService,
+    private facturasService: FacturasService,
+  ) {}
 
   @Query(() => [GeneralReportDto], {
     name: 'grafica_gastos_generales',
@@ -32,10 +38,38 @@ export class EstadisticasResolver {
     name: 'dashboard_web',
     description: 'Obtiene el resumen mensual de ingresos y egresos',
   })
-  async dashboardweb(
-    @Args('inputDate', { type: () => String }) inputDate: string,
-  ): Promise<Dashboard> {
-    await this.estadisticasService.getIngresosEgresosMensuales(inputDate);
-    return null;
+  async dashboardweb(): Promise<Dashboard> {
+    const fechaActual = new Date();
+    const fechaActualString = new Date().toISOString();
+
+    const [
+      ingresosMensuales,
+      mantenimientosRealizados,
+      mantenimientosDenegados,
+      gastosGenerales,
+      operatividad,
+      calendario,
+      ingresosEgresos,
+      repuestosMasConsumidos,
+    ] = await Promise.all([
+      this.estadisticasService.getIngresosTabla(fechaActualString),
+      this.mantenimientosService.getCompletedMaintenancesInMonth(fechaActual),
+      this.mantenimientosService.getDenegadosMaintenancesInMonth(fechaActual),
+      this.estadisticasService.getGastosMensuales(fechaActualString),
+      this.estadisticasService.getOperatividadGraf(fechaActualString),
+      this.mantenimientosService.getCalendarGraficaRange(fechaActual),
+      this.estadisticasService.getIngresosEgresosMensuales(fechaActualString),
+      this.mantenimientosService.getMostConsumedParts(fechaActual),
+    ]);
+    return {
+      ingresosMensuales,
+      mantenimientosRealizados,
+      mantenimientosDenegados,
+      gastosGenerales,
+      operatividad,
+      calendario,
+      ingresosEgresos,
+      repuestosMasConsumidos,
+    };
   }
 }
