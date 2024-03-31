@@ -904,7 +904,9 @@ export class MantenimientosService {
 
         const horasDelMes = new Date(year, month + 1, 0).getDate() * 24;
 
-        const operatividad = horasDelMes - horasMuertas;
+        const operatividad = parseFloat(
+          (horasDelMes - horasMuertas).toFixed(2),
+        );
 
         return {
           mes: `${month + 1}/${year}`,
