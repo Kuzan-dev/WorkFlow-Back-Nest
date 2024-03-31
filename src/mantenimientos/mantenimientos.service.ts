@@ -699,15 +699,17 @@ export class MantenimientosService {
     const kmRecorridoPorMes = Array(12)
       .fill(0)
       .map((_, index) => {
-        const month = new Date(oneYearAgo);
-        month.setMonth(month.getMonth() + index + 1);
+        const year =
+          oneYearAgo.getFullYear() +
+          Math.floor((oneYearAgo.getMonth() + index + 1) / 12);
+        const month = (oneYearAgo.getMonth() + index + 1) % 12;
 
         const kmRecorridoTotal = mantenimientos
           .filter((mantenimiento) => {
             const mantenimientoDate = new Date(mantenimiento.fecha);
             return (
-              mantenimientoDate.getMonth() === month.getMonth() &&
-              mantenimientoDate.getFullYear() === month.getFullYear()
+              mantenimientoDate.getMonth() === month &&
+              mantenimientoDate.getFullYear() === year
             );
           })
           .reduce(
@@ -717,7 +719,7 @@ export class MantenimientosService {
           );
 
         return {
-          mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
+          mes: `${month + 1}/${year}`,
           kmRecorridoTotal,
         };
       });
@@ -875,15 +877,17 @@ export class MantenimientosService {
     const operatividadPorMes = Array(12)
       .fill(0)
       .map((_, index) => {
-        const month = new Date(oneYearAgo);
-        month.setMonth(month.getMonth() + index + 1);
+        const year =
+          oneYearAgo.getFullYear() +
+          Math.floor((oneYearAgo.getMonth() + index + 1) / 12);
+        const month = (oneYearAgo.getMonth() + index + 1) % 12;
 
         const mantenimientosThisMonth = mantenimientos.filter(
           (mantenimiento) => {
             const mantenimientoDate = new Date(mantenimiento.fecha);
             return (
-              mantenimientoDate.getMonth() === month.getMonth() &&
-              mantenimientoDate.getFullYear() === month.getFullYear()
+              mantenimientoDate.getMonth() === month &&
+              mantenimientoDate.getFullYear() === year
             );
           },
         );
@@ -898,13 +902,12 @@ export class MantenimientosService {
           0,
         );
 
-        const horasDelMes =
-          new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate() * 24;
+        const horasDelMes = new Date(year, month + 1, 0).getDate() * 24;
 
         const operatividad = horasDelMes - horasMuertas;
 
         return {
-          mes: `${month.getMonth() + 1}/${month.getFullYear()}`,
+          mes: `${month + 1}/${year}`,
           operatividad,
         };
       });
