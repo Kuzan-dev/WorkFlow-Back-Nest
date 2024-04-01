@@ -134,7 +134,7 @@ export class MantenimientosService {
     });
     pubSub.publish('Actividades', { Actividades: mantToday });
     await this.notificacionesService.crearNotificacion(
-      'Notificacion-admin',
+      'admin',
       'mantenimiento',
       programMant.id.toString(),
       'Mantenimiento programado',
@@ -203,7 +203,7 @@ export class MantenimientosService {
       });
       pubSub.publish('Actividades', { Actividades: mantToday });
       await this.notificacionesService.crearNotificacion(
-        'Notificacion-admin',
+        'admin',
         'mantenimiento',
         updateMant.id.toString(),
         'Mantenimiento Registrado',
@@ -274,7 +274,7 @@ export class MantenimientosService {
       });
       pubSub.publish('Actividades', { Actividades: mantToday });
       await this.notificacionesService.crearNotificacion(
-        'Notificacion-admin',
+        'admin',
         'mantenimiento',
         updateOneMant.id.toString(),
         'Mantenimiento Registrado',
@@ -514,7 +514,7 @@ export class MantenimientosService {
       pubSub.publish('Actividades', { Actividades: mantToday });
 
       await this.notificacionesService.crearNotificacion(
-        'Notificacion-admin',
+        'admin',
         'mantenimiento',
         updatedMant.id.toString(),
         'Mantenimiento Completado',

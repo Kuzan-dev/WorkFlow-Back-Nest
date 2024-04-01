@@ -33,6 +33,7 @@
     "@nestjs/platform-socket.io": "^10.3.3",
     "@nestjs/schedule": "^4.0.1",
     "@nestjs/websockets": "^10.3.3",
+    "@onesignal/node-onesignal": "^2.0.1-beta2",
     "apollo-server-core": "^3.13.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",

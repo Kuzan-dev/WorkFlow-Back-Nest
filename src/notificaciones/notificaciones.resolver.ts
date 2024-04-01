@@ -14,7 +14,7 @@ export class NotificacionesResolver {
     resolve: (payload) => payload || new NotificacionDTO(),
   })
   async mantenimientos() {
-    return pubSub.asyncIterator('Notificacion-admin');
+    return pubSub.asyncIterator('admin');
   }
 
   //Agregar Query para ver todos los mensajes
