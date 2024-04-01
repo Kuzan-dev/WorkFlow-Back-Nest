@@ -202,6 +202,15 @@ export class MantenimientosService {
         calendarTecnico: { calendar, mantenimientos: allMantenimientos },
       });
       pubSub.publish('Actividades', { Actividades: mantToday });
+      await this.notificacionesService.crearNotificacion(
+        'Notificacion-admin',
+        'mantenimiento',
+        updateMant.id.toString(),
+        'Mantenimiento Registrado',
+        `Se ha registrado un mantenimiento para el carro con placa ${updateMant.placa}`,
+        new Date(),
+        false,
+      );
       return updateMant.id.toString(); //Enviamos el ID como string
     } catch (error) {
       await session.abortTransaction();
@@ -264,6 +273,15 @@ export class MantenimientosService {
         calendarTecnico: { calendar, mantenimientos: allMantenimientos },
       });
       pubSub.publish('Actividades', { Actividades: mantToday });
+      await this.notificacionesService.crearNotificacion(
+        'Notificacion-admin',
+        'mantenimiento',
+        updateOneMant.id.toString(),
+        'Mantenimiento Registrado',
+        `Se ha registrado un mantenimiento para el carro con placa ${updateOneMant.placa}`,
+        new Date(),
+        false,
+      );
       return updateOneMant.id.toString();
     } catch (error) {
       await session.abortTransaction();
@@ -494,6 +512,16 @@ export class MantenimientosService {
         calendarTecnico: { calendar, mantenimientos: allMantenimientos },
       });
       pubSub.publish('Actividades', { Actividades: mantToday });
+
+      await this.notificacionesService.crearNotificacion(
+        'Notificacion-admin',
+        'mantenimiento',
+        updatedMant.id.toString(),
+        'Mantenimiento Completado',
+        `Se ha completado el mantenimiento para el carro con placa ${updatedMant.placa}`,
+        new Date(),
+        false,
+      );
 
       return updatedMant.id.toString();
     } catch (error) {

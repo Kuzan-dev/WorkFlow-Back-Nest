@@ -3,16 +3,27 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Factura } from './schemas/factura.schema';
 import { CreateFacturaDto } from './dto/create-factura.dto';
+import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
 
 @Injectable()
 export class FacturasService {
   constructor(
     @InjectModel(Factura.name)
     private readonly facturaModel: Model<Factura>,
+    private readonly notificacionesService: NotificacionesService,
   ) {}
 
   async create(createDacturaDto: CreateFacturaDto): Promise<Factura> {
     const newFactura = await this.facturaModel.create(createDacturaDto);
+    await this.notificacionesService.crearNotificacion(
+      'Notificacion-admin',
+      'factura',
+      newFactura.id.toString(),
+      'Facturación',
+      `Se ha registrado una ${newFactura.tipo} con monto de S/. ${newFactura.monto}`,
+      new Date(),
+      false,
+    );
     return newFactura.id;
   }
 
