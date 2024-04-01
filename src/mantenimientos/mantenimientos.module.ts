@@ -9,9 +9,11 @@ import {
 } from './schemas/mantenimiento.schema';
 import { CarsModule } from 'src/cars/cars.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { NotificacionesModule } from 'src/notificaciones/notificaciones.module';
 
 @Module({
   imports: [
+    NotificacionesModule,
     AuthModule,
     MongooseModule.forFeature([
       { name: Mantenimiento.name, schema: MantenimientoSchema },

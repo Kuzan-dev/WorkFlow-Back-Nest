@@ -22,6 +22,7 @@ import { DocumentosModule } from './documentos/documentos.module';
 import { EstadisticasModule } from './estadisticas/estadisticas.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ReportModule } from './report/report.module';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { ReportModule } from './report/report.module';
     EstadisticasModule,
     TasksModule,
     ReportModule,
+    NotificacionesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

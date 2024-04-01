@@ -341,6 +341,16 @@ type GetForPlacasDto {
   fechaSoat: DateTime!
 }
 
+type NotificacionDTO {
+  _id: String!
+  tipo: String!
+  titulo: String!
+  identificador: String!
+  descripcion: String!
+  fecha: DateTime!
+  leido: Boolean!
+}
+
 type SalarioFechaDto {
   salario: Float!
   fecha: DateTime!
@@ -446,6 +456,9 @@ type Query {
   Esta función retorna la cantidad de mantenimientos programados, pendientes, completados y denegados por mes
   """
   calendar_grafica(fechaInput: DateTime): [CalendarGrafica!]!
+
+  """Esta Función retorna la información de las notificaciones no leidas"""
+  obtener_notificaciones_no_leidas: [NotificacionDTO!]!
 
   """
   Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)
@@ -559,6 +572,9 @@ type Mutation {
   Esta función actualiza el campo diagnosticoFinal de un mantenimiento y cambia su estado a "completado"
   """
   completar_mantenimiento(id: String!, diagnosticoFinal: String!, fechaFin: DateTime!): String!
+
+  """Esta Función es para probar las notifaciones"""
+  prueba_notificacion(inputNotification: CreateNotiDTO!): Boolean!
 
   """Esta Función registra un auto en la base de datos"""
   crear_auto(createCarInput: CreateCarDto!): String!
@@ -683,6 +699,16 @@ input UpdateMantenimientoDto {
   repuestos: [RepuestoDto!]
 }
 
+input CreateNotiDTO {
+  canal: String!
+  tipo: String!
+  titulo: String!
+  identificador: String!
+  descripcion: String!
+  fecha: DateTime!
+  leido: Boolean!
+}
+
 input CreateCarDto {
   placa: String!
   propietario: String!
@@ -780,5 +806,8 @@ type Subscription {
   Esta funcion retorna los mantenimientos desde el día de hoy para la pestaña de actividades
   """
   Actividades: [homeMantDTO!]!
+
+  """Esta Función retorna la información de las notificaciones admin"""
+  notificaciones_admin: NotificacionDTO!
   Personal: [PersonalDto!]!
 }

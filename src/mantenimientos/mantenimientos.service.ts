@@ -30,7 +30,7 @@ import {
   DashRepuestos,
   ProductoConsumidoDash,
 } from 'src/estadisticas/dto/dashboard.dto';
-
+import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
 @Injectable()
 export class MantenimientosService {
   private readonly mantenimientoChanges = new Subject<any>();
@@ -39,6 +39,7 @@ export class MantenimientosService {
     private readonly mantenimientoModel: Model<Mantenimiento>,
     private readonly carsService: CarsService,
     private readonly repuestosService: RepuestosService,
+    private readonly notificacionesService: NotificacionesService,
   ) {}
 
   async getMantenimientosPorPlaca(placa: string): Promise<Mantenimiento[]> {
@@ -132,6 +133,15 @@ export class MantenimientosService {
       calendarTecnico: { calendar, mantenimientos: allMantenimientos },
     });
     pubSub.publish('Actividades', { Actividades: mantToday });
+    await this.notificacionesService.crearNotificacion(
+      'Notificacion-admin',
+      'mantenimiento',
+      programMant.id.toString(),
+      'Mantenimiento programado',
+      `Se ha programado un mantenimiento para el carro con placa ${programMant.placa}`,
+      new Date(),
+      false,
+    );
     return programMant.id.toString();
   }
 
