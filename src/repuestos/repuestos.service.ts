@@ -185,19 +185,29 @@ export class RepuestosService {
     page?: number,
   ): Promise<{ repuestos: Repuesto[]; totalPages: number }> {
     const limit = 8;
-    const skip = page && page > 0 ? (page - 1) * limit : 0;
+
+    let skip;
+    let needPagination = true;
+
+    if (page === undefined || page === null) {
+      needPagination = false;
+    } else {
+      skip = page && page > 0 ? (page - 1) * limit : 0;
+    }
 
     const query =
       producto === '' ? {} : { producto: new RegExp(producto, 'i') };
 
     const totalDocuments = await this.respuestoModel.countDocuments(query);
-    const totalPages = Math.ceil(totalDocuments / limit);
+    const totalPages = needPagination ? Math.ceil(totalDocuments / limit) : 1;
 
-    const repuestos = await this.respuestoModel
-      .find(query)
-      .skip(skip)
-      .limit(limit)
-      .exec();
+    let findQuery = this.respuestoModel.find(query);
+
+    if (needPagination) {
+      findQuery = findQuery.skip(skip).limit(limit);
+    }
+
+    const repuestos = await findQuery.exec();
 
     return {
       repuestos,
