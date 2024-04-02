@@ -23,8 +23,11 @@ export class UsersService {
     return newUser.save();
   }
 
-  async updatePassword(username: string, newPassword: string): Promise<User> {
-    const user = await this.userModel.findOne({ username: username }).exec();
+  async updatePassword(
+    oldUsername: string,
+    newPassword: string,
+  ): Promise<User> {
+    const user = await this.userModel.findOne({ username: oldUsername }).exec();
     if (!user) {
       throw new Error('User not found');
     }
@@ -70,5 +73,24 @@ export class UsersService {
       throw new NotFoundException('Usuario no encontrado');
     }
     return user.clienteAsociado;
+  }
+
+  async updateDatUser(
+    oldUsername: string,
+    newUsername: string,
+    newName: string,
+    newEmail: string,
+    newPassword: string,
+  ): Promise<User> {
+    const user = await this.userModel.findOne({ username: oldUsername }).exec();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.username = newUsername;
+    user.name = newName;
+    user.email = newEmail;
+    return user.save();
   }
 }

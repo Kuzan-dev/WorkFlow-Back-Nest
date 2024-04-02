@@ -1,4 +1,4 @@
-import { Mutation, Resolver, Args } from '@nestjs/graphql';
+import { Mutation, Resolver, Args, Query } from '@nestjs/graphql';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
@@ -7,6 +7,7 @@ import { Roles } from '../auth/roles.decorator';
 import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+import { UserOutput } from 'src/users/dto/create-user.dto';
 
 @Resolver()
 export class AuthResolver {
@@ -77,5 +78,33 @@ export class AuthResolver {
     } catch (error) {
       return 'Fallo al eliminar user';
     }
+  }
+
+  @Query(() => UserOutput, {
+    name: 'obtener_usuario_por_username',
+    description: 'Esta Función obtiene un usuario por su username',
+  })
+  async getUsersByClienteName(
+    @Args('username') username: string,
+  ): Promise<UserOutput> {
+    return this.usersService.findOne(username);
+  }
+
+  @Mutation(() => Boolean)
+  async updateData(
+    @Args('oldUsername') oldUsername: string,
+    @Args('newUsername') newUsername: string,
+    @Args('newName') newName: string,
+    @Args('newEmail') newEmail: string,
+    @Args('newPassword') newPassword: string,
+  ) {
+    await this.usersService.updateDatUser(
+      oldUsername,
+      newUsername,
+      newName,
+      newEmail,
+      newPassword,
+    );
+    return true;
   }
 }

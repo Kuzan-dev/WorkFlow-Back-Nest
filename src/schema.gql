@@ -396,6 +396,9 @@ type ClientesResult {
 }
 
 type Query {
+  """Esta Función obtiene un usuario por su username"""
+  obtener_usuario_por_username(username: String!): UserOutput!
+
   """
   Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy
   """
@@ -549,6 +552,7 @@ type Mutation {
 
   """Esta Función elimina un usuario de la base de datos"""
   borrar_usuario_por_id(_id: String!): String!
+  updateData(oldUsername: String!, newUsername: String!, newName: String!, newEmail: String!, newPassword: String!): Boolean!
 
   """
   Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados
