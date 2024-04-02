@@ -341,6 +341,13 @@ type GetForPlacasDto {
   fechaSoat: DateTime!
 }
 
+type GetPlacasClientDto {
+  _id: String!
+  placa: String!
+  cliente: String!
+  fechaSoat: DateTime!
+}
+
 type NotificacionDTO {
   _id: String!
   tipo: String!
@@ -473,6 +480,11 @@ type Query {
 
   """Esta Función retorna las placas de los autos"""
   buscar_placas_autos(placa: String!): [String!]!
+
+  """
+  Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)
+  """
+  obtener_info_placas_clientes: [GetPlacasClientDto!]!
 
   """
   Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)

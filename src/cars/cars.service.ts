@@ -85,6 +85,12 @@ export class CarsService {
     const cars = await this.carModel.find({ cliente: clientName }).exec();
     return cars.map((car) => car.placa);
   }
+
+  //Función para encontrar las placas de los carros de un cliente
+  async findCarByClient(clientName: string): Promise<Car[]> {
+    const cars = await this.carModel.find({ cliente: clientName }).exec();
+    return cars;
+  }
   //Función de busqueda de una placa en especifico usando SearchParams y devuelve el primer resultado
   async findFirstByPlaca(placa: string): Promise<Car> {
     if (placa === '') {

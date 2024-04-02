@@ -1,12 +1,21 @@
-import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query, Context } from '@nestjs/graphql';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { GetPlacasDto } from './dto/get-placas-info.dto';
 import { GetForPlacasDto } from './dto/get-for-placa';
+import { GetPlacasClientDto } from './dto/get-placas-info-client.dto';
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Resolver()
 export class CarsResolver {
-  constructor(private readonly carsService: CarsService) {}
+  constructor(
+    private readonly carsService: CarsService,
+    private readonly usersService: UsersService,
+  ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   @Mutation((returns) => String, {
@@ -42,5 +51,18 @@ export class CarsResolver {
   })
   async searchCars(@Args('placa', { type: () => String }) placa: string) {
     return this.carsService.searchCars(placa);
+  }
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'cliente')
+  @Query(() => [GetPlacasClientDto], {
+    name: 'obtener_info_placas_clientes',
+    description:
+      'Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)',
+  })
+  async getCarsDataClient(@Context() context) {
+    const username = context.req.user.username;
+    const client = await this.usersService.findClientByUsername(username);
+    return this.carsService.findCarByClient(client);
   }
 }

@@ -47,4 +47,4 @@ export class Proveedor {
   documentos: Array<string>;
 }
 
-export const UserSchema = SchemaFactory.createForClass(Proveedor);
+export const ProveedorSchema = SchemaFactory.createForClass(Proveedor);
