@@ -15,4 +15,33 @@ export class ProveedoresService {
     const newProveedor = new this.proveedorModel(proveedor);
     return newProveedor.save();
   }
+
+  async searchProveedor(
+    nombre: string,
+    page?: number,
+  ): Promise<{ proveedor: ProveedorDto[]; totalPages: number }> {
+    const limit = 8;
+    const skip = page && page > 0 ? (page - 1) * limit : 0;
+
+    const query = nombre === '' ? {} : { nombre: new RegExp(nombre, 'i') };
+
+    const totalDocuments = await this.proveedorModel.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / limit);
+
+    const proveedor = await this.proveedorModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    return {
+      proveedor,
+      totalPages,
+    };
+  }
+
+  async deleteProveedor(id: string): Promise<boolean> {
+    const result = await this.proveedorModel.findByIdAndDelete(id).exec();
+    return result != null;
+  }
 }

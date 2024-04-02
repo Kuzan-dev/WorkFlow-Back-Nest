@@ -358,6 +358,23 @@ type NotificacionDTO {
   leido: Boolean!
 }
 
+type ProveedorDto {
+  _id: String
+  nombre: String!
+  ruc: String!
+  direccion: String!
+  nombreContacto: String
+  numeroContacto: Int
+  email: String
+  rubro: String
+  documentos: [String]
+}
+
+type ProveedorResult {
+  proveedor: [ProveedorDto!]!
+  totalPages: Int!
+}
+
 type SalarioFechaDto {
   salario: Float!
   fecha: DateTime!
@@ -506,6 +523,9 @@ type Query {
   """
   Ingreso_Facturas_Mensual(inputDate: String!): Float!
 
+  """Esta función retorna la información del proveedor en base a su nombre"""
+  buscar_Proveedor(nombre: String!, page: Int): ProveedorResult!
+
   """
   Esta Función retorna la información de todo el personal en la base de datos
   """
@@ -611,6 +631,16 @@ type Mutation {
   Esta Función registra una factura en la base de datos y retorna el id de la factura creada
   """
   crear_factura(createFacturaInput: CreateFacturaDto!): String!
+
+  """
+  Esta Función registra un nuevo proveedor en la base de datos y retorna el id del documento creado
+  """
+  crear_Proveedor(input: ProveedorInput!): String!
+
+  """
+  Esta Función elimina un proveedor de la base de datos y retorna un booleano indicando si se eliminó correctamente o no
+  """
+  borrar_Proveedor(id: String!): Boolean!
 
   """
   Esta Función registra un nuevo persoanl en la base de datos y retorna el id del documento creado
@@ -761,6 +791,17 @@ input CreateFacturaDto {
   fecha: DateTime!
   involucrado: String
   documentos: [String!]
+}
+
+input ProveedorInput {
+  _id: String
+  nombre: String!
+  ruc: String!
+  direccion: String!
+  nombreContacto: String
+  numeroContacto: Int
+  email: String
+  rubro: String
 }
 
 input PersonalUserInput {
