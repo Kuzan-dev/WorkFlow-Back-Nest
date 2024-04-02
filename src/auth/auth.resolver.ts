@@ -90,7 +90,10 @@ export class AuthResolver {
     return this.usersService.findOne(username);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, {
+    name: 'actualizar_datos_usuario',
+    description: 'Esta Función actualiza la información de un usuario',
+  })
   async updateData(
     @Args('oldUsername') oldUsername: string,
     @Args('newUsername') newUsername: string,
