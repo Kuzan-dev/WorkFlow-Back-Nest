@@ -148,6 +148,9 @@ export class MantenimientosService {
   async registrar(
     updateMantDto: UpdateMantenimientoDto,
   ): Promise<Mantenimiento> {
+    if (updateMantDto.repuestos.length === 0) {
+      throw new BadRequestException('La matriz de repuestos está vacía');
+    }
     const session = await this.mantenimientoModel.db.startSession();
     session.startTransaction();
     try {
@@ -227,6 +230,10 @@ export class MantenimientosService {
     const exists = await this.carsService.exists(existsCarDto);
     if (!exists) {
       throw new NotFoundException('Carro no existe');
+    }
+    // If the repuestos array is empty, return a response immediately
+    if (updateOneMantDto.repuestos.length === 0) {
+      throw new BadRequestException('La matriz de repuestos está vacía');
     }
     const session = await this.mantenimientoModel.db.startSession();
     session.startTransaction();
