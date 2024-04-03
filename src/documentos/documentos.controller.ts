@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { RolesRestGuard } from '../auth/roles-rest.guard';
 import { Roles } from '../auth/roles.decorator';
+import mime from 'mime';
 
 const allowedMimetypes = [
   'application/pdf', // PDF
@@ -104,6 +105,7 @@ export class DocumentosController {
             console.error('Error al leer el archivo', err);
             res.status(500).send('Error al leer el archivo');
           });
+          res.type(mime.getType(path));
           file.pipe(res);
         }
       });
