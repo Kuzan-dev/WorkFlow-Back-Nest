@@ -22,7 +22,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { RolesRestGuard } from '../auth/roles-rest.guard';
 import { Roles } from '../auth/roles.decorator';
-import mime from 'mime';
 
 const allowedMimetypes = [
   'application/pdf', // PDF
@@ -95,7 +94,7 @@ export class DocumentosController {
     try {
       const filePath = params[0]; // La ruta completa del archivo se almacena en params[0]
       const path = join(process.cwd(), filePath);
-      fs.access(path, fs.constants.F_OK, (err) => {
+      fs.access(path, fs.constants.F_OK, async (err) => {
         if (err) {
           console.error('El archivo no existe');
           res.status(404).send('Archivo no encontrado');
@@ -105,7 +104,8 @@ export class DocumentosController {
             console.error('Error al leer el archivo', err);
             res.status(500).send('Error al leer el archivo');
           });
-          res.type(mime.getType(path));
+          const mime = await import('mime'); // Use dynamic import
+          res.type(mime.default.getType(path)); // Use mime.default.getType
           file.pipe(res);
         }
       });
