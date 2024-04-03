@@ -89,7 +89,7 @@ export class DocumentosController {
   }
 
   @UseGuards(JwtAuthGuard, RolesRestGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin', 'tecnico', 'cliente')
   @Get('download/*')
   async getFile(@Res() res: Response, @Param() params: any) {
     try {
