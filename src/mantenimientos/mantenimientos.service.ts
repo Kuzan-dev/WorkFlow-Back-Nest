@@ -1154,7 +1154,7 @@ export class MantenimientosService {
     const mantenimientos = await this.mantenimientoModel.aggregate([
       {
         $match: {
-          estado: 'programado',
+          estado: 'completado',
           fecha: { $gte: startDate, $lte: endDate },
         },
       },

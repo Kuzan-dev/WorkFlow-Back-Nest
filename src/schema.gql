@@ -479,10 +479,8 @@ type Query {
   """
   table_historial_Mantenimientos_admin(fechaInicio: DateTime, fechaTermino: DateTime, placa: String, page: Int): MantenimientoTableType!
 
-  """
-  Esta función retorna la cantidad de mantenimientos programados, pendientes, completados y denegados por mes
-  """
-  calendar_grafica(fechaInput: DateTime): [CalendarGrafica!]!
+  """Esta función retorna la cantidad de mantenimientos programados"""
+  calendar_grafica: [CalendarGrafica!]!
 
   """Esta Función retorna la información de las notificaciones no leidas"""
   obtener_notificaciones_no_leidas: [NotificacionDTO!]!
@@ -723,7 +721,7 @@ input UpdateOneMantenimientoDto {
   kmMedido: Float!
   fechaInicio: DateTime!
   diagnostico: String!
-  repuestos: [RepuestoDto!]
+  repuestos: [RepuestoDto!]!
 }
 
 input RepuestoDto {
@@ -744,7 +742,7 @@ input UpdateMantenimientoDto {
   kmPrevio: Float!
   Cliente: String!
   diagnostico: String!
-  repuestos: [RepuestoDto!]
+  repuestos: [RepuestoDto!]!
 }
 
 input CreateNotiDTO {

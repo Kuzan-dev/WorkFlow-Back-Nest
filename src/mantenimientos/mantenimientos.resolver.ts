@@ -451,12 +451,10 @@ export class MantenimientosResolver {
   @Query(() => [CalendarGrafica], {
     name: 'calendar_grafica',
     description:
-      'Esta función retorna la cantidad de mantenimientos programados, pendientes, completados y denegados por mes',
+      'Esta función retorna la cantidad de mantenimientos programados',
   })
-  async getCalendarGrafica(
-    @Args('fechaInput', { type: () => Date, nullable: true })
-    fechaInput: Date,
-  ) {
-    return this.mantenimientosService.getCalendarGraficaRange(fechaInput);
+  async getCalendarGrafica() {
+    const fechaActual = new Date();
+    return this.mantenimientosService.getCalendarGraficaRange(fechaActual);
   }
 }
