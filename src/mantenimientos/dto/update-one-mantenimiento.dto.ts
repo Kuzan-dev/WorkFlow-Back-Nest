@@ -57,7 +57,7 @@ export class UpdateOneMantenimientoDto {
   @IsNotEmpty()
   diagnostico: string;
 
-  @Field(() => [RepuestoDto], { nullable: true })
+  @Field(() => [RepuestoDto])
   @IsArray()
   @IsOptional()
   repuestos?: RepuestoDto[];
