@@ -1,7 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import {
   IsString,
-  IsOptional,
   IsArray,
   IsNotEmpty,
   IsNumber,
@@ -48,6 +47,5 @@ export class UpdateMantenimientoDto {
 
   @Field(() => [RepuestoDto])
   @IsArray()
-  @IsOptional()
-  repuestos?: RepuestoDto[];
+  repuestos: RepuestoDto[];
 }
