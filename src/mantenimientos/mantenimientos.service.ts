@@ -1169,10 +1169,14 @@ export class MantenimientosService {
         },
       },
     ]);
-    return mantenimientos.map(({ _id, count }) => ({
-      fecha: new Date(_id.year, _id.month - 1, _id.day),
-      cantidad: count,
-    }));
+    return mantenimientos.map(({ _id, count }) => {
+      const fecha = new Date(_id.year, _id.month - 1, _id.day);
+      fecha.setHours(fecha.getHours() - 5);
+      return {
+        fecha,
+        cantidad: count,
+      };
+    });
   }
 
   //Mantenimientos completados en x mes
