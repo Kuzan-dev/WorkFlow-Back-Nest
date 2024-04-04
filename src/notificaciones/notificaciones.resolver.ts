@@ -17,6 +17,16 @@ export class NotificacionesResolver {
     return pubSub.asyncIterator('admin');
   }
 
+  @Subscription(() => NotificacionDTO, {
+    name: 'notificaciones_tecnico',
+    description:
+      'Esta Función retorna la información de las notificaciones tecnico',
+    resolve: (payload) => payload || new NotificacionDTO(),
+  })
+  async mantenimientostec() {
+    return pubSub.asyncIterator('tecnico');
+  }
+
   //Agregar Query para ver todos los mensajes
   @Mutation(() => Boolean, {
     name: 'prueba_notificacion',

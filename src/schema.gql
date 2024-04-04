@@ -866,5 +866,8 @@ type Subscription {
 
   """Esta Función retorna la información de las notificaciones admin"""
   notificaciones_admin: NotificacionDTO!
+
+  """Esta Función retorna la información de las notificaciones tecnico"""
+  notificaciones_tecnico: NotificacionDTO!
   Personal: [PersonalDto!]!
 }
