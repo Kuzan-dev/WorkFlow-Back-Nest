@@ -40,8 +40,8 @@ export class EstadisticasService {
     };
 
     for (let i = 0; i < 12; i++) {
-      date.setMonth(date.getMonth() - 1);
       promises.push(createPromise(new Date(date)));
+      date.setMonth(date.getMonth() - 1);
     }
 
     return Promise.all(promises);
@@ -74,8 +74,8 @@ export class EstadisticasService {
     };
 
     for (let i = 0; i < 12; i++) {
-      date.setMonth(date.getMonth() - 1);
       promises.push(createPromise(new Date(date)));
+      date.setMonth(date.getMonth() - 1);
     }
 
     return Promise.all(promises);
