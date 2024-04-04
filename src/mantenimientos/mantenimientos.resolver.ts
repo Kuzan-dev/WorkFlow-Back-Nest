@@ -151,6 +151,11 @@ export class MantenimientosResolver {
         'revision',
         fecha,
       );
+    const cantidadAprobados =
+      await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
+        'aprobado',
+        fecha,
+      );
     const cantidadCompletada =
       await this.mantenimientosService.getCantidadMantenimientosPorEstadoYFecha(
         'completado',
@@ -161,6 +166,7 @@ export class MantenimientosResolver {
       cantidadProgramada +
       cantidadPendiente +
       cantidadRevision +
+      cantidadAprobados +
       cantidadCompletada;
 
     const mantenimientos1 =
