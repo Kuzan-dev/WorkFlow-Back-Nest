@@ -1,4 +1,4 @@
-import { Args, Mutation, Resolver, Query, Context } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query, Context, Int } from '@nestjs/graphql';
 import { CarsService } from './cars.service';
 import { CreateCarDto } from './dto/create-car.dto';
 import { GetPlacasDto } from './dto/get-placas-info.dto';
@@ -73,13 +73,13 @@ export class CarsResolver {
   })
   async findCarByPlateWithPaginationAndTotalPages(
     @Args('plate') plate: string,
-    @Args('page') page: number,
-    @Args('pageSize') pageSize: number,
+    @Args('page', { type: () => Int, nullable: true }) page: number,
   ) {
+    const pageSize = 8;
     return this.carsService.findCarByPlateWithPaginationAndTotalPages(
+      pageSize,
       plate,
       page,
-      pageSize,
     );
   }
 }

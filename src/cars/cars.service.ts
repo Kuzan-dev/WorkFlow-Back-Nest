@@ -83,7 +83,12 @@ export class CarsService {
 
   //Función para encontrar las placas de los carros de un cliente
   async findPlatesByClient(clientName: string): Promise<string[]> {
-    const cars = await this.carModel.find({ cliente: clientName }).exec();
+    let cars;
+    if (clientName === 'EspejoAlban') {
+      cars = await this.carModel.find().exec(); // No se aplica el filtro de cliente
+    } else {
+      cars = await this.carModel.find({ cliente: clientName }).exec();
+    }
     return cars.map((car) => car.placa);
   }
 
@@ -111,17 +116,30 @@ export class CarsService {
 
   //Función para encontrar las placas de los carros de un cliente
   async findCarByPlateWithPaginationAndTotalPages(
-    plate: string,
-    page: number,
     pageSize: number,
+    plate: string,
+    page?: number,
   ): Promise<SearchPlacas> {
-    const query = plate ? { placa: new RegExp(plate, 'i') } : {};
+    let skip;
+    let needPagination = true;
+    if (page === undefined || page === null) {
+      needPagination = false;
+    } else {
+      skip = page && page > 0 ? (page - 1) * pageSize : 0;
+    }
+    const query = plate === '' ? {} : { placa: new RegExp(plate, 'i') };
+
     const totalDocuments = await this.carModel.countDocuments(query);
-    const totalPages = Math.ceil(totalDocuments / pageSize);
-    const cars = await this.carModel
-      .find(query)
-      .skip((page - 1) * pageSize)
-      .limit(pageSize);
+    const totalPages = needPagination
+      ? Math.ceil(totalDocuments / pageSize)
+      : 1;
+    let findQuery = this.carModel.find(query);
+
+    if (needPagination) {
+      findQuery = findQuery.skip(skip).limit(pageSize);
+    }
+    const cars = await findQuery.exec();
+
     return {
       cars,
       totalPages,

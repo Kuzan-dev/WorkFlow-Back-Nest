@@ -19,6 +19,7 @@ export class UsersService {
     const newUser = new this.userModel({
       ...user,
       password: hashedPassword,
+      clienteAsociado: user.clienteAsociado ?? 'EspejoAlban',
     });
     return newUser.save();
   }

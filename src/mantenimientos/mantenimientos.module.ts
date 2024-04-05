@@ -10,10 +10,12 @@ import {
 import { CarsModule } from 'src/cars/cars.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { NotificacionesModule } from 'src/notificaciones/notificaciones.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     NotificacionesModule,
+    UsersModule,
     AuthModule,
     MongooseModule.forFeature([
       { name: Mantenimiento.name, schema: MantenimientoSchema },

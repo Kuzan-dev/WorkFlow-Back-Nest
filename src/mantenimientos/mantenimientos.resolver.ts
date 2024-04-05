@@ -5,6 +5,7 @@ import {
   Query,
   Subscription,
   Int,
+  Context,
 } from '@nestjs/graphql';
 import { MantenimientosService } from './mantenimientos.service';
 import { PrograMantenimientoDto } from './dto/create-mantenimiento.dto';
@@ -34,11 +35,14 @@ import { CarsService } from 'src/cars/cars.service';
 import { HistorialCarData } from './dto/historial-admin.dto';
 import { MantenimientoTableType } from './dto/historial-admin-table.dto';
 import { CalendarGrafica } from './dto/calendar-graph.dt';
+import { UsersService } from 'src/users/users.service';
+
 @Resolver()
 export class MantenimientosResolver {
   constructor(
     private readonly mantenimientosService: MantenimientosService,
     private readonly carService: CarsService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Subscription(() => CalendarAndMantenimientosDTO, {
@@ -448,9 +452,13 @@ export class MantenimientosResolver {
     fechaTermino: Date,
     @Args('placa', { type: () => String, nullable: true }) placa: string,
     @Args('page', { type: () => Int, nullable: true }) page: number,
+    @Context() context,
   ): Promise<MantenimientoTableType> {
+    const username = context.req.user.username;
+    const cliente = await this.usersService.findClientByUsername(username);
     try {
       return this.mantenimientosService.searchMantenimientos(
+        cliente,
         fechaInicio,
         fechaTermino,
         placa,

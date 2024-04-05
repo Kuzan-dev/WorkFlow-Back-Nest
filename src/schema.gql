@@ -507,7 +507,7 @@ type Query {
   obtener_info_placas_clientes: [GetPlacasClientDto!]!
 
   """Esta Función retorna las placas de los autos"""
-  buscar_info_placas_tabla(plate: String!, page: Float!, pageSize: Float!): SearchPlacas!
+  buscar_info_placas_tabla(plate: String!, page: Int): SearchPlacas!
 
   """
   Esta Función retorna la información de todos los repuestos (id, producto, marca, cantidad, cantidadReserva, precio)

@@ -1115,6 +1115,7 @@ export class MantenimientosService {
   }
 
   async searchMantenimientos(
+    cliente: string,
     fechaInicio?: Date | null,
     fechaTermino?: Date | null,
     placa?: string,
@@ -1122,9 +1123,23 @@ export class MantenimientosService {
   ) {
     const query = {};
     const limit = 6;
+    // Obtiene las placas asociadas al cliente
+    const placasCliente = await this.carsService.findPlatesByClient(cliente);
 
     // Agrega esta línea para buscar solo mantenimientos completados
     query['estado'] = 'completado';
+
+    // Si se proporciona una placa, se busca una placa que coincida con
+    // el parámetro o que esté en la lista de placas asociadas al cliente
+    if (placa) {
+      query['placa'] = {
+        $or: [{ $regex: new RegExp(placa, 'i') }, { $in: placasCliente }],
+      };
+    } else {
+      query['placa'] = { $in: placasCliente };
+    }
+
+    query['placa'] = { $in: placasCliente };
 
     if (fechaInicio != null) {
       query['fechaFin'] = { $gte: fechaInicio };
@@ -1136,10 +1151,6 @@ export class MantenimientosService {
       } else {
         query['fechaFin'] = { $lte: fechaTermino };
       }
-    }
-
-    if (placa) {
-      query['placa'] = { $regex: new RegExp(placa, 'i') };
     }
 
     const totalDocuments = await this.mantenimientoModel.countDocuments(query);
