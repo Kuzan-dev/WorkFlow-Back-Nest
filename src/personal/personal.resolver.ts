@@ -14,7 +14,11 @@ import { UsersService } from 'src/users/users.service';
 import { PersonalUserInput } from './dto/create-personalUser.dto';
 import { UpdatePersonalInput } from './dto/update-personal.dto';
 import { PersonalResult } from './dto/search-personal.dto';
-
+//Importaciones de Seguridad
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 @Resolver()
 export class PersonalResolver {
   constructor(
@@ -22,6 +26,8 @@ export class PersonalResolver {
     private userService: UsersService,
   ) {}
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => String, {
     name: 'crear_Personal',
     description:
@@ -40,6 +46,8 @@ export class PersonalResolver {
     return personalInfo;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => PersonalDto, {
     name: 'Agregar_Salario_Fecha',
     description:
@@ -53,6 +61,8 @@ export class PersonalResolver {
     return this.personalService.addSalarioFecha(id, salarioFecha);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => Boolean, {
     name: 'borrar_Personal',
     description:
@@ -62,6 +72,8 @@ export class PersonalResolver {
     return this.personalService.deletePersonal(id);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [PersonalDto], {
     name: 'obtener_Todo_Personal',
     description:
@@ -71,6 +83,8 @@ export class PersonalResolver {
     return this.personalService.getAllPersonal();
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => PersonalDto, {
     name: 'obtener_Personal_Por_Id',
     description: 'Esta Función retorna la información de un personal por su id',
@@ -79,11 +93,15 @@ export class PersonalResolver {
     return this.personalService.getPersonalById(id);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Subscription(() => [PersonalDto], { name: 'Personal' })
   personalAll() {
     return pubSub.asyncIterator('Personal');
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => PersonalResult, {
     name: 'buscar_Pesonal',
     description:
@@ -96,6 +114,8 @@ export class PersonalResolver {
     return this.personalService.searchPersonal(nombre, page);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation(() => Boolean, {
     name: 'actualizar_Info_Personal',
     description:
@@ -115,6 +135,8 @@ export class PersonalResolver {
     return true;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => Number, {
     name: 'obtener_Salari_Total',
     description:
