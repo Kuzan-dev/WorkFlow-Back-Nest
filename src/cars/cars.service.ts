@@ -5,6 +5,7 @@ import { Car } from './schemas/car.schema';
 import { CreateCarDto } from './dto/create-car.dto';
 import { ExistsCarDto } from './dto/exists-card.dto';
 import { UpdateKmDto } from './dto/update-km.dto';
+import { SearchPlacas } from './dto/search-cars.dto';
 
 @Injectable()
 export class CarsService {
@@ -106,5 +107,24 @@ export class CarsService {
     const car = await this.carModel.findOne({ placa }).exec();
     console.log('Car:', car);
     return car ? car.cliente : null;
+  }
+
+  //Función para encontrar las placas de los carros de un cliente
+  async findCarByPlateWithPaginationAndTotalPages(
+    plate: string,
+    page: number,
+    pageSize: number,
+  ): Promise<SearchPlacas> {
+    const query = plate ? { placa: new RegExp(plate, 'i') } : {};
+    const totalDocuments = await this.carModel.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / pageSize);
+    const cars = await this.carModel
+      .find(query)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+    return {
+      cars,
+      totalPages,
+    };
   }
 }
