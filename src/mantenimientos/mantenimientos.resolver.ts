@@ -305,6 +305,9 @@ export class MantenimientosResolver {
     @Args('updateOneMantenimientoInput')
     updateOneMantenimientoDto: UpdateOneMantenimientoDto,
   ) {
+    this.mantenimientosService.checkUniqueRepuesto(
+      updateOneMantenimientoDto.repuestos,
+    );
     return await this.mantenimientosService.registrarNuevo(
       updateOneMantenimientoDto,
     );
@@ -319,6 +322,7 @@ export class MantenimientosResolver {
   async registrarMant(
     @Args('registrarMantInput') registrarMantDto: UpdateMantenimientoDto,
   ) {
+    this.mantenimientosService.checkUniqueRepuesto(registrarMantDto.repuestos);
     return await this.mantenimientosService.registrar(registrarMantDto);
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

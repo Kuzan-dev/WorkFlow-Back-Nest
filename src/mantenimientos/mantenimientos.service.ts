@@ -31,6 +31,8 @@ import {
   ProductoConsumidoDash,
 } from 'src/estadisticas/dto/dashboard.dto';
 import { NotificacionesService } from 'src/notificaciones/notificaciones.service';
+import { RepuestoDto } from 'src/repuestos/dto/repuesto.dto';
+
 @Injectable()
 export class MantenimientosService {
   private readonly mantenimientoChanges = new Subject<any>();
@@ -612,6 +614,13 @@ export class MantenimientosService {
       cantidadRevision +
       cantidadProgramada;
     return [cantidadProgramada, cantidadTotal];
+  }
+
+  checkUniqueRepuesto(repuestos: RepuestoDto[]) {
+    const uniqueRepuestoIds = new Set(repuestos.map((repuesto) => repuesto.id));
+    if (uniqueRepuestoIds.size !== repuestos.length) {
+      throw new BadRequestException('Los repuestos deben ser únicos');
+    }
   }
 
   async getProgrammedMaintenanceCount(): Promise<
