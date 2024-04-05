@@ -440,6 +440,8 @@ export class MantenimientosResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => MantenimientoTableType, {
     name: 'table_historial_Mantenimientos_admin',
     description:
