@@ -5,6 +5,11 @@ import { GeneralReportDto } from './dto/ingresos-egresos.dto';
 import { Dashboard } from './dto/dashboard.dto';
 import { MantenimientosService } from 'src/mantenimientos/mantenimientos.service';
 import { FacturasService } from 'src/facturas/facturas.service';
+//Importaciones de Seguridad
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 
 @Resolver()
 export class EstadisticasResolver {
@@ -14,6 +19,8 @@ export class EstadisticasResolver {
     private facturasService: FacturasService,
   ) {}
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => [GeneralReportDto], {
     name: 'grafica_gastos_generales',
     description: 'Obtiene el resumen mensual de ingresos y egresos',
@@ -24,6 +31,8 @@ export class EstadisticasResolver {
     return this.estadisticasService.getGastosMensuales(inputDate);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => [MonthlySummaryDto], {
     name: 'grafica_ingresos_egresos',
     description: 'Obtiene el resumen mensual de ingresos y egresos',
@@ -34,6 +43,8 @@ export class EstadisticasResolver {
     return this.estadisticasService.getIngresosEgresosMensuales(inputDate);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => Dashboard, {
     name: 'dashboard_web',
     description: 'Obtiene el resumen mensual de ingresos y egresos',

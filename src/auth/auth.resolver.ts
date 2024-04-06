@@ -49,6 +49,8 @@ export class AuthResolver {
     return true;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico', 'cliente')
   @Mutation(() => String, {
     name: 'actualizar_datos_usuario_por_id',
     description:
@@ -67,6 +69,8 @@ export class AuthResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'borrar_usuario_por_id',
     description: 'Esta Función elimina un usuario de la base de datos',
@@ -80,6 +84,8 @@ export class AuthResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico', 'cliente')
   @Query(() => UserOutput, {
     name: 'obtener_usuario_por_username',
     description: 'Esta Función obtiene un usuario por su username',
@@ -90,6 +96,8 @@ export class AuthResolver {
     return this.usersService.findOne(username);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico', 'cliente')
   @Mutation(() => Boolean, {
     name: 'actualizar_datos_usuario',
     description: 'Esta Función actualiza la información de un usuario',

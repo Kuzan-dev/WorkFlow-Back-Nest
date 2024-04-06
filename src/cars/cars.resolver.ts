@@ -18,8 +18,9 @@ export class CarsResolver {
     private readonly usersService: UsersService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => String, {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Mutation(() => String, {
     name: 'crear_auto',
     description: 'Esta Función registra un auto en la base de datos',
   })
@@ -27,8 +28,9 @@ export class CarsResolver {
     return await this.carsService.create(createCarDto);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => [GetPlacasDto], {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
+  @Query(() => [GetPlacasDto], {
     name: 'obtener_info_placas',
     description:
       'Esta Función retorna la información de los carros (id, placa, cliente, propietarios fechaSoat)',
@@ -37,15 +39,21 @@ export class CarsResolver {
     return this.carsService.getCarsData();
   }
 
+  // @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  // @Roles('admin', 'tecnico')
   @Query(() => GetForPlacasDto, {
     name: 'obtener_info_for_placa',
     description:
       'Esta Función retorna la información de un auto por medio de su placa',
   })
-  async getCarInfo(@Args('placa', { type: () => String }) placa: string) {
-    return this.carsService.getCarInfo(placa);
+  async getCarInfo(
+    @Args('placa', { type: () => String }) placa: string,
+  ): Promise<GetForPlacasDto> {
+    return await this.carsService.getCarInfo2(placa);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [String], {
     name: 'buscar_placas_autos',
     description: 'Esta Función retorna las placas de los autos',
@@ -67,6 +75,8 @@ export class CarsResolver {
     return this.carsService.findCarByClient(client);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => SearchPlacas, {
     name: 'buscar_info_placas_tabla',
     description: 'Esta Función retorna las placas de los autos',

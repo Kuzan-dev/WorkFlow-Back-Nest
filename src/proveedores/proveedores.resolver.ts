@@ -3,10 +3,18 @@ import { ProveedoresService } from './proveedores.service';
 import { ProveedorInput } from './dto/create-proveedor.dto';
 import { ProveedorResult } from './dto/search-proveedor.dto';
 
+//Importaciones de Seguridad
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+
 @Resolver()
 export class ProveedoresResolver {
   constructor(private proveedoresService: ProveedoresService) {}
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'crear_Proveedor',
     description:
@@ -17,6 +25,8 @@ export class ProveedoresResolver {
     return 'Proveedor creado';
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => ProveedorResult, {
     name: 'buscar_Proveedor',
     description:
@@ -29,6 +39,8 @@ export class ProveedoresResolver {
     return this.proveedoresService.searchProveedor(nombre, page);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => Boolean, {
     name: 'borrar_Proveedor',
     description:

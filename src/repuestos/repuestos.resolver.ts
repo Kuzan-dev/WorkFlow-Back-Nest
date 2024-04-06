@@ -7,10 +7,18 @@ import { RepuestoDto, RepuestoType } from './dto/repuesto.dto';
 import { RepuestoSearchType } from './dto/search-repuesto.dto';
 import { RepuestosResult } from './dto/search-table-repuesto.dto';
 
+//Importaciones de seguridad
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+
 @Resolver()
 export class RepuestosResolver {
   constructor(private readonly repuestoService: RepuestosService) {}
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query((returns) => [RepuestoType], {
     name: 'obtener_todos_los_repuestos',
     description:
@@ -28,6 +36,8 @@ export class RepuestosResolver {
     }));
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation((returns) => Boolean, {
     name: 'crear_repuesto',
     description:
@@ -40,6 +50,8 @@ export class RepuestosResolver {
     return true;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation((returns) => Boolean, {
     name: 'verficar_repuestos',
     description:
@@ -52,6 +64,8 @@ export class RepuestosResolver {
     return true;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => RepuestosResult, {
     name: 'buscar_repuestos',
     description:

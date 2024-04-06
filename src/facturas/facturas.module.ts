@@ -5,9 +5,11 @@ import { FacturasResolver } from './facturas.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Factura, FacturaSchema } from './schemas/factura.schema';
 import { NotificacionesModule } from 'src/notificaciones/notificaciones.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     NotificacionesModule,
     MongooseModule.forFeature([{ name: Factura.name, schema: FacturaSchema }]),
   ],

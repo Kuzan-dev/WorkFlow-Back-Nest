@@ -2,11 +2,18 @@ import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { NotificacionesService } from './notificaciones.service';
 import { NotificacionDTO, CreateNotiDTO } from './dto/notificacion.dto';
 import { pubSub } from 'src/shared/pubsub';
+//Importaciones de Seguridad
+import { Roles } from '../auth/roles.decorator';
+import { UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 
 @Resolver()
 export class NotificacionesResolver {
   constructor(private notificacionesService: NotificacionesService) {}
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Subscription(() => NotificacionDTO, {
     name: 'notificaciones_admin',
     description:
@@ -17,6 +24,8 @@ export class NotificacionesResolver {
     return pubSub.asyncIterator('admin');
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('tecnico')
   @Subscription(() => NotificacionDTO, {
     name: 'notificaciones_tecnico',
     description:
@@ -27,6 +36,8 @@ export class NotificacionesResolver {
     return pubSub.asyncIterator('tecnico');
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   //Agregar Query para ver todos los mensajes
   @Mutation(() => Boolean, {
     name: 'prueba_notificacion',
@@ -49,6 +60,8 @@ export class NotificacionesResolver {
     return true;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => [NotificacionDTO], {
     name: 'obtener_notificaciones_no_leidas',
     description:

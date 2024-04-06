@@ -20,7 +20,7 @@ export class ClientesResolver {
     private userService: UsersService,
   ) {}
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'crear_Cliente',
     description:
@@ -44,6 +44,8 @@ export class ClientesResolver {
     return clientInfo;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'actualizar_Cliente',
     description:
@@ -69,7 +71,7 @@ export class ClientesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => Boolean, {
     name: 'borrar_Cliente',
     description:
@@ -80,7 +82,7 @@ export class ClientesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => ClienteDto, {
     name: 'obtener_Cliente_ID',
     description:
@@ -91,7 +93,7 @@ export class ClientesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => ClienteDto, {
     name: 'Agregar_Contrato_Cliente',
     description:
@@ -105,7 +107,7 @@ export class ClientesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => [ClienteDto], {
     name: 'obtener_Todos_Clientes',
     description:
@@ -116,7 +118,7 @@ export class ClientesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => ClientesResult, {
     name: 'buscar_Clientes',
     description:
@@ -129,6 +131,8 @@ export class ClientesResolver {
     return this.clienteService.searchClientes(nombreCliente, page);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => [UserOutput], {
     name: 'obtener_Usuarios_por_IDcliente',
     description:
@@ -146,6 +150,8 @@ export class ClientesResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => Boolean, {
     name: 'eliminar_Contrato',
     description:

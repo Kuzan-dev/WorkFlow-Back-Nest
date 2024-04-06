@@ -2,11 +2,18 @@
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { FacturasService } from './facturas.service';
 import { CreateFacturaDto } from './dto/create-factura.dto';
+//Importaciones de Seguridad
+import { Roles } from '../auth/roles.decorator';
+import { NotFoundException, UseGuards } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard';
+import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 
 @Resolver()
 export class FacturasResolver {
   constructor(private readonly facturasService: FacturasService) {}
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Mutation((returns) => String, {
     name: 'crear_factura',
     description:
@@ -19,6 +26,8 @@ export class FacturasResolver {
     return id;
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => Number, {
     name: 'Egreso_Facturas_Mensual',
     description:
@@ -31,6 +40,8 @@ export class FacturasResolver {
     return this.facturasService.getEgresosDelMes(date);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => Number, {
     name: 'Ingreso_Facturas_Mensual',
     description:

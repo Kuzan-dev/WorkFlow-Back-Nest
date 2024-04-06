@@ -2,24 +2,24 @@ import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
 export class GetForPlacasDto {
-  @Field()
-  _id: string;
+  @Field({ nullable: true })
+  _id?: string;
 
-  @Field()
-  placa: string;
+  @Field({ nullable: true })
+  placa?: string;
 
-  @Field()
-  cliente: string;
+  @Field({ nullable: true })
+  cliente?: string;
 
-  @Field()
-  tipoContrato: string;
+  @Field({ nullable: true })
+  tipoContrato?: string;
 
-  @Field()
-  kmActual: number;
+  @Field({ nullable: true })
+  kmActual?: number;
 
-  @Field()
-  propietario: string;
+  @Field({ nullable: true })
+  propietario?: string;
 
-  @Field()
-  fechaSoat: Date;
+  @Field({ nullable: true })
+  fechaSoat?: Date;
 }

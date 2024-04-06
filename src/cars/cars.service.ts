@@ -6,6 +6,7 @@ import { CreateCarDto } from './dto/create-car.dto';
 import { ExistsCarDto } from './dto/exists-card.dto';
 import { UpdateKmDto } from './dto/update-km.dto';
 import { SearchPlacas } from './dto/search-cars.dto';
+import { GetForPlacasDto } from './dto/get-for-placa';
 
 @Injectable()
 export class CarsService {
@@ -60,6 +61,34 @@ export class CarsService {
   async getCarInfo(placa: string): Promise<Car> {
     return this.carModel.findOne({ placa }).exec();
   }
+
+  // Esta función retorna la información de un carro por su placa
+  async getCarInfo2(placa: string): Promise<GetForPlacasDto> {
+    const carExists = await this.carModel.exists({ placa });
+    if (!carExists) {
+      return {
+        _id: null,
+        placa: null,
+        cliente: null,
+        tipoContrato: null,
+        kmActual: null,
+        propietario: null,
+        fechaSoat: null,
+      };
+    }
+    const car = await this.carModel.findOne({ placa }).exec();
+    return {
+      _id: car._id.toString(),
+      placa: car.placa,
+      cliente: car.cliente,
+      tipoContrato: car.tipoContrato,
+      kmActual: car.kmActual,
+      propietario: car.propietario,
+      fechaSoat: car.fechaSoat,
+      // Aquí puedes mapear cualquier otro campo que necesites
+    };
+  }
+
   //Función de busqueda de una placa en especifico usando SearchParams
   async searchCars(placa: string): Promise<string[]> {
     if (placa === '') {

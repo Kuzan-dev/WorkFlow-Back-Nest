@@ -332,13 +332,13 @@ type GetPlacasDto {
 }
 
 type GetForPlacasDto {
-  _id: String!
-  placa: String!
-  cliente: String!
-  tipoContrato: String!
-  kmActual: Float!
-  propietario: String!
-  fechaSoat: DateTime!
+  _id: String
+  placa: String
+  cliente: String
+  tipoContrato: String
+  kmActual: Float
+  propietario: String
+  fechaSoat: DateTime
 }
 
 type GetPlacasClientDto {

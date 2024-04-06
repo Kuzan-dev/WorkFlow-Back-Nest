@@ -27,7 +27,7 @@ export class PersonalResolver {
   ) {}
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'crear_Personal',
     description:
@@ -47,7 +47,7 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => PersonalDto, {
     name: 'Agregar_Salario_Fecha',
     description:
@@ -62,7 +62,7 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => Boolean, {
     name: 'borrar_Personal',
     description:
@@ -73,7 +73,7 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => [PersonalDto], {
     name: 'obtener_Todo_Personal',
     description:
@@ -84,7 +84,7 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => PersonalDto, {
     name: 'obtener_Personal_Por_Id',
     description: 'Esta Función retorna la información de un personal por su id',
@@ -94,14 +94,14 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Subscription(() => [PersonalDto], { name: 'Personal' })
   personalAll() {
     return pubSub.asyncIterator('Personal');
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => PersonalResult, {
     name: 'buscar_Pesonal',
     description:
@@ -115,7 +115,7 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Mutation(() => Boolean, {
     name: 'actualizar_Info_Personal',
     description:
@@ -136,7 +136,7 @@ export class PersonalResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin')
   @Query(() => Number, {
     name: 'obtener_Salari_Total',
     description:
