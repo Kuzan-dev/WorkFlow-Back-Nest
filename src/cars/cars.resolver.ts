@@ -39,8 +39,8 @@ export class CarsResolver {
     return this.carsService.getCarsData();
   }
 
-  // @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  // @Roles('admin', 'tecnico')
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => GetForPlacasDto, {
     name: 'obtener_info_for_placa',
     description:
