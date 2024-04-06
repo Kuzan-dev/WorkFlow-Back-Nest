@@ -579,21 +579,15 @@ export class MantenimientosService {
     startOfToday.setDate(startOfToday.getDate() - 7); // Resta 7 días a la fecha actual
     startOfToday.setHours(0, 0, 0, 0);
 
-    const endOfToday = new Date();
-    endOfToday.setHours(23, 59, 59, 999);
-
     console.log('Fecha del servidor: ', new Date());
     console.log('Inicio del día: ', startOfToday);
-    console.log('Fin del día: ', endOfToday);
 
     const mantenimientos = await this.mantenimientoModel
       .find({
-        fecha: { $gte: startOfToday, $lte: endOfToday },
+        fecha: { $gte: startOfToday },
         estado: { $nin: ['expirado' /*, 'completado'*/] },
       })
       .exec();
-
-    //console.log('Mantenimientos encontrados: ', mantenimientos);
 
     // Asegurarse de que siempre se devuelva un array
     return mantenimientos || [];
