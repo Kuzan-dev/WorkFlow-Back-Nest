@@ -31,7 +31,7 @@ export class RepuestosService {
     );
     if (uniqueCheck.size < createRepuestosDto.length) {
       throw new Error(
-        'No se pueden crear repuestos con la misma marca y producto',
+        'Esta ingresando el mismo repuestos dos veces, por favor verifique los datos (nuevos repuestos)',
       );
     }
 
@@ -51,7 +51,9 @@ export class RepuestosService {
   ): Promise<any> {
     const uniqueCheck = new Set(repuestos.map((repuesto) => repuesto._id));
     if (uniqueCheck.size < repuestos.length) {
-      throw new Error('No se pueden actualizar repuestos con el mismo _id');
+      throw new Error(
+        'Esta ingresando el mismo repuestos dos veces, por favor verifique los datos (actualizar repuestos)',
+      );
     }
 
     const operations = repuestos.map((repuesto) => ({
@@ -70,11 +72,20 @@ export class RepuestosService {
     const session = await this.respuestoModel.db.startSession();
     session.startTransaction();
     try {
-      const newRepuestos = await this.createMany(dto.repuestosNuevos, session);
-      const updatedRepuestos = await this.actualizarRepuesto(
-        dto.repuestosActualizar,
-        session,
-      );
+      let newRepuestos;
+      let updatedRepuestos;
+
+      if (dto.repuestosNuevos && dto.repuestosNuevos.length > 0) {
+        newRepuestos = await this.createMany(dto.repuestosNuevos, session);
+      }
+
+      if (dto.repuestosActualizar && dto.repuestosActualizar.length > 0) {
+        updatedRepuestos = await this.actualizarRepuesto(
+          dto.repuestosActualizar,
+          session,
+        );
+      }
+
       await session.commitTransaction();
       return { newRepuestos, updatedRepuestos };
     } catch (error) {

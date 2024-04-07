@@ -1,15 +1,13 @@
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
 
 @InputType()
 export class NuevoRepuestoDto {
   @Field()
-  @IsNotEmpty()
   @IsString()
   marca: string;
 
   @Field()
-  @IsNotEmpty()
   @IsString()
   producto: string;
 
