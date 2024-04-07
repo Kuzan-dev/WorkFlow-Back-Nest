@@ -37,6 +37,17 @@ export class RepuestosService {
 
     const newRepuestos = await Promise.all(
       createRepuestosDto.map(async (repuestoDto) => {
+        const existingRepuesto = await this.respuestoModel
+          .findOne({
+            producto: repuestoDto.producto,
+            marca: repuestoDto.marca,
+          })
+          .session(session);
+        if (existingRepuesto) {
+          throw new Error(
+            `El repuesto con producto "${repuestoDto.producto}" y marca "${repuestoDto.marca}" ya existe`,
+          );
+        }
         return this.respuestoModel.create([repuestoDto], {
           session,
         });
