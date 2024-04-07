@@ -791,8 +791,8 @@ input VerifyRepuestoDto {
 }
 
 input IngresoRepuestosDto {
-  repuestosActualizar: [UpdateRepuestoDto!]!
-  repuestosNuevos: [NuevoRepuestoDto!]!
+  repuestosActualizar: [UpdateRepuestoDto!]
+  repuestosNuevos: [NuevoRepuestoDto!]
 }
 
 input UpdateRepuestoDto {

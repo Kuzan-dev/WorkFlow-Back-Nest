@@ -65,8 +65,8 @@ export class RepuestosResolver {
     return true;
   }
 
-  @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  // @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  // @Roles('admin', 'tecnico')
   @Query(() => RepuestosResult, {
     name: 'buscar_repuestos',
     description:

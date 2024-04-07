@@ -272,7 +272,7 @@ export class RepuestosService {
   }
 
   async searchRepuesto(
-    producto: string,
+    search: string,
     page?: number,
   ): Promise<{ repuestos: Repuesto[]; totalPages: number }> {
     const limit = 8;
@@ -286,9 +286,18 @@ export class RepuestosService {
       skip = page && page > 0 ? (page - 1) * limit : 0;
     }
 
-    const query =
-      producto === '' ? {} : { producto: new RegExp(producto, 'i') };
+    // Divide la cadena de búsqueda en producto y marca
+    const [producto, marca] = search.split(' ');
 
+    let query = {};
+
+    if (search !== '') {
+      const [producto, marca] = search.split(' ');
+      query = {
+        producto: new RegExp(producto, 'i'),
+        marca: new RegExp(marca, 'i'),
+      };
+    }
     const totalDocuments = await this.respuestoModel.countDocuments(query);
     const totalPages = needPagination ? Math.ceil(totalDocuments / limit) : 1;
 
