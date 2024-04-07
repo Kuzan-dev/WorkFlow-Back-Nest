@@ -14,7 +14,10 @@ export class FacturasService {
   ) {}
 
   async create(createDacturaDto: CreateFacturaDto): Promise<string> {
-    const newFactura = await this.facturaModel.create(createDacturaDto);
+    if (createDacturaDto.numeroFactura == ""){
+      createDacturaDto.numeroFactura = `compra adicional ${new Date().getTime()}`;
+    }
+    const newFactura = await this.facturaModel.create(createDacturaDto );
     await this.notificacionesService.crearNotificacion(
       'Notificacion-admin',
       'factura',
