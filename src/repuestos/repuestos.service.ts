@@ -286,18 +286,16 @@ export class RepuestosService {
       skip = page && page > 0 ? (page - 1) * limit : 0;
     }
 
-    // Divide la cadena de búsqueda en producto y marca
-    const [producto, marca] = search.split(' ');
-
     let query = {};
 
+    // Si la cadena de búsqueda no está vacía, divide la cadena de búsqueda en palabras y busca en ambos campos, producto y marca
     if (search !== '') {
-      const [producto, marca] = search.split(' ');
+      const words = search.split(' ').map((word) => new RegExp(word, 'i'));
       query = {
-        producto: new RegExp(producto, 'i'),
-        marca: new RegExp(marca, 'i'),
+        $or: [{ producto: { $in: words } }, { marca: { $in: words } }],
       };
     }
+
     const totalDocuments = await this.respuestoModel.countDocuments(query);
     const totalPages = needPagination ? Math.ceil(totalDocuments / limit) : 1;
 
