@@ -1,9 +1,12 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { ClientSession, Model } from 'mongoose';
 import { Repuesto } from './schemas/repuesto.schema';
 import { VerifyRepuestoDto } from './dto/verify-repuesto.dto';
 import { CreateRepuestoDto } from './dto/create-repuesto.dto';
+import { NuevoRepuestoDto } from 'src/estadisticas/dto/nuevo-repuesto.dto';
+import { UpdateRepuestoDto } from 'src/estadisticas/dto/actualizar-repuesto.dto';
+import { IngresoRepuestosDto } from 'src/estadisticas/dto/ingreso-repuestos.dto';
 
 @Injectable()
 export class RepuestosService {
@@ -16,6 +19,72 @@ export class RepuestosService {
     const newRepuesto = await this.respuestoModel.create(createRepuestoDto);
     return newRepuesto;
   }
+
+  async createMany(
+    createRepuestosDto: NuevoRepuestoDto[],
+    session: ClientSession,
+  ): Promise<Repuesto[]> {
+    const uniqueCheck = new Set(
+      createRepuestosDto.map(
+        (repuesto) => `${repuesto.marca}-${repuesto.producto}`,
+      ),
+    );
+    if (uniqueCheck.size < createRepuestosDto.length) {
+      throw new Error(
+        'No se pueden crear repuestos con la misma marca y producto',
+      );
+    }
+
+    const newRepuestos = await Promise.all(
+      createRepuestosDto.map(async (repuestoDto) => {
+        return this.respuestoModel.create([repuestoDto], {
+          session,
+        });
+      }),
+    );
+    return newRepuestos.flat();
+  }
+
+  async actualizarRepuesto(
+    repuestos: UpdateRepuestoDto[],
+    session: ClientSession,
+  ): Promise<any> {
+    const uniqueCheck = new Set(repuestos.map((repuesto) => repuesto._id));
+    if (uniqueCheck.size < repuestos.length) {
+      throw new Error('No se pueden actualizar repuestos con el mismo _id');
+    }
+
+    const operations = repuestos.map((repuesto) => ({
+      updateOne: {
+        filter: { _id: repuesto._id },
+        update: {
+          $set: { cantidad: repuesto.cantidad, precio: repuesto.precio },
+        },
+      },
+    }));
+
+    return this.respuestoModel.bulkWrite(operations, { session });
+  }
+
+  async ingresarRepuestos(dto: IngresoRepuestosDto): Promise<any> {
+    const session = await this.respuestoModel.db.startSession();
+    session.startTransaction();
+    try {
+      const newRepuestos = await this.createMany(dto.repuestosNuevos, session);
+      const updatedRepuestos = await this.actualizarRepuesto(
+        dto.repuestosActualizar,
+        session,
+      );
+      await session.commitTransaction();
+      return { newRepuestos, updatedRepuestos };
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
   async findAll(): Promise<Repuesto[]> {
     const repuestos = await this.respuestoModel.find();
     return repuestos;

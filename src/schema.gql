@@ -633,6 +633,9 @@ type Mutation {
   """
   verficar_repuestos(verifyRepuestoInput: VerifyRepuestoDto!): Boolean!
 
+  """Función para ingresar repuestos desde la web"""
+  Ingreso_Repuestos_Web(data: IngresoRepuestosDto!): String!
+
   """
   Esta Función registra una factura en la base de datos y retorna el id de la factura creada
   """
@@ -785,6 +788,24 @@ input CreateRepuestoDto {
 
 input VerifyRepuestoDto {
   repuestos: [RepuestoDto!]
+}
+
+input IngresoRepuestosDto {
+  repuestosActualizar: [UpdateRepuestoDto!]!
+  repuestosNuevos: [NuevoRepuestoDto!]!
+}
+
+input UpdateRepuestoDto {
+  _id: String!
+  cantidad: Float!
+  precio: Float!
+}
+
+input NuevoRepuestoDto {
+  marca: String!
+  producto: String!
+  cantidad: Float!
+  precio: Float!
 }
 
 input CreateFacturaDto {

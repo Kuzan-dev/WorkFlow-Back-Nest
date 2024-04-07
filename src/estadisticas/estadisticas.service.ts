@@ -5,6 +5,7 @@ import { MantenimientosService } from 'src/mantenimientos/mantenimientos.service
 import { PersonalService } from 'src/personal/personal.service';
 import { OperatividadOut } from './dto/dashboard.dto';
 import { IngresosDtoOut } from './dto/dashboard.dto';
+import { RepuestosService } from 'src/repuestos/repuestos.service';
 
 @Injectable()
 export class EstadisticasService {
@@ -12,6 +13,7 @@ export class EstadisticasService {
     private facturasService: FacturasService,
     private personalService: PersonalService,
     private mantenimientosService: MantenimientosService,
+    private repuestosService: RepuestosService,
   ) {}
 
   async getGastosMensuales(inputDateISO: string): Promise<any[]> {

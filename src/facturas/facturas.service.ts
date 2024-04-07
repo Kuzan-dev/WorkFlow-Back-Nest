@@ -13,7 +13,7 @@ export class FacturasService {
     private readonly notificacionesService: NotificacionesService,
   ) {}
 
-  async create(createDacturaDto: CreateFacturaDto): Promise<Factura> {
+  async create(createDacturaDto: CreateFacturaDto): Promise<string> {
     const newFactura = await this.facturaModel.create(createDacturaDto);
     await this.notificacionesService.crearNotificacion(
       'Notificacion-admin',

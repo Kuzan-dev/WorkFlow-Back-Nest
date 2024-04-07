@@ -6,6 +6,7 @@ import { VerifyRepuestoDto } from './dto/verify-repuesto.dto';
 import { RepuestoDto, RepuestoType } from './dto/repuesto.dto';
 import { RepuestoSearchType } from './dto/search-repuesto.dto';
 import { RepuestosResult } from './dto/search-table-repuesto.dto';
+import { IngresoRepuestosDto } from 'src/estadisticas/dto/ingreso-repuestos.dto';
 
 //Importaciones de seguridad
 import { Roles } from '../auth/roles.decorator';
@@ -76,5 +77,14 @@ export class RepuestosResolver {
     @Args('page', { type: () => Int, nullable: true }) page: number,
   ): Promise<RepuestosResult> {
     return this.repuestoService.searchRepuesto(producto, page);
+  }
+
+  @Mutation(() => String, {
+    name: 'Ingreso_Repuestos_Web',
+    description: 'Función para ingresar repuestos desde la web',
+  })
+  async ingresarRepuestos(@Args('data') data: IngresoRepuestosDto) {
+    await this.repuestoService.ingresarRepuestos(data);
+    return 'Repuestos ingresados correctamente';
   }
 }
