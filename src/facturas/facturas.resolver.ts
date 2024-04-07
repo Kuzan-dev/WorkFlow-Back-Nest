@@ -7,6 +7,7 @@ import { Roles } from '../auth/roles.decorator';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
+import { FacturaDto } from './dto/search-factura.dto';
 
 @Resolver()
 export class FacturasResolver {
@@ -52,5 +53,20 @@ export class FacturasResolver {
   ): Promise<number> {
     const date = new Date(inputDate);
     return this.facturasService.getIngresosDelMes(date);
+  }
+
+  @Query(() => [FacturaDto], {
+    name: 'buscar_factura',
+    description:
+      'Esta Función retorna una lista de facturas que coinciden con el numero de factura',
+  })
+  async searchFactura(
+    @Args('numeroFactura') numeroFactura: string,
+  ): Promise<FacturaDto[]> {
+    const facturas = await this.facturasService.searchFactura(numeroFactura);
+    if (!facturas) {
+      throw new NotFoundException('Factura no encontrada');
+    }
+    return facturas;
   }
 }

@@ -363,6 +363,18 @@ type NotificacionDTO {
   leido: Boolean!
 }
 
+type FacturaDto {
+  numeroFactura: String!
+  monto: Float!
+  igv: Float
+  detraccion: Float
+  tipo: String!
+  notificacion: Boolean!
+  fecha: DateTime!
+  involucrado: String
+  documentos: [String!]
+}
+
 type ProveedorDto {
   _id: String
   nombre: String!
@@ -528,6 +540,11 @@ type Query {
   Esta Función retorna el total de salarios de todo el personal en la base de dato
   """
   Ingreso_Facturas_Mensual(inputDate: String!): Float!
+
+  """
+  Esta Función retorna una lista de facturas que coinciden con el numero de factura
+  """
+  buscar_factura(numeroFactura: String!): [FacturaDto!]!
 
   """Esta función retorna la información del proveedor en base a su nombre"""
   buscar_Proveedor(nombre: String!, page: Int): ProveedorResult!

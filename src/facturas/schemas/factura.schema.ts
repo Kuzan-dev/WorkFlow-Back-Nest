@@ -6,7 +6,7 @@ export type FacturaDocument = HydratedDocument<Factura>;
 @Schema()
 export class Factura {
   @Prop({ unique: true })
-  numeroFactura?: string;
+  numeroFactura: string;
 
   @Prop()
   monto: number;

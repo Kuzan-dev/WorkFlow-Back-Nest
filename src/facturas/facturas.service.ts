@@ -198,4 +198,15 @@ export class FacturasService {
 
     return egresos[0]?.total || 0;
   }
+  async searchFactura(numeroFactura: string): Promise<Factura[]> {
+    let query = {};
+
+    // Si numeroFactura no está vacío, busca por numeroFactura
+    if (numeroFactura !== '') {
+      query = { numeroFactura: new RegExp(numeroFactura, 'i') };
+    }
+
+    const facturas = await this.facturaModel.find(query);
+    return facturas;
+  }
 }
