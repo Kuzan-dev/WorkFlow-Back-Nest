@@ -14,10 +14,13 @@ export class FacturasService {
   ) {}
 
   async create(createDacturaDto: CreateFacturaDto): Promise<string> {
-    if (createDacturaDto.numeroFactura == ""){
-      createDacturaDto.numeroFactura = `compra adicional ${new Date().getTime()}`;
+    if (createDacturaDto.numeroFactura == '') {
+      const date = new Date();
+      const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}-${String(date.getHours()).padStart(2, '0')}-${String(date.getMinutes()).padStart(2, '0')}`;
+
+      createDacturaDto.numeroFactura = `compra adicional ${formattedDate}`;
     }
-    const newFactura = await this.facturaModel.create(createDacturaDto );
+    const newFactura = await this.facturaModel.create(createDacturaDto);
     await this.notificacionesService.crearNotificacion(
       'Notificacion-admin',
       'factura',
