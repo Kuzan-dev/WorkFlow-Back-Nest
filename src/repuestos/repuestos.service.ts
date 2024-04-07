@@ -108,7 +108,7 @@ export class RepuestosService {
   }
 
   async findAll(): Promise<Repuesto[]> {
-    const repuestos = await this.respuestoModel.find();
+    const repuestos = await this.respuestoModel.find().sort({ producto: 1 });
     return repuestos;
   }
   async findById(_id: string): Promise<Repuesto> {
