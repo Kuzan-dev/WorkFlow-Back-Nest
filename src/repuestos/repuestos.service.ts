@@ -45,7 +45,7 @@ export class RepuestosService {
           .session(session);
         if (existingRepuesto) {
           throw new Error(
-            `El repuesto con producto "${repuestoDto.producto}" y marca "${repuestoDto.marca}" ya existe`,
+            `El repuesto con nombre "${repuestoDto.producto}" y marca "${repuestoDto.marca}" ya existe`,
           );
         }
         return this.respuestoModel.create([repuestoDto], {
