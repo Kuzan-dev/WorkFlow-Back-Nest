@@ -1074,8 +1074,45 @@ export class MantenimientosService {
     return operatividad;
   }
 
-  async getCarData(searchParam: string): Promise<any> {
-    const car = await this.carsService.findFirstByPlaca(searchParam);
+  // async getCarData(searchParam: string): Promise<any> {
+  //   const car = await this.carsService.findFirstByPlaca(searchParam);
+  //   if (!car) {
+  //     return {};
+  //   }
+
+  //   const fechaSoat = car.fechaSoat;
+  //   const vigenciaContrato = car.vigenciaContrato;
+  //   const kmActual = car.kmActual;
+  //   const cliente = await this.carsService.getCliente(car.placa);
+
+  //   const mantenimientos = await this.mantenimientoModel
+  //     .find({
+  //       placa: car.placa,
+  //       estado: 'completado',
+  //     })
+  //     .sort({ fecha: -1 });
+
+  //   const ultimaRevision =
+  //     mantenimientos.length > 0 ? mantenimientos[0].fecha : null;
+
+  //   const operatividad = await this.getOperatividadPorcentual(car.placa);
+
+  //   return {
+  //     placa: car.placa,
+  //     fechaSoat,
+  //     cliente,
+  //     ultimaRevision,
+  //     vigenciaContrato,
+  //     kmActual,
+  //     operatividad,
+  //   };
+  // }
+
+  async getCarData(searchParam: string, cliente: string): Promise<any> {
+    const car = await this.carsService.findFirstByPlacaForClient(
+      searchParam,
+      cliente,
+    );
     if (!car) {
       return {};
     }
@@ -1083,7 +1120,7 @@ export class MantenimientosService {
     const fechaSoat = car.fechaSoat;
     const vigenciaContrato = car.vigenciaContrato;
     const kmActual = car.kmActual;
-    const cliente = await this.carsService.getCliente(car.placa);
+    const clienteData = await this.carsService.getCliente(car.placa);
 
     const mantenimientos = await this.mantenimientoModel
       .find({
@@ -1100,7 +1137,7 @@ export class MantenimientosService {
     return {
       placa: car.placa,
       fechaSoat,
-      cliente,
+      cliente: clienteData,
       ultimaRevision,
       vigenciaContrato,
       kmActual,

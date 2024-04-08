@@ -432,9 +432,12 @@ export class MantenimientosResolver {
   async getCarData(
     @Args('searchParam', { type: () => String, nullable: true })
     searchParam: string,
+    @Context() context,
   ): Promise<HistorialCarData> {
+    const username = context.req.user.username;
+    const cliente = await this.usersService.findClientByUsername(username);
     try {
-      return this.mantenimientosService.getCarData(searchParam);
+      return this.mantenimientosService.getCarData(searchParam, cliente);
     } catch {
       return null;
     }

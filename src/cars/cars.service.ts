@@ -136,6 +136,23 @@ export class CarsService {
         .exec();
     }
   }
+  async findFirstByPlacaForClient(
+    placa: string,
+    cliente: string,
+  ): Promise<Car> {
+    // Obtiene las placas asociadas al cliente
+    const placasCliente = await this.findPlatesByClient(cliente);
+
+    if (placa === '') {
+      return this.carModel.findOne({ placa: { $in: placasCliente } }).exec();
+    } else {
+      return this.carModel
+        .findOne({
+          placa: { $regex: new RegExp(placa, 'i'), $in: placasCliente },
+        })
+        .exec();
+    }
+  }
 
   async getCliente(placa: string): Promise<string> {
     const car = await this.carModel.findOne({ placa }).exec();
