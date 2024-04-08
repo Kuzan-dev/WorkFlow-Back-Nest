@@ -38,6 +38,7 @@ export class NotificacionesService {
     await notificacion.save();
 
     pubSub.publish(canal, notificacion);
+    //One Signal
     const notification = new NotificationBySegmentBuilder()
       .setIncludedSegments([canal])
       .notification()

@@ -15,3 +15,18 @@ export class UpdateRepuestoDto {
   @IsNumber()
   precio: number;
 }
+
+@InputType()
+export class UpdateRepuestoStringDto {
+  @Field()
+  @IsString()
+  _id: string;
+
+  @Field()
+  @IsString()
+  cantidad: string;
+
+  @Field()
+  @IsString()
+  precio: string;
+}

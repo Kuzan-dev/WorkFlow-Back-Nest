@@ -6,7 +6,7 @@ import { VerifyRepuestoDto } from './dto/verify-repuesto.dto';
 import { RepuestoDto, RepuestoType } from './dto/repuesto.dto';
 import { RepuestoSearchType } from './dto/search-repuesto.dto';
 import { RepuestosResult } from './dto/search-table-repuesto.dto';
-import { IngresoRepuestosDto } from 'src/estadisticas/dto/ingreso-repuestos.dto';
+import { IngresoRepuestosStringDto } from 'src/estadisticas/dto/ingreso-repuestos.dto';
 
 //Importaciones de seguridad
 import { Roles } from '../auth/roles.decorator';
@@ -83,8 +83,20 @@ export class RepuestosResolver {
     name: 'Ingreso_Repuestos_Web',
     description: 'Función para ingresar repuestos desde la web',
   })
-  async ingresarRepuestos(@Args('data') data: IngresoRepuestosDto) {
-    await this.repuestoService.ingresarRepuestos(data);
+  async ingresarRepuestos(@Args('data') data: IngresoRepuestosStringDto) {
+    const dataNumerica = {
+      repuestosActualizar: data.repuestosActualizar?.map((repuesto) => ({
+        ...repuesto,
+        cantidad: Number(repuesto.cantidad),
+        precio: Number(repuesto.precio),
+      })),
+      repuestosNuevos: data.repuestosNuevos?.map((repuesto) => ({
+        ...repuesto,
+        cantidad: Number(repuesto.cantidad),
+        precio: Number(repuesto.precio),
+      })),
+    };
+    await this.repuestoService.ingresarRepuestos(dataNumerica);
     return 'Repuestos ingresados correctamente';
   }
 }

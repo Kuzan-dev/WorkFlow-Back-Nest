@@ -19,3 +19,22 @@ export class NuevoRepuestoDto {
   @IsNumber()
   precio: number;
 }
+
+@InputType()
+export class NuevoRepuestoStringDto {
+  @Field()
+  @IsString()
+  marca: string;
+
+  @Field()
+  @IsString()
+  producto: string;
+
+  @Field()
+  @IsString()
+  cantidad: string;
+
+  @Field()
+  @IsString()
+  precio: string;
+}
