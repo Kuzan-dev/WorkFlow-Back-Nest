@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
 export class FacturaDto {
@@ -28,4 +28,13 @@ export class FacturaDto {
 
   @Field(() => [String], { nullable: true })
   documentos?: Array<string>;
+}
+
+@ObjectType()
+export class FacturasResult {
+  @Field(() => [FacturaDto])
+  facturas: FacturaDto[];
+
+  @Field(() => Int)
+  totalPages: number;
 }

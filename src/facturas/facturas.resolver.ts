@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Args, Mutation, Resolver, Query } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query, Int } from '@nestjs/graphql';
 import { FacturasService } from './facturas.service';
 import { CreateFacturaDto } from './dto/create-factura.dto';
 //Importaciones de Seguridad
@@ -7,7 +7,7 @@ import { Roles } from '../auth/roles.decorator';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
-import { FacturaDto } from './dto/search-factura.dto';
+import { FacturasResult } from './dto/search-factura.dto';
 
 @Resolver()
 export class FacturasResolver {
@@ -55,18 +55,19 @@ export class FacturasResolver {
     return this.facturasService.getIngresosDelMes(date);
   }
 
-  @Query(() => [FacturaDto], {
+  @Query(() => FacturasResult, {
     name: 'buscar_factura',
     description:
       'Esta Función retorna una lista de facturas que coinciden con el numero de factura',
   })
   async searchFactura(
     @Args('numeroFactura') numeroFactura: string,
-  ): Promise<FacturaDto[]> {
-    const facturas = await this.facturasService.searchFactura(numeroFactura);
-    if (!facturas) {
-      throw new NotFoundException('Factura no encontrada');
-    }
+    @Args('page', { type: () => Int, nullable: true }) page: number,
+  ): Promise<FacturasResult> {
+    const facturas = await this.facturasService.searchFactura(
+      numeroFactura,
+      page,
+    );
     return facturas;
   }
 }

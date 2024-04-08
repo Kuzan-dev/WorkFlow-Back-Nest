@@ -198,15 +198,26 @@ export class FacturasService {
 
     return egresos[0]?.total || 0;
   }
-  async searchFactura(numeroFactura: string): Promise<Factura[]> {
-    let query = {};
+  async searchFactura(numeroFactura: string, page?: number): Promise<any> {
+    const limit = 8;
+    const skip = page && page > 0 ? (page - 1) * limit : 0;
 
-    // Si numeroFactura no está vacío, busca por numeroFactura
-    if (numeroFactura !== '') {
-      query = { numeroFactura: new RegExp(numeroFactura, 'i') };
-    }
+    const query =
+      numeroFactura === ''
+        ? {}
+        : { numeroFactura: new RegExp(numeroFactura, 'i') };
 
-    const facturas = await this.facturaModel.find(query);
-    return facturas;
+    const totalDocuments = await this.facturaModel.countDocuments(query);
+    const totalPages = Math.ceil(totalDocuments / limit);
+
+    const facturas = await this.facturaModel
+      .find(query)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    return {
+      facturas,
+      totalPages,
+    };
   }
 }

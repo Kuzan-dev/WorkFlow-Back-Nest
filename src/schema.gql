@@ -375,6 +375,11 @@ type FacturaDto {
   documentos: [String!]
 }
 
+type FacturasResult {
+  facturas: [FacturaDto!]!
+  totalPages: Int!
+}
+
 type ProveedorDto {
   _id: String
   nombre: String!
@@ -544,7 +549,7 @@ type Query {
   """
   Esta Función retorna una lista de facturas que coinciden con el numero de factura
   """
-  buscar_factura(numeroFactura: String!): [FacturaDto!]!
+  buscar_factura(numeroFactura: String!, page: Int): FacturasResult!
 
   """Esta función retorna la información del proveedor en base a su nombre"""
   buscar_Proveedor(nombre: String!, page: Int): ProveedorResult!
