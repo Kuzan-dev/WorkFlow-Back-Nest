@@ -71,7 +71,8 @@ export class RepuestosService {
       updateOne: {
         filter: { _id: repuesto._id },
         update: {
-          $set: { cantidad: repuesto.cantidad, precio: repuesto.precio },
+          $inc: { cantidad: repuesto.cantidad },
+          $set: { precio: repuesto.precio },
         },
       },
     }));
