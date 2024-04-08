@@ -424,6 +424,8 @@ export class MantenimientosResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => HistorialCarData, {
     name: 'Historial_Car_Admin',
     description:
