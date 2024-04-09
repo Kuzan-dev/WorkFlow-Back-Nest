@@ -12,8 +12,6 @@ import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
 export class NotificacionesResolver {
   constructor(private notificacionesService: NotificacionesService) {}
 
-  @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
   @Subscription(() => NotificacionDTO, {
     name: 'notificaciones_admin',
     description:
@@ -24,8 +22,6 @@ export class NotificacionesResolver {
     return pubSub.asyncIterator('admin');
   }
 
-  @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('tecnico')
   @Subscription(() => NotificacionDTO, {
     name: 'notificaciones_tecnico',
     description:
