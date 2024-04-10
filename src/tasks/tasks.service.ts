@@ -1,9 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Model } from 'mongoose';
 import * as moment from 'moment';
+import { exec } from 'child_process';
+import * as fs from 'fs';
+import { google } from 'googleapis';
+import { OAuth2Client } from 'google-auth-library';
 import { Mantenimiento } from '../mantenimientos/schemas/mantenimiento.schema';
+import * as credentials from '../../keyfile.json';
 
 @Injectable()
 export class TasksService {
@@ -32,5 +37,70 @@ export class TasksService {
         await mantenimiento.save();
       }
     });
+  }
+
+  @Cron(CronExpression.EVERY_10_MINUTES) // Se ejecutara el primer día de cada mes a la medianoche
+  async handleBackupCron() {
+    this.logger.debug('El cron job de copia de seguridad se ejecutó');
+
+    // Realizar una copia de seguridad de la base de datos
+    exec(
+      'mongodump --out /backups/mongodump-$(date +%Y-%m-%d)',
+      async (error, stdout, stderr) => {
+        if (error) {
+          this.logger.error(
+            `Error al realizar la copia de seguridad de la base de datos: ${error}`,
+          );
+          return;
+        }
+
+        this.logger.debug(
+          'Copia de seguridad de la base de datos realizada con éxito',
+        );
+
+        const { client_id, client_secret, redirect_uris } = credentials.web;
+
+        const client = new OAuth2Client(
+          client_id,
+          client_secret,
+          redirect_uris[0],
+        );
+
+        const drive = google.drive({
+          version: 'v3',
+          auth: client,
+        });
+        // Subir la copia de seguridad a Google Drive
+        const fileMetadata = {
+          name: 'mongodump-$(date +%Y-%m-%d)',
+          parents: ['11KbYsZbRrzuGCiCmj-UJWEUcJkhwPte1'],
+        };
+        const media = {
+          mimeType: 'application/gzip',
+          body: fs.createReadStream(
+            `/backups/mongodump-$(date +%Y-%m-%d).tar.gz`,
+          ),
+        };
+        drive.files.create(
+          {
+            requestBody: fileMetadata,
+            media: media,
+            fields: 'id',
+          },
+          (err, file) => {
+            if (err) {
+              this.logger.error(
+                `Error al subir la copia de seguridad a Google Drive: ${err}`,
+              );
+              return;
+            }
+
+            this.logger.debug(
+              'Copia de seguridad subida a Google Drive con éxito',
+            );
+          },
+        );
+      },
+    );
   }
 }
