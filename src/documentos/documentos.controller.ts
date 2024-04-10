@@ -71,6 +71,7 @@ export class DocumentosController {
     @UploadedFiles() files: { files: Express.Multer.File[] },
     @Query('query1') query1: string,
     @Query('query2') query2: string,
+    @Res() res: Response,
   ) {
     try {
       console.log('Files:', files); // Log the files
@@ -82,6 +83,7 @@ export class DocumentosController {
         query2,
       );
       console.log('Paths:', paths); // Log the paths
+      res.status(200).send('Archivo subido con éxito');
     } catch (error) {
       console.error('Error subiendo archivos:', error);
       throw error;
@@ -107,6 +109,7 @@ export class DocumentosController {
           });
           res.type(mimeTypes.lookup(path));
           file.pipe(res);
+          res.status(200).send('Archivo descargado con éxito');
         }
       });
     } catch (error) {
