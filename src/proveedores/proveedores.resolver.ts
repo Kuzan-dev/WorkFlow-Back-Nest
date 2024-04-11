@@ -49,4 +49,13 @@ export class ProveedoresResolver {
   async deletePersonal(@Args('id') id: string): Promise<boolean> {
     return this.proveedoresService.deleteProveedor(id);
   }
+
+  @Query(() => [String], {
+    name: 'obtener_nombres_proveedor',
+    description:
+      'Esta función retorna un arreglo con los nombres de los proveedores',
+  })
+  async proveedorNames(): Promise<string[]> {
+    return this.proveedoresService.findAllProveedorNames();
+  }
 }

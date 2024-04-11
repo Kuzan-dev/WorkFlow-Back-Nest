@@ -44,4 +44,9 @@ export class ProveedoresService {
     const result = await this.proveedorModel.findByIdAndDelete(id).exec();
     return result != null;
   }
+
+  async findAllProveedorNames(): Promise<string[]> {
+    const proveedores = await this.proveedorModel.find().exec();
+    return proveedores.map((proveedor) => proveedor.nombre);
+  }
 }

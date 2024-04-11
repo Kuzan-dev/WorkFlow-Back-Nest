@@ -558,6 +558,9 @@ type Query {
   """Esta función retorna la información del proveedor en base a su nombre"""
   buscar_Proveedor(nombre: String!, page: Int): ProveedorResult!
 
+  """Esta función retorna un arreglo con los nombres de los proveedores"""
+  obtener_nombres_proveedor: [String!]!
+
   """
   Esta Función retorna la información de todo el personal en la base de datos
   """
@@ -618,7 +621,7 @@ type Mutation {
   borrar_usuario_por_id(_id: String!): String!
 
   """Esta Función actualiza la información de un usuario"""
-  actualizar_datos_usuario(oldUsername: String!, newName: String!, newEmail: String!, newPassword: String!, newUsername: String): Boolean!
+  actualizar_datos_usuario(oldUsername: String!, newEmail: String!, newPassword: String!, newName: String, newUsername: String): Boolean!
 
   """
   Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados
