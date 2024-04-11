@@ -82,10 +82,10 @@ export class UsersService {
 
   async updateDatUser(
     oldUsername: string,
-    newName: string,
     newEmail: string,
     newPassword: string,
     newUsername?: string,
+    newName?: string,
   ): Promise<User> {
     const user = await this.userModel.findOne({ username: oldUsername }).exec();
     if (!user) {
@@ -96,7 +96,9 @@ export class UsersService {
     if (newUsername) {
       user.username = newUsername;
     }
-    user.name = newName;
+    if (newName) {
+      user.name = newName;
+    }
     user.email = newEmail;
     return user.save();
   }

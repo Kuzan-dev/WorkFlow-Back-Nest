@@ -104,9 +104,9 @@ export class AuthResolver {
   })
   async updateData(
     @Args('oldUsername') oldUsername: string,
-    @Args('newName') newName: string,
     @Args('newEmail') newEmail: string,
     @Args('newPassword') newPassword: string,
+    @Args('newName', { nullable: true }) newName?: string,
     @Args('newUsername', { nullable: true }) newUsername?: string,
   ) {
     await this.usersService.updateDatUser(
