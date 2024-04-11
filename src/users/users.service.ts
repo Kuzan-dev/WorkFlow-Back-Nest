@@ -86,7 +86,7 @@ export class UsersService {
     newPassword: string,
     newUsername?: string,
     newName?: string,
-  ): Promise<User> {
+  ): Promise<string> {
     const user = await this.userModel.findOne({ username: oldUsername }).exec();
     if (!user) {
       throw new Error('User not found');
@@ -100,6 +100,7 @@ export class UsersService {
       user.name = newName;
     }
     user.email = newEmail;
-    return user.save();
+    await user.save();
+    return 'User updated successfully';
   }
 }

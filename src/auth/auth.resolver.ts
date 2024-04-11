@@ -111,10 +111,10 @@ export class AuthResolver {
   ) {
     await this.usersService.updateDatUser(
       oldUsername,
-      newUsername,
-      newName,
       newEmail,
       newPassword,
+      newUsername,
+      newName,
     );
     return true;
   }
