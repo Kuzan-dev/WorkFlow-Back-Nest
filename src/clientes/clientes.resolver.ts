@@ -37,11 +37,7 @@ export class ClientesResolver {
     ) {
       return 'faltaUsers';
     }
-    const clientInfo = await this.clienteService.createCliente(cliente.cliente);
-    await Promise.all(
-      cliente.users.map((user) => this.userService.create(user)),
-    );
-    return clientInfo;
+    return this.clienteService.createClienteWithUsers(cliente);
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)

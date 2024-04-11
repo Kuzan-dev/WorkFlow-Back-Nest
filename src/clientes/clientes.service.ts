@@ -6,6 +6,8 @@ import { Cliente, ClienteDocument } from './schemas/cliente.schema';
 import { UsersService } from 'src/users/users.service';
 import { UserOutput } from 'src/users/dto/create-user.dto';
 import { omit } from 'lodash';
+import { ClienteUserInput } from './dto/cliente-user.input';
+import { ClientSession } from 'mongoose';
 
 @Injectable()
 export class ClientesService {
@@ -14,6 +16,32 @@ export class ClientesService {
     private usersService: UsersService,
   ) {}
 
+  async createClienteWithUsers(cliente: ClienteUserInput): Promise<string> {
+    const session = await this.clienteModel.db.startSession();
+    session.startTransaction();
+    try {
+      const clientInfo = await this.createCliente2(cliente.cliente, session);
+      await Promise.all(
+        cliente.users.map((user) => this.usersService.create2(user, session)),
+      );
+      await session.commitTransaction();
+      return clientInfo;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
+  async createCliente2(
+    cliente: ClienteDto,
+    session?: ClientSession,
+  ): Promise<string> {
+    const newCliente = new this.clienteModel(cliente);
+    const result = await newCliente.save({ session });
+    return result._id;
+  }
   async createCliente(cliente: ClienteDto): Promise<string> {
     const newCliente = new this.clienteModel(cliente);
     const result = await newCliente.save();
