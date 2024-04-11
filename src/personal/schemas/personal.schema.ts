@@ -31,6 +31,9 @@ export class Personal {
 
   @Prop([String])
   documentos?: Array<string>;
+
+  @Prop({ type: String, required: true, unique: true })
+  username: string;
 }
 
 export type PersonalDocument = Personal & Document;

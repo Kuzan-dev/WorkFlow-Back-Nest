@@ -1,7 +1,7 @@
-import { InputType, Field, Int, Float } from '@nestjs/graphql';
+import { Field, ObjectType, Int, Float } from '@nestjs/graphql';
 
-@InputType()
-export class SalarioFechaInput {
+@ObjectType()
+export class SalarioFechaBusDto {
   @Field(() => Float)
   salario: number;
 
@@ -9,8 +9,8 @@ export class SalarioFechaInput {
   fecha: Date;
 }
 
-@InputType()
-export class PersonalInput {
+@ObjectType()
+export class PersonalBusDto {
   @Field({ nullable: true })
   _id: string;
 
@@ -26,12 +26,12 @@ export class PersonalInput {
   @Field({ nullable: true })
   fechaIngreso: Date;
 
-  @Field(() => [SalarioFechaInput], { nullable: 'itemsAndList' })
-  salarioFecha: SalarioFechaInput[];
+  @Field(() => [SalarioFechaBusDto], { nullable: 'itemsAndList' })
+  salarioFecha: SalarioFechaBusDto[];
 
   @Field(() => [String], { nullable: 'itemsAndList' })
   documentos?: Array<string>;
 
   @Field()
-  username: string;
+  id_user: string;
 }

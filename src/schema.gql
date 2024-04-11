@@ -410,6 +410,7 @@ type PersonalDto {
   fechaIngreso: DateTime
   salarioFecha: [SalarioFechaDto]
   documentos: [String]
+  username: String!
 }
 
 type PersonalResult {
@@ -445,7 +446,7 @@ type Query {
   """Esta Función obtiene un usuario por su username"""
   obtener_usuario_por_username(username: String!): UserOutput!
 
-  """Esta Función obtiene un usuario por su username"""
+  """Esta Función obtiene un usuario por su id"""
   obtener_usuario_por_id(_id: String!): UserOutput!
 
   """
@@ -869,6 +870,7 @@ input PersonalInput {
   fechaIngreso: DateTime
   salarioFecha: [SalarioFechaInput]
   documentos: [String]
+  username: String!
 }
 
 input SalarioFechaInput {

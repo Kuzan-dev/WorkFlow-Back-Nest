@@ -31,4 +31,7 @@ export class PersonalDto {
 
   @Field(() => [String], { nullable: 'itemsAndList' })
   documentos?: Array<string>;
+
+  @Field()
+  username: string;
 }

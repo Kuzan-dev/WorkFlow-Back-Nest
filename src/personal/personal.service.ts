@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PersonalDto, SalarioFechaDto } from './dto/create-personal.dto';
 import { pubSub } from 'src/shared/pubsub';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PersonalService {
   constructor(
     @InjectModel(Personal.name) private personalModel: Model<PersonalDocument>,
+    private userService: UsersService,
   ) {}
 
   async createPersonal(createPersonalDto: PersonalDto): Promise<string> {
@@ -41,7 +43,7 @@ export class PersonalService {
     return this.personalModel.find().exec();
   }
 
-  async getPersonalById(id: string): Promise<Personal> {
+  async getPersonalById(id: string): Promise<PersonalDto> {
     return this.personalModel.findById(id).exec();
   }
 
