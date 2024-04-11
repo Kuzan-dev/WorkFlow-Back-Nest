@@ -618,7 +618,7 @@ type Mutation {
   borrar_usuario_por_id(_id: String!): String!
 
   """Esta Función actualiza la información de un usuario"""
-  actualizar_datos_usuario(oldUsername: String!, newUsername: String!, newName: String!, newEmail: String!, newPassword: String!): Boolean!
+  actualizar_datos_usuario(oldUsername: String!, newName: String!, newEmail: String!, newPassword: String!, newUsername: String): Boolean!
 
   """
   Esta función cambia el estado de un mantenimiento a "revision" y realiza una corrección de repuestos, esta corrección es quitar los repuestos que estaban reservados

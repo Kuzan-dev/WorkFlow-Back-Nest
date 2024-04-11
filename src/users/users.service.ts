@@ -82,10 +82,10 @@ export class UsersService {
 
   async updateDatUser(
     oldUsername: string,
-    newUsername: string,
     newName: string,
     newEmail: string,
     newPassword: string,
+    newUsername?: string,
   ): Promise<User> {
     const user = await this.userModel.findOne({ username: oldUsername }).exec();
     if (!user) {
@@ -93,7 +93,9 @@ export class UsersService {
     }
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashedPassword;
-    user.username = newUsername;
+    if (newUsername) {
+      user.username = newUsername;
+    }
     user.name = newName;
     user.email = newEmail;
     return user.save();
