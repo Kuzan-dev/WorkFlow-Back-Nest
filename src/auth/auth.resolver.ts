@@ -118,4 +118,14 @@ export class AuthResolver {
     );
     return true;
   }
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Query(() => UserOutput, {
+    name: 'obtener_usuario_por_id',
+    description: 'Esta Función obtiene un usuario por su id',
+  })
+  async getUserById(@Args('_id') _id: string): Promise<UserOutput> {
+    return this.usersService.findOneID(_id);
+  }
 }

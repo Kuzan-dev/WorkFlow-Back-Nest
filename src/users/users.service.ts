@@ -14,6 +14,10 @@ export class UsersService {
     return this.userModel.findOne({ username: username }).exec();
   }
 
+  async findOneID(_id: string): Promise<UserDocument | undefined> {
+    return this.userModel.findById(_id).exec();
+  }
+
   async create(user: User): Promise<User> {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = new this.userModel({

@@ -445,6 +445,9 @@ type Query {
   """Esta Función obtiene un usuario por su username"""
   obtener_usuario_por_username(username: String!): UserOutput!
 
+  """Esta Función obtiene un usuario por su username"""
+  obtener_usuario_por_id(_id: String!): UserOutput!
+
   """
   Esta funcion retorna el calendario de mantenimientos programados del mes, y ademas los mantenimientos para el dia de hoy
   """
