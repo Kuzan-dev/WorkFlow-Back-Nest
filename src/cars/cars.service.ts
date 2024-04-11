@@ -101,6 +101,17 @@ export class CarsService {
     }
   }
 
+  async searchCars2(placa: string): Promise<string[]> {
+    if (placa === '') {
+      return [];
+    } else {
+      return this.carModel
+        .find({ placa: new RegExp(placa, 'i') })
+        .distinct('placa')
+        .exec();
+    }
+  }
+
   async getPuntaje(placa: string): Promise<number> {
     try {
       const car = await this.carModel.findOne({ placa }).exec();

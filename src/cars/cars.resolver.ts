@@ -59,7 +59,7 @@ export class CarsResolver {
     description: 'Esta Función retorna las placas de los autos',
   })
   async searchCars(@Args('placa', { type: () => String }) placa: string) {
-    return this.carsService.searchCars(placa);
+    return this.carsService.searchCars2(placa);
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
