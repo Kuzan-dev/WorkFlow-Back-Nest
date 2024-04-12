@@ -1,7 +1,12 @@
 import { Resolver, Args, Mutation, Query, Int } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
 import { ContratoInput } from './dto/cliente.input';
-import { ClienteDto, Cliente2Dto, Contrato2Dto } from './dto/cliente.dto';
+import {
+  ClienteDto,
+  Cliente2Dto,
+  Contrato2Dto,
+  ContratoIntDto,
+} from './dto/cliente.dto';
 import { ClienteInput } from './dto/cliente.input';
 import { ClienteUserInput } from './dto/cliente-user.input';
 import { UsersService } from '../users/users.service';
@@ -183,5 +188,18 @@ export class ClientesResolver {
         `No se pudo eliminar el contrato del cliente con el ID ${clienteId}`,
       );
     }
+  }
+
+  @Mutation(() => String, {
+    name: 'agregar_Contrato',
+    description:
+      'Esta Función agrega un contrato a un cliente en la base de datos',
+  })
+  async add2Contrato(
+    @Args('id') id: string,
+    @Args('contrato') contrato: ContratoIntDto,
+  ): Promise<string> {
+    await this.clienteService.addContrato(id, contrato);
+    return 'contrato agregado con exito';
   }
 }

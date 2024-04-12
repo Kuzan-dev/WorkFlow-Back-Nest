@@ -740,6 +740,9 @@ type Mutation {
   Esta Función elimina un contrato de un cliente en la base de datos y retorna el documento actualizado
   """
   eliminar_Contrato(clienteId: String!, numeroContrato: String!): Boolean!
+
+  """Esta Función agrega un contrato a un cliente en la base de datos"""
+  agregar_Contrato(id: String!, contrato: ContratoIntDto!): String!
 }
 
 input CreateUserDto {
@@ -925,6 +928,12 @@ input ClienteInput {
 }
 
 input ContratoInput {
+  numeroContrato: String!
+  fechaInicio: DateTime!
+  fechaFin: DateTime!
+}
+
+input ContratoIntDto {
   numeroContrato: String!
   fechaInicio: DateTime!
   fechaFin: DateTime!

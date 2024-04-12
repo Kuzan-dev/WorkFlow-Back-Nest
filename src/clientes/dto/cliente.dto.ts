@@ -1,7 +1,19 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class ContratoDto {
+  @Field()
+  numeroContrato: string;
+
+  @Field()
+  fechaInicio: Date;
+
+  @Field()
+  fechaFin: Date;
+}
+
+@InputType()
+export class ContratoIntDto {
   @Field()
   numeroContrato: string;
 
