@@ -55,6 +55,8 @@ export class FacturasResolver {
     return this.facturasService.getIngresosDelMes(date);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => FacturasResult, {
     name: 'buscar_factura',
     description:

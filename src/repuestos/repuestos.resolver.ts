@@ -65,8 +65,8 @@ export class RepuestosResolver {
     return true;
   }
 
-  // @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  // @Roles('admin', 'tecnico')
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => RepuestosResult, {
     name: 'buscar_repuestos',
     description:
@@ -79,6 +79,8 @@ export class RepuestosResolver {
     return this.repuestoService.searchRepuesto(producto, page);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'Ingreso_Repuestos_Web',
     description: 'Función para ingresar repuestos desde la web',
@@ -100,6 +102,8 @@ export class RepuestosResolver {
     return 'Repuestos ingresados correctamente';
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'Borrar_Repuesto',
     description: 'Función para borrar repuestos',

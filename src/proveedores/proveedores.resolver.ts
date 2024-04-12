@@ -50,6 +50,8 @@ export class ProveedoresResolver {
     return this.proveedoresService.deleteProveedor(id);
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [String], {
     name: 'obtener_nombres_proveedor',
     description:
