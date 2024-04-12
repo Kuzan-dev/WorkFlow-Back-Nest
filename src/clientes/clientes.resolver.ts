@@ -1,7 +1,7 @@
 import { Resolver, Args, Mutation, Query, Int } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
 import { ContratoInput } from './dto/cliente.input';
-import { ClienteDto } from './dto/cliente.dto';
+import { ClienteDto, Cliente2Dto, Contrato2Dto } from './dto/cliente.dto';
 import { ClienteInput } from './dto/cliente.input';
 import { ClienteUserInput } from './dto/cliente-user.input';
 import { UsersService } from '../users/users.service';
@@ -79,22 +79,40 @@ export class ClientesResolver {
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
   @Roles('admin')
-  @Query(() => ClienteDto, {
+  @Query(() => Cliente2Dto, {
     name: 'obtener_Cliente_ID',
     description:
       'Esta Función retorna la información de un cliente en base a su ID',
   })
-  async getClienteById(@Args('id') id: string): Promise<ClienteDto> {
-    return this.clienteService.getClienteById(id);
-  }
+  async getClienteById(@Args('id') id: string): Promise<Cliente2Dto> {
+    const cliente = await this.clienteService.getClienteById(id);
 
-  @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Mutation(() => ClienteDto, {
-    name: 'Agregar_Contrato_Cliente',
-    description:
-      'Esta Función agrega un nuevo contrato al cliente en la base de datos y retorna el documento actualizado',
-  })
+    // Mapear los contratos a Contrato2Dto
+    const contratos = cliente.contratos.map((contrato) => {
+      return {
+        numeroContrato: contrato.numeroContrato,
+        fechaInicio: contrato.fechaInicio,
+        fechaFin: contrato.fechaFin,
+        clienteId: cliente._id, // Aquí asignamos el _id del cliente al campo clienteId del contrato
+      } as Contrato2Dto;
+    });
+
+    // Mapear el cliente a Cliente2Dto
+    const cliente2Dto: Cliente2Dto = {
+      _id: cliente._id,
+      nombre: cliente.nombre,
+      ruc: cliente.ruc,
+      direccion: cliente.direccion,
+      nombreCliente: cliente.nombreCliente,
+      numeroContacto: cliente.numeroContacto,
+      email: cliente.email,
+      rubro: cliente.rubro,
+      contratos: contratos,
+      documentos: cliente.documentos,
+    };
+
+    return cliente2Dto;
+  }
   async addContrato(
     @Args('id') id: string,
     @Args('contrato', { type: () => ContratoInput }) contrato: ContratoInput,

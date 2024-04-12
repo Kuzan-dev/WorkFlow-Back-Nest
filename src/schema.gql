@@ -437,6 +437,26 @@ type ClienteDto {
   documentos: [String]
 }
 
+type Contrato2Dto {
+  numeroContrato: String!
+  fechaInicio: DateTime!
+  fechaFin: DateTime!
+  clienteId: String!
+}
+
+type Cliente2Dto {
+  _id: String
+  nombre: String!
+  ruc: String!
+  direccion: String!
+  nombreCliente: String
+  numeroContacto: Float
+  email: String!
+  rubro: String!
+  contratos: [Contrato2Dto]
+  documentos: [String]
+}
+
 type ClientesResult {
   clientes: [ClienteDto!]!
   totalPages: Int!
@@ -578,7 +598,7 @@ type Query {
   obtener_Salari_Total(inputDate: String!): Float!
 
   """Esta Función retorna la información de un cliente en base a su ID"""
-  obtener_Cliente_ID(id: String!): ClienteDto!
+  obtener_Cliente_ID(id: String!): Cliente2Dto!
 
   """
   Esta Función retorna la información de todos los clientes en la base de datos
@@ -715,11 +735,6 @@ type Mutation {
   Esta Función elimina un cliente de la base de datos y retorna un booleano indicando si se eliminó correctamente o no
   """
   borrar_Cliente(id: String!): Boolean!
-
-  """
-  Esta Función agrega un nuevo contrato al cliente en la base de datos y retorna el documento actualizado
-  """
-  Agregar_Contrato_Cliente(id: String!, contrato: ContratoInput!): ClienteDto!
 
   """
   Esta Función elimina un contrato de un cliente en la base de datos y retorna el documento actualizado
