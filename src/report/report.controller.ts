@@ -33,10 +33,12 @@ export class ReportController {
   ) {
     try {
       const username = req.user.username;
+      const defaultFechaDesde = new Date('2020-01-01');
+      const defaultFechaHasta = new Date('3000-01-01');
       const report = await this.reportService.generateReport2(
         username,
-        new Date(fechaDesde),
-        new Date(fechaHasta),
+        fechaDesde ? new Date(fechaDesde) : defaultFechaDesde,
+        fechaHasta ? new Date(fechaHasta) : defaultFechaHasta,
       );
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
