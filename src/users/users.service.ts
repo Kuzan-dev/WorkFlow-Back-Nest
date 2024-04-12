@@ -20,7 +20,11 @@ export class UsersService {
     return this.userModel.findById(_id).exec();
   }
   async create2(user: CreateUserDto, session?: ClientSession): Promise<User> {
-    const newUser = new this.userModel(user);
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const newUser = new this.userModel({
+      ...user,
+      password: hashedPassword,
+    });
     const result = await newUser.save({ session });
     return result;
   }
