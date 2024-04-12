@@ -665,6 +665,9 @@ type Mutation {
   """Función para ingresar repuestos desde la web"""
   Ingreso_Repuestos_Web(data: IngresoRepuestosStringDto!): String!
 
+  """Función para borrar repuestos"""
+  Borrar_Repuesto(id: String!): String!
+
   """
   Esta Función registra una factura en la base de datos y retorna el id de la factura creada
   """

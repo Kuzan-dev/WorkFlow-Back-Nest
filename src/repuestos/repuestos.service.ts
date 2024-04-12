@@ -20,6 +20,14 @@ export class RepuestosService {
     return newRepuesto;
   }
 
+  async delete(_id: string): Promise<Repuesto> {
+    const repuesto = await this.respuestoModel.findByIdAndDelete(_id);
+    if (!repuesto) {
+      throw new HttpException('Repuesto no encontrado', HttpStatus.NOT_FOUND);
+    }
+    return repuesto;
+  }
+
   async createMany(
     createRepuestosDto: NuevoRepuestoDto[],
     session: ClientSession,

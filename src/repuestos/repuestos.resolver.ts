@@ -99,4 +99,13 @@ export class RepuestosResolver {
     await this.repuestoService.ingresarRepuestos(dataNumerica);
     return 'Repuestos ingresados correctamente';
   }
+
+  @Mutation(() => String, {
+    name: 'Borrar_Repuesto',
+    description: 'Función para borrar repuestos',
+  })
+  async deleteRepuesto(@Args('id') id: string) {
+    await this.repuestoService.delete(id);
+    return 'Repuesto borrado correctamente';
+  }
 }
