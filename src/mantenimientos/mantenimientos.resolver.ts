@@ -359,39 +359,42 @@ export class MantenimientosResolver {
   ): Promise<EstadisticWebDTO> {
     try {
       const placaSelect = await this.carService.findFirstByPlaca(placa);
+      // Si la fecha es una cadena vacía, asigna la fecha actual
+      const fechaSeleccionada = fecha === '' ? new Date() : new Date(fecha);
+
       const kmRecorrido = await this.mantenimientosService.getKmRecorridoPorMes(
         placaSelect.placa,
-        new Date(fecha),
+        new Date(fechaSeleccionada),
       );
 
       const costos = await this.mantenimientosService.getCostos(
         placaSelect.placa,
-        new Date(fecha),
+        new Date(fechaSeleccionada),
       );
 
       const puntaje = await this.carService.getPuntaje(placaSelect.placa);
       const cantidadMatenimientos =
         await this.mantenimientosService.getNumeroMantenimientos(
           placaSelect.placa,
-          new Date(fecha),
+          new Date(fechaSeleccionada),
         );
 
       const cantidadMatDenegados =
         await this.mantenimientosService.getNumeroMantCance(
           placaSelect.placa,
-          new Date(fecha),
+          new Date(fechaSeleccionada),
         );
 
       const repuestosConsumidos =
         await this.mantenimientosService.getRepuestosMasConsumidos(
           placaSelect.placa,
-          new Date(fecha),
+          new Date(fechaSeleccionada),
         );
 
       const operatividad =
         await this.mantenimientosService.getOperatividadPorMes(
           placaSelect.placa,
-          new Date(fecha),
+          new Date(fechaSeleccionada),
         );
       return {
         placa: placaSelect.placa,
