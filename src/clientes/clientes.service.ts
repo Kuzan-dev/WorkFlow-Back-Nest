@@ -33,6 +33,10 @@ export class ClientesService {
       session.endSession();
     }
   }
+  async getNombreCliente(id: string): Promise<string> {
+    const cliente = await this.clienteModel.findById(id).exec();
+    return cliente.nombreCliente;
+  }
 
   async createCliente2(
     cliente: ClienteDto,

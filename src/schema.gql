@@ -743,6 +743,11 @@ type Mutation {
 
   """Esta Función agrega un contrato a un cliente en la base de datos"""
   agregar_Contrato(id: String!, contrato: ContratoIntDto!): String!
+
+  """
+  Esta Función registra un nuevo usuario en la base de datos y lo asocia a un cliente
+  """
+  crear_usuario_cliente(input: CreateClientUserDto!): String!
 }
 
 input CreateUserDto {
@@ -937,6 +942,14 @@ input ContratoIntDto {
   numeroContrato: String!
   fechaInicio: DateTime!
   fechaFin: DateTime!
+}
+
+input CreateClientUserDto {
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+  idCliente: String
 }
 
 type Subscription {

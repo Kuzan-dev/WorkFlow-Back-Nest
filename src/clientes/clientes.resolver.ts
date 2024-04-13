@@ -1,6 +1,5 @@
 import { Resolver, Args, Mutation, Query, Int } from '@nestjs/graphql';
 import { ClientesService } from './clientes.service';
-import { ContratoInput } from './dto/cliente.input';
 import {
   ClienteDto,
   Cliente2Dto,
@@ -15,9 +14,11 @@ import { Roles } from '../auth/roles.decorator';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard';
 import { GqlJwtAuthGuard } from '../auth/gql-jwt-auth.guard';
-import { UserOutput } from 'src/users/dto/create-user.dto';
+import { CreateUserDto, UserOutput } from 'src/users/dto/create-user.dto';
 import { omit } from 'lodash';
 import { ClientesResult } from './dto/search-clientes.dto';
+import { CreateClientUserDto } from './dto/create-user-client.dto';
+
 @Resolver()
 export class ClientesResolver {
   constructor(
@@ -118,12 +119,6 @@ export class ClientesResolver {
 
     return cliente2Dto;
   }
-  async addContrato(
-    @Args('id') id: string,
-    @Args('contrato', { type: () => ContratoInput }) contrato: ContratoInput,
-  ): Promise<ClienteDto> {
-    return this.clienteService.addContrato(id, contrato);
-  }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -201,5 +196,28 @@ export class ClientesResolver {
   ): Promise<string> {
     await this.clienteService.addContrato(id, contrato);
     return 'contrato agregado con exito';
+  }
+
+  @Mutation(() => String, {
+    name: 'crear_usuario_cliente',
+    description:
+      'Esta Función registra un nuevo usuario en la base de datos y lo asocia a un cliente',
+  })
+  async createUserCliente(
+    @Args('input', { type: () => CreateClientUserDto })
+    input: CreateClientUserDto,
+  ): Promise<string> {
+    const clienteA = await this.clienteService.getNombreCliente(
+      input.idCliente,
+    );
+
+    const inputU: CreateUserDto = {
+      ...input,
+      nivelUser: 'cliente',
+      clienteAsociado: clienteA,
+      _id: null,
+    };
+    await this.userService.create(inputU);
+    return 'crear usuario cliente';
   }
 }
