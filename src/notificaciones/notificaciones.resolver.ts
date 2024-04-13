@@ -57,6 +57,37 @@ export class NotificacionesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'cliente')
+  //Agregar Query para ver todos los mensajes
+  @Mutation(() => Boolean, {
+    name: 'emergencia_notificacion',
+    description: 'envia un string de notificación de emergencia',
+  })
+  async emergenciaNotificacion(
+    @Args('emergencia') emergencia: string,
+  ): Promise<boolean> {
+    const { canal, tipo, identificador, titulo, descripcion, fecha, leido } = {
+      canal: 'admin',
+      tipo: 'mantenimiento',
+      identificador: '999',
+      titulo: 'Alerta - Emergencia',
+      descripcion: emergencia,
+      fecha: new Date(),
+      leido: false,
+    };
+    await this.notificacionesService.crearNotificacion(
+      canal,
+      tipo,
+      identificador,
+      titulo,
+      descripcion,
+      fecha,
+      leido,
+    );
+    return true;
+  }
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Query(() => [NotificacionDTO], {
     name: 'obtener_notificaciones_no_leidas',
