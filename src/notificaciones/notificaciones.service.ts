@@ -50,6 +50,8 @@ export class NotificacionesService {
   }
 
   async obtenerNotificacionesNoLeidas(): Promise<Notificacion[]> {
-    return await this.notificacionModel.find({ leido: false });
+    return await this.notificacionModel
+      .find({ leido: false })
+      .sort({ fecha: -1 });
   }
 }
