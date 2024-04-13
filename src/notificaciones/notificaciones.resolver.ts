@@ -88,7 +88,7 @@ export class NotificacionesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin', 'tecnico', 'cliente')
   @Query(() => [NotificacionDTO], {
     name: 'obtener_notificaciones_no_leidas',
     description:
