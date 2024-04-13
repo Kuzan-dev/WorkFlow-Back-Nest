@@ -92,6 +92,9 @@ export class ClientesResolver {
   })
   async getClienteById(@Args('id') id: string): Promise<Cliente2Dto> {
     const cliente = await this.clienteService.getClienteById(id);
+    if (!cliente) {
+      throw new NotFoundException(`Cliente with ID ${id} not found`);
+    }
 
     // Mapear los contratos a Contrato2Dto
     const contratos = cliente.contratos.map((contrato) => {
