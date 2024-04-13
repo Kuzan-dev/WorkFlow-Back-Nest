@@ -42,7 +42,7 @@ export class FacturasResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'tecnico')
   @Query(() => Number, {
     name: 'Ingreso_Facturas_Mensual',
     description:

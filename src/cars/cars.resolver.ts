@@ -29,7 +29,7 @@ export class CarsResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin', 'tecnico')
+  @Roles('admin', 'tecnico', 'cliente')
   @Query(() => [GetPlacasDto], {
     name: 'obtener_info_placas',
     description:

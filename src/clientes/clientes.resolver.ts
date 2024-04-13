@@ -121,7 +121,7 @@ export class ClientesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'tecnico', 'cliente')
   @Query(() => [ClienteDto], {
     name: 'obtener_Todos_Clientes',
     description:
