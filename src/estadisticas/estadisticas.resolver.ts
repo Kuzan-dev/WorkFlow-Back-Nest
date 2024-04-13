@@ -44,7 +44,7 @@ export class EstadisticasResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'tecnico')
   @Query(() => Dashboard, {
     name: 'dashboard_web',
     description: 'Obtiene el resumen mensual de ingresos y egresos',
