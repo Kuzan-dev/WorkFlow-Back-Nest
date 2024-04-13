@@ -33,7 +33,7 @@ export class NotificacionesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'tecnico')
   //Agregar Query para ver todos los mensajes
   @Mutation(() => Boolean, {
     name: 'prueba_notificacion',
@@ -88,7 +88,7 @@ export class NotificacionesResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'tecnico')
   @Query(() => [NotificacionDTO], {
     name: 'obtener_notificaciones_no_leidas',
     description:
