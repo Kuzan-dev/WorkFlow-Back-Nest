@@ -70,7 +70,7 @@ export class NotificacionesResolver {
       canal: 'admin',
       tipo: 'mantenimiento',
       identificador: '999',
-      titulo: 'Alerta - Emergencia',
+      titulo: 'Alerta Cliente - Emergencia',
       descripcion: emergencia,
       fecha: new Date(),
       leido: false,
