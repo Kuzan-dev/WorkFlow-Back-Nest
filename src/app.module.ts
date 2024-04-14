@@ -11,7 +11,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { MantenimientosModule } from './mantenimientos/mantenimientos.module';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+//import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { CarsModule } from './cars/cars.module';
 import { RepuestosModule } from './repuestos/repuestos.module';
 import { FacturasModule } from './facturas/facturas.module';
@@ -36,7 +36,7 @@ import { NotificacionesModule } from './notificaciones/notificaciones.module';
       },
       playground: false,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      //plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     MongooseModule.forRoot(process.env.DB_CONNECTION),
     AuthModule,

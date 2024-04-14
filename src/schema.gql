@@ -669,6 +669,9 @@ type Mutation {
   """Esta Función es para probar las notifaciones"""
   prueba_notificacion(inputNotification: CreateNotiDTO!): Boolean!
 
+  """envia un string de notificación de emergencia"""
+  emergencia_notificacion(emergencia: String!): Boolean!
+
   """Esta Función registra un auto en la base de datos"""
   crear_auto(createCarInput: CreateCarDto!): String!
 
