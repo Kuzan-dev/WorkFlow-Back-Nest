@@ -56,6 +56,8 @@ export class MantenimientosResolver {
     return pubSub.asyncIterator('calendarTecnico');
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => CalendarAndMantenimientosDTO, {
     name: 'Query_Calendar_Hoy_Tecnico',
     description:
@@ -80,6 +82,8 @@ export class MantenimientosResolver {
     return pubSub.asyncIterator('Actividades');
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [homeMantDTO], {
     name: 'Actividades',
     description:
@@ -89,6 +93,8 @@ export class MantenimientosResolver {
     return await this.mantenimientosService.getMantAPartirDeHoy();
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => [MesRepuestos], {
     name: 'grafica_repuesto_xmeses',
     description:
@@ -101,7 +107,8 @@ export class MantenimientosResolver {
     const start = new Date(startDate);
     return this.mantenimientosService.getConsumedRepuestos(start, months);
   }
-
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
   @Query(() => [Date], {
     name: 'calendar',
     description:
@@ -111,8 +118,9 @@ export class MantenimientosResolver {
     return this.mantenimientosService.getProgrammedMaintenanceDates();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => MantenimientoInfoDto, {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico', 'cliente')
+  @Query(() => MantenimientoInfoDto, {
     name: 'Mantenimiento_Info_por_ID',
     description:
       'Esta funcion retorna la informacion de un mantenimiento por id',
@@ -121,8 +129,9 @@ export class MantenimientosResolver {
     return this.mantenimientosService.getMantenimientoPorId(id);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => [MantenimientoInfoDto56], {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico', 'cliente')
+  @Query(() => [MantenimientoInfoDto56], {
     name: 'Mantenimiento_Info_por_Placa',
     description:
       'Esta funcion retorna la informacion de un mantenimiento por placa',
@@ -133,8 +142,9 @@ export class MantenimientosResolver {
     return this.mantenimientosService.getMantenimientosPorPlaca(placa);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => HomeAdminDTO, {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
+  @Query(() => HomeAdminDTO, {
     name: 'home_admin',
     description:
       'Esta funcion se usa en el home del admin y retorna la cantidad de mantenimientos programados, la cantidad total de mantenimientos y los mantenimientos programados',
@@ -221,7 +231,8 @@ export class MantenimientosResolver {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico', 'cliente')
   @Query(() => CarInfo, {
     name: 'admin_history_cars',
     description:
@@ -233,8 +244,10 @@ export class MantenimientosResolver {
     const existsCarDto: ExistsCarDto = { placa };
     return this.mantenimientosService.findInfoForPlaca(existsCarDto);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Query((returns) => MantenimientoResult, {
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Query(() => MantenimientoResult, {
     description:
       'Esta funcion retorna la cantidad de mantenimientos por estado y los mantenimientos (información compleja) por estado y fecha',
   })
@@ -254,6 +267,8 @@ export class MantenimientosResolver {
     return { cantidad, mantenimientos };
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => Boolean, {
     name: 'cambiar_estado_revision_o_denegado',
     description:
@@ -288,8 +303,7 @@ export class MantenimientosResolver {
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
   @Roles('admin', 'tecnico')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => String, {
+  @Mutation(() => String, {
     name: 'programar_mantenimiento',
     description: 'Esta funcion programa un mantenimiento',
   })
@@ -299,8 +313,9 @@ export class MantenimientosResolver {
     return await this.mantenimientosService.programar(prograMantDto);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => String, {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
+  @Mutation(() => String, {
     name: 'regisrar_mantenimiento_no_programado',
     description:
       'Esta funcion registra un mantenimiento que no haya sido previamente programado, ademas en el apartado de repuestos, solo pide entregar una id y la cantidad',
@@ -317,8 +332,9 @@ export class MantenimientosResolver {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => String, {
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
+  @Mutation(() => String, {
     name: 'regisrar_mantenimiento_programado',
     description:
       'Esta Función registra un mantenimiento que ya haya sido previamente programado, ademas en el apartado de repuestos, pide entregar una id y la cantidad',
@@ -329,8 +345,10 @@ export class MantenimientosResolver {
     this.mantenimientosService.checkUniqueRepuesto(registrarMantDto.repuestos);
     return await this.mantenimientosService.registrar(registrarMantDto);
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  @Mutation((returns) => String, {
+
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin', 'tecnico')
+  @Mutation(() => String, {
     name: 'completar_mantenimiento',
     description:
       'Esta función actualiza el campo diagnosticoFinal de un mantenimiento y cambia su estado a "completado"',
@@ -347,7 +365,8 @@ export class MantenimientosResolver {
     );
   }
 
-  //EstadisticasWeb
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => EstadisticWebDTO, {
     name: 'estadisticas_web',
     description:
@@ -479,6 +498,8 @@ export class MantenimientosResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Query(() => [CalendarGrafica], {
     name: 'calendar_grafica',
     description:

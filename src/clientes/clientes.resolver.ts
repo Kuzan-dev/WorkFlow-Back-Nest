@@ -188,6 +188,8 @@ export class ClientesResolver {
     }
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'agregar_Contrato',
     description:
@@ -201,6 +203,8 @@ export class ClientesResolver {
     return 'contrato agregado con exito';
   }
 
+  @UseGuards(GqlJwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Mutation(() => String, {
     name: 'crear_usuario_cliente',
     description:
