@@ -8,10 +8,12 @@ import {
 } from './schemas/notificacion.schema';
 import { OneSignalModule } from 'onesignal-api-client-nest';
 import { AuthModule } from 'src/auth/auth.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
     AuthModule,
+    UsersModule,
     OneSignalModule.forRoot({
       appId: '53544c67-6fbf-4324-bd8a-4f66224c9f22',
       restApiKey: 'ZDBhYjUwMDYtMDU2ZC00NGE0LWEzOGQtNzE0MDYwMmI0ZWY2',
