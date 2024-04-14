@@ -76,7 +76,11 @@ export class RepuestosResolver {
     @Args('producto') producto: string,
     @Args('page', { type: () => Int, nullable: true }) page: number,
   ): Promise<RepuestosResult> {
-    return this.repuestoService.searchRepuesto(producto, page);
+    try {
+      return this.repuestoService.searchRepuesto(producto, page);
+    } catch (error) {
+      return { repuestos: [], totalPages: 1 };
+    }
   }
 
   @UseGuards(GqlJwtAuthGuard, RolesGuard)
