@@ -150,6 +150,7 @@ export class RepuestosService {
             .findById(repuesto.id)
             .session(transactionSession);
           if (foundRepuesto && foundRepuesto.cantidad >= repuesto.cantidad) {
+            foundRepuesto.cantidadReserva = foundRepuesto.cantidadReserva || 0;
             foundRepuesto.cantidadReserva += repuesto.cantidad;
             foundRepuesto.cantidad -= repuesto.cantidad;
             await foundRepuesto.save({ session: transactionSession });
