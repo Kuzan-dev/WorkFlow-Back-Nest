@@ -153,6 +153,14 @@ export class MantenimientosService {
     if (updateMantDto.repuestos.length === 0) {
       throw new BadRequestException('La matriz de repuestos está vacía');
     }
+    //Verificar que no haya repuestos duplicados
+    const repuestoIds = updateMantDto.repuestos.map((repuesto) => repuesto.id);
+    const uniqueRepuestoIds = [...new Set(repuestoIds)];
+    if (repuestoIds.length !== uniqueRepuestoIds.length) {
+      throw new BadRequestException(
+        'La matriz de repuestos contiene duplicados',
+      );
+    }
     const session = await this.mantenimientoModel.db.startSession();
     session.startTransaction();
     try {
@@ -236,6 +244,16 @@ export class MantenimientosService {
     // If the repuestos array is empty, return a response immediately
     if (updateOneMantDto.repuestos.length === 0) {
       throw new BadRequestException('La matriz de repuestos está vacía');
+    }
+    //Verificar que no haya repuestos duplicados
+    const repuestoIds = updateOneMantDto.repuestos.map(
+      (repuesto) => repuesto.id,
+    );
+    const uniqueRepuestoIds = [...new Set(repuestoIds)];
+    if (repuestoIds.length !== uniqueRepuestoIds.length) {
+      throw new BadRequestException(
+        'La matriz de repuestos contiene duplicados',
+      );
     }
     const session = await this.mantenimientoModel.db.startSession();
     session.startTransaction();
