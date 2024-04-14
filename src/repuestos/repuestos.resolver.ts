@@ -80,16 +80,7 @@ export class RepuestosResolver {
       return this.repuestoService.searchRepuesto(producto, page);
     } catch (error) {
       return {
-        repuestos: [
-          {
-            _id: null,
-            producto: null,
-            marca: null,
-            cantidad: 0,
-            cantidadReserva: 0,
-            precio: 0,
-          },
-        ],
+        repuestos: [],
         totalPages: 1,
       };
     }
